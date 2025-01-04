@@ -1,12 +1,13 @@
 import { StyleSheet, Image, Platform } from 'react-native';
-
+import { Text } from "react-native";
+import { Activity, Airplay } from "@tamagui/lucide-icons";
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-
+import React from 'react';
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
@@ -19,6 +20,7 @@ export default function TabTwoScreen() {
           style={styles.headerImage}
         />
       }>
+      <Text className='font-bold text-amber-400'>max</Text>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore</ThemedText>
       </ThemedView>

@@ -5,7 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-
+import "../global.css";
+import { TamaguiProvider, View } from '@tamagui/core'
+import tamaguiConfig from "@/tamagui.config";
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -28,6 +30,7 @@ export default function RootLayout() {
   }
 
   return (
+    <TamaguiProvider config={tamaguiConfig}>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -35,5 +38,6 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
+    </TamaguiProvider>
   );
 }
