@@ -6,9 +6,9 @@ import { Button, View, XGroup, XStack, YStack } from "tamagui";
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
+    <View  style={styles.container}>
       <YStack padding="$3" gap="$3">
-        <Text className='font-bold text-amber-400 text-xl'>max</Text>
+        <Text className='font-bold text-red-400 text-xl'>max</Text>
         <Button>Plain</Button>
         <Button alignSelf="center" icon={Airplay} size="$6">
           Large
