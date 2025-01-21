@@ -20,7 +20,8 @@ export default function TabLayout() {
         height:72,
         elevation:0,
         backgroundColor:"white",
-        borderRadius:20,
+        borderTopLeftRadius: 30, 
+        borderTopRightRadius: 30, 
         alignItems:"center",
         justifyContent:"center",
       }
@@ -40,7 +41,7 @@ export default function TabLayout() {
               />
               <Text style={{
                 color: focused ? "#5680EC" : "#001A35",
-                fontSize:10,
+                fontSize:9,
                 marginTop: 4,
                 fontWeight:"bold"
               }}>Home</Text>
