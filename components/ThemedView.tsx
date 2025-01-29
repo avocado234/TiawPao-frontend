@@ -10,7 +10,7 @@ export type ThemedViewProps = ViewProps & {
 
 export function ThemedView({ children , style, className = '', ...otherProps }: ThemedViewProps) {
   const theme = useColorScheme();
-  const themeClass = theme === 'light' ? 'bg-white' : 'bg-black';
+  const themeClass = theme === 'light' ? 'bg-white' : 'bg-zinc-900';
 
   return (
     <View
