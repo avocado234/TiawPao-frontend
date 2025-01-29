@@ -10,7 +10,7 @@ import { ThemedLogo } from '@/components/ThemedLogo';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 
 
-export default function SignInPage() {
+export default function SignUpPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
@@ -34,11 +34,10 @@ export default function SignInPage() {
                     <View className="relative w-full">
 
                         <TextInput
-                            className="text-clip overflow-hidden border border-[#203B82] w-full max-w-ful rounded-3xl px-4 py-2 pr-12 "
+                            className="border border-[#203B82] w-full rounded-3xl px-4 py-2 pr-12"
                             onChangeText={setPassword}
                             value={password}
                             secureTextEntry={secureText}
-                            maxLength={28}
                         />
                         <Pressable
                             className=" absolute right-4 top-1/2 -translate-y-1/2"
@@ -53,6 +52,7 @@ export default function SignInPage() {
                         <ThemedText className="py-2 font-semibold">Forget password?</ThemedText>
                     </View>
                 </View>
+
                 <Pressable
                     className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
                     onPress={() => router.push("/(tabs)/plan")}
