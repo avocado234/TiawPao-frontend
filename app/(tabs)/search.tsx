@@ -1,12 +1,25 @@
-import { StyleSheet, Image, Platform } from 'react-native';
-import React from 'react'
-import { Text,Button, View, XGroup, XStack, YStack, ScrollView } from "tamagui";
+
+import * as React from 'react';
+import { View, Text } from 'react-native';
 import ColorScrollList from '@/components/ColorScrollList';
-export default function search() {
+import { ThemedText } from '@/components/ThemedText';
+import SvgComponent from '@/components/Bgelement';
+
+
+export default function profile(){
   return (
-    <ScrollView>
-    <ColorScrollList color="#32a852"/>
-    </ScrollView>
-  );
+    <View className=''>
+    <SvgComponent/>
+    <View className='absolute'>
+       <Text className='text-2xl text-white'>foo</Text>
+       <Text>foo</Text>
+       <Text>foo</Text>
+       <Text>foo</Text>
+       <Text>foo</Text>
+       <Text>foo</Text>
+ 
+    </View>
+ </View>
+  )
 }
 
