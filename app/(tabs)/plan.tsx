@@ -6,7 +6,7 @@ export default function plan (){
       <View>
            <Text>
                        add
-                   </Text>
+            </Text>
        </View>
   )
 }

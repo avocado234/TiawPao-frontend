@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import ColorScrollList from '@/components/ColorScrollList';
@@ -21,3 +22,4 @@ export default function profile(){
  </View>
   )
 }
+
