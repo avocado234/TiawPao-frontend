@@ -13,7 +13,7 @@ const theme = useColorScheme();
 
   return (
       <Text
-          className={`${theme === `dark`? `text-[#F2F2F2]` : `[text-[#203B82]`}` +
+          className={`${theme === `dark`? `text-[#F2F2F2]` :`text-[#203B82]`}` +
                     (className ? ` ${className} `: ``)}
                   { ... props}
                     >

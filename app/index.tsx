@@ -1,50 +1,84 @@
 import React from 'react'
-import { View, TextInput,Button } from "react-native";
+import { useState} from 'react'
+import { View, TextInput,Pressable,Text } from "react-native";
 import { Image } from 'expo-image';
 import { router } from 'expo-router'
-import { YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedLogo } from '@/components/ThemedLogo';
+import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
+
 
 export default function SignInPage() {
-    const [username, setUsername] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [secureText, setSecureText] = useState(true);
+
 
     return (
-        <ThemedView className="flex justify-center items-center h-screen">
-            <Image
-                source={require('../assets/images/TiawPaoLogo.png')}
-                style={{ width: '60%', height: '30%' }}
-                contentFit="contain"
+    <ThemedView className="flex justify-center items-center h-screen">
+    <ThemedLogo/>
+    <YStack space="$3" alignItems="center" width="100%">
+
+        <View className="w-[70%]">
+            <ThemedText className="text-[#203B82] py-2">Username or Email</ThemedText>
+            <TextInput
+                className="border border-[#203B82] w-full rounded-3xl px-4 py-2"
+                onChangeText={setUsername}
+                value={username}
             />
-
-            <YStack space="$3" alignItems="center" width="100%">
+        </View>
+        <View className="w-[70%]">
+            <ThemedText className="py-2">Password</ThemedText>
+            <View className="relative w-full">
        
-                <View className="w-[70%]">
-                    <ThemedText className="text-[#203B82] py-2">Username or Email</ThemedText>
-                    <TextInput
-                        className="border border-gray-400 w-full rounded-3xl px-4 py-2"
-                        onChangeText={setUsername}
-                        value={username}
-                    />
-                </View>
-
-                {/* Password */}
-                <View className="w-[70%]">
-                    <ThemedText className="text-[#203B82] py-2">Password</ThemedText>
-                    <TextInput
-                        className="border border-gray-400 w-full rounded-3xl px-4 py-2"
-                        onChangeText={setPassword}
-                        value={password}
-                        secureTextEntry={true} 
-                    />
-                </View>
-
-                <Button
-                title="Press me"
-                onPress={() => router.push("/(tabs)/plan")}
+                <TextInput
+                    className="border border-[#203B82] w-full rounded-3xl px-4 py-2 pr-12" 
+                    onChangeText={setPassword}
+                    value={password}
+                    secureTextEntry={secureText}
                 />
-            </YStack>
-        </ThemedView>
+                <Pressable 
+                    className=" absolute right-4 top-1/2 -translate-y-1/2"
+                    onPress={() => setSecureText(!secureText)}
+                >
+                    {secureText ? <EyeOff size={20} color="gray" /> : <Eye size={20} color="gray" />}
+                </Pressable>
+            </View>
+
+       
+            <View className="w-full flex items-end">
+                <ThemedText className="py-2 font-semibold">Forget password?</ThemedText>
+            </View>
+        </View>
+    
+        <Pressable
+            className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
+            onPress={() => router.push("/(tabs)/plan")}
+        >
+            <Text className='text-xl text-white'>SIGN IN</Text>
+        </Pressable>
+
+        <ThemedText className="py-2 font-semibold"> or sign in with</ThemedText>
+        <Pressable
+    className="bg-white w-[300px] border border-[#203B82] h-[50px] flex flex-row justify-center items-center rounded-3xl"
+    onPress={() => router.push("/(tabs)/plan")}
+>
+    <Image
+        source={require("../assets/images/devicon_google.png")}
+        style={{ width: 24, height: 24, marginRight: 10 }}
+
+    />
+    <Text className="text-lg text-[#203B82]">SIGN IN WITH GOOGLE</Text>
+</Pressable>
+<XStack>
+    <Text className="text-lg text-gray-500">Don't have an account ? </Text>
+    <Text className="text-lg text-[#203B82] font-bold">sign up</Text>
+</XStack>
+        
+    </YStack>
+</ThemedView>
+
     );
 }
