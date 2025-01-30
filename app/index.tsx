@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { View, TextInput, Pressable, Text } from "react-native";
 import { Image } from 'expo-image';
-import { router } from 'expo-router'
+import { router,Link } from 'expo-router'
 import { XStack, YStack } from "tamagui";
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -74,7 +74,9 @@ export default function SignInPage() {
                 </Pressable>
                 <XStack>
                     <ThemedText className="text-lg text-gray-500">Don't have an account ? </ThemedText>
-                    <ThemedText className="text-lg text-[#203B82] font-bold">sign up</ThemedText>
+                    <Link href="/signup">
+                        <ThemedText className=" text-lg text-[#203B82] font-bold">Sign Up</ThemedText>
+                    </Link>
                 </XStack>
 
             </YStack>
