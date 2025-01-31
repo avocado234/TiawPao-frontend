@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { View, Text ,SafeAreaView, useColorScheme, Pressable} from 'react-native';
-import ColorScrollList from '@/components/ColorScrollList';
+import PublicPlanBox from '@/components/PublicPlanBox';
 import { ThemedText } from '@/components/ThemedText';
 import SvgComponent from '@/components/Bgelement';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -13,20 +13,22 @@ export default function Profile() {
   const router = useRouter(); // ✅ ใช้ useRouter()
 
   return (
-    <ThemedView>
+    <ThemedView >
       <SvgComponent />
-      <View className="absolute">
-        <ThemedText className="!justify-start text-4xl text-white inset-y-20 inset-x-8 font-bold">
+      <View className="absolute w-full">
+        <View className='mb-20'>
+        <ThemedText className="!justify-start text-4xl text-white inset-y-20 inset-x-8 font-bold mt-5">
           Public Plan
         </ThemedText>
-        
-      
         <Pressable onPress={() => router.push("/(tabs)/profile")}> 
         <AntDesign  name="filter" size={32} color="white" className=' inset-x-safe-offset-96 inset-y-10  font-bold '/>
         </Pressable>
-
-        <ColorScrollList  />
+        </View>
+        
+        <PublicPlanBox  />
+      
       </View>
+   
     </ThemedView>
   );
 }

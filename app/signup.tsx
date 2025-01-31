@@ -26,7 +26,7 @@ export default function SignUpPage() {
                 <View className="w-[70%]">
                     <ThemedText className="text-[#203B82] py-2">Username </ThemedText>
                     <TextInput
-                        className="border border-[#203B82] w-full rounded-3xl px-4 py-2"
+                        className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2"
                         onChangeText={setUsername}
                         value={username}
                     />
@@ -34,7 +34,7 @@ export default function SignUpPage() {
                 <View className="w-[70%]">
                     <ThemedText className="text-[#203B82] py-2">Email </ThemedText>
                     <TextInput
-                        className="border border-[#203B82] w-full rounded-3xl px-4 py-2"
+                        className="border border-[#203B82] h-[40px]  w-full rounded-3xl px-4 py-2"
                         onChangeText={setEmail}
                         value={email}
                     />
@@ -44,7 +44,7 @@ export default function SignUpPage() {
                     <View className="relative w-full">
 
                         <TextInput
-                            className="border border-[#203B82] w-full rounded-3xl px-4 py-2 pr-12"
+                            className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2 pr-12"
                             onChangeText={setPassword}
                             value={password}
                             secureTextEntry={secureText}
@@ -63,7 +63,7 @@ export default function SignUpPage() {
                     <View className="relative w-full">
 
                         <TextInput
-                            className="border border-[#203B82] w-full rounded-3xl px-4 py-2 pr-12"
+                            className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2 pr-12"
                             onChangeText={setConfirmPassword}
                             value={confirmpassword}
                             secureTextEntry={secureTextConfirm}
