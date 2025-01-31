@@ -16,17 +16,19 @@ export default function Profile() {
     <ThemedView >
       <SvgComponent />
       <View className="absolute w-full">
-        <ThemedText className="!justify-start text-4xl text-white inset-y-20 inset-x-8 font-bold">
+        <View className='mb-20'>
+        <ThemedText className="!justify-start text-4xl text-white inset-y-20 inset-x-8 font-bold mt-5">
           Public Plan
         </ThemedText>
-        
-      
         <Pressable onPress={() => router.push("/(tabs)/profile")}> 
         <AntDesign  name="filter" size={32} color="white" className=' inset-x-safe-offset-96 inset-y-10  font-bold '/>
         </Pressable>
-
+        </View>
+        
         <PublicPlanBox  />
+      
       </View>
+   
     </ThemedView>
   );
 }

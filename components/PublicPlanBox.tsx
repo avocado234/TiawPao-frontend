@@ -5,11 +5,24 @@ import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 // import TripCard from "./TripCard";
 import { YStack } from "tamagui"; // นำเข้า TripCard
+interface Trip {
+  id: number;
+  user:string;
+  nametrip:string;
+  location: string;
+  price: string;
+  date: string;
+  rating: string;
+  description:string;
+}
 
+interface TripCardProps {
+  trip: Trip;
+}
 const tripData = [
-  { id: 1, location: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", review: "4.8" },
-  { id: 2, location: "Bangkok trip", price: "600$", date: "1 Feb - 3 Feb", review: "4.5" },
-  { id: 3, location: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", review: "4.7" },
+  { id: 1, user:"Jame Macdonell",nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", rating: "4.8" ,location:"Chonburi",description:"this plan is very good plan in Pattaya"},
+  { id: 2, user:"Jame Macdonell",nametrip: "Bangkok trip", price: "600$", date: "1 Feb - 3 Feb", rating: "4.5" ,location:"Bangkok",description:"this plan is very good plan in Pattaya"},
+  { id: 3, user:"Jame Macdonell",nametrip: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", rating: "4.7",location:"Phuket" ,description:"this plan is very good plan in Pattaya"},
 ];
 
 const PublicPlanBox = () => {
@@ -19,17 +32,17 @@ const PublicPlanBox = () => {
     contentContainerStyle={styles.scrollViewContent} // เพิ่มสไตล์ให้ container
     // className="bg-red-900 w-full h-screen"
   >
-      <TripCard/>
-      <TripCard/>
-      <TripCard/>
-      <TripCard/>
-      <TripCard/>
+       {tripData.map((trip) => (
+      
+            <TripCard  key={trip.id} trip={trip}/>
+
+        ))} 
     </ScrollView>
   );
 };
 
 export default PublicPlanBox;
-const TripCard = () => {
+const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 return (
     <ThemedView style={styles.card}>
     <View className=" " style={styles.header}>
@@ -38,18 +51,18 @@ return (
             source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }}
             style={styles.avatar}
         />
-        <Text style={styles.userName}>Jame Macdonnell</Text>
+        <Text style={styles.userName}>{trip.user}</Text>
         </View>
-        <Text style={styles.price}>500$</Text>
+        <Text style={styles.price}>{trip.price}</Text>
     
-    <Text style={styles.tripTitle}>{tripData[1].location}</Text>
+    <Text style={styles.tripTitle}>{trip.nametrip}</Text>
     <View style={styles.tripInfo}>
         <FontAwesome name="calendar" size={18} color="#fff" />
-        <Text style={styles.dateText}> 24 Jan - 26 Jan, 9 Location</Text>
+        <Text style={styles.dateText}> {trip.date}</Text>
     </View>
     <View style={styles.tripInfo}>
         <FontAwesome name="map-marker" size={18} color="#fff" />
-        <Text style={styles.dateText}> Pattaya</Text>
+        <Text style={styles.dateText}> {trip.location}</Text>
     </View>
     </View>
     <View className="py-5 px-10">
@@ -57,11 +70,11 @@ return (
           <Text style={styles.reviewText}>Review</Text>
           <View style={styles.rating}>
           <FontAwesome name="star" size={14} color="#FBC02D" />
-          <Text style={styles.ratingText}> 4.8</Text>
+          <Text style={styles.ratingText}> {trip.rating}</Text>
           </View>
       </View>
       <Text style={styles.reviewDesc}>
-          this plan is very good plan in Pattaya
+          {trip.description}
       </Text>
     </View>
 
@@ -83,7 +96,7 @@ const styles = StyleSheet.create({
     // flexDirection: "column",
     alignItems: "center",
     // alignItems: "center", // จัดให้เนื้อหาอยู่ตรงกลางแนวนอน
-    marginTop:50,
+    // marginTop:50,
     // paddingHorizontal:20,
     // paddingVertical: 50,
     // paddingTop:100,
