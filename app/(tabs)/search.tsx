@@ -13,9 +13,9 @@ export default function Profile() {
   const router = useRouter(); // ✅ ใช้ useRouter()
 
   return (
-    <ThemedView>
+    <ThemedView >
       <SvgComponent />
-      <View className="absolute">
+      <View className="absolute w-full">
         <ThemedText className="!justify-start text-4xl text-white inset-y-20 inset-x-8 font-bold">
           Public Plan
         </ThemedText>

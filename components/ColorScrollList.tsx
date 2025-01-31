@@ -12,25 +12,27 @@ const tripData = [
   { id: 3, location: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", review: "4.7" },
 ];
 
-// const ColorScrollList = () => {
-//   return (
-//     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-//       <YStack>
-//       {tripData.map((trip) => (
-//         <View key={trip.id} style={{ marginRight: 10 }}>
-//           <TripCard trip={trip} />
-//         </View>
-//       ))}
-//       </YStack>
-//     </ScrollView>
-//   );
-// };
+const ColorScrollList = () => {
+  return (
+    <ScrollView
+    // showsHorizontalScrollIndicator={false} // ซ่อนแถบเลื่อนแนวนอน
+    contentContainerStyle={styles.scrollViewContent} // เพิ่มสไตล์ให้ container
+    // className="bg-red-900 w-full h-screen"
+  >
+      <TripCard/>
+      <TripCard/>
+      <TripCard/>
+      <TripCard/>
+      <TripCard/>
+    </ScrollView>
+  );
+};
 
-
+export default ColorScrollList;
 const TripCard = () => {
 return (
-    <ThemedView className=" inset-x-16 inset-y-24" style={styles.card}>
-    <View className="  -inset-x-5 -inset-y-6" style={styles.header}>
+    <ThemedView style={styles.card}>
+    <View className=" " style={styles.header}>
         <View style={styles.userInfo}>
         <Image
             source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }}
@@ -50,44 +52,63 @@ return (
         <Text style={styles.dateText}> Pattaya</Text>
     </View>
     </View>
-
-    <View style={styles.reviewSection}>
-        <Text style={styles.reviewText}>Review</Text>
-        <View style={styles.rating}>
-        <FontAwesome name="star" size={14} color="#FBC02D" />
-        <Text style={styles.ratingText}> 4.8</Text>
-        </View>
+    <View className="py-5 px-10">
+      <View style={styles.reviewSection}>
+          <Text style={styles.reviewText}>Review</Text>
+          <View style={styles.rating}>
+          <FontAwesome name="star" size={14} color="#FBC02D" />
+          <Text style={styles.ratingText}> 4.8</Text>
+          </View>
+      </View>
+      <Text style={styles.reviewDesc}>
+          this plan is very good plan in Pattaya
+      </Text>
     </View>
-    <Text style={styles.reviewDesc}>
-        this plan is very good plan in Pattaya
-    </Text>
+
     </ThemedView>
 );
 };
 
-export default TripCard;
+
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    // backgroundColor:"red",
+    // display:"flex",
+    width:"100%", // ระยะห่างด้านบนและล่าง
+
+    // height:"100%",
+    // paddingHorizontal:20,
+    // justifyContent:"center",
+    // flexDirection: "column",
+    alignItems: "center",
+    // alignItems: "center", // จัดให้เนื้อหาอยู่ตรงกลางแนวนอน
+    marginTop:50,
+    // paddingHorizontal:20,
+    // paddingVertical: 50,
+    // paddingTop:100,
+    // marginHorizontal: 80,
+  },
   card: {
     backgroundColor: "#fff",
-    borderRadius: 20,
+    borderRadius: 25,
     overflow: "hidden",
-    padding: 15,
+    // padding: 15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4},
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    width:"94%",
     elevation: 3,
-    width: 350,
-    marginHorizontal: -25,
+    marginVertical: 10, // ระยะห่างระหว่างการ์ดในแนวตั้ง
   },
   header: {
     backgroundColor: "#203B82",
     padding: 15,
-    borderRadius: 25,
-    width: 355,
-    position: "relative",
-    marginBottom: -18,
+    borderRadius: 20,
+    width:"100%",
+    // position: "relative",
+    // marginBottom: -18,
   },
   userInfo: {
     flexDirection: "row",
@@ -132,15 +153,16 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   reviewSection: {
+
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    // marginTop: 10,
     
   },
   reviewText: {
     fontWeight: "bold",
     color: "#16367F",
-    right: -20,
+    // right: -20,
   },
   rating: {
     flexDirection: "row",
@@ -155,7 +177,7 @@ const styles = StyleSheet.create({
   reviewDesc: {
     marginTop: 4,
     color: "#666",
-    right: -20,
+    // right: -20,
   },
 });
 

@@ -2,9 +2,19 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { ThemedView } from "./ThemedView"; 
+interface Trip {
+  id: number;
+  location: string;
+  price: string;
+  date: string;
+  review: string;
+}
 
+interface TripCardProps {
+  trip: Trip;
+}
 
-const TripCard = ({ trip }) => {
+const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   return (
     <ThemedView className="inset-x-16 inset-y-24" style={styles.card}>
       <View className="-inset-x-5 -inset-y-6" style={styles.header}>
@@ -50,7 +60,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    width: 350,
     marginHorizontal: -25,
   },
   header: {
