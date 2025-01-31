@@ -12,7 +12,7 @@ const tripData = [
   { id: 3, location: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", review: "4.7" },
 ];
 
-const ColorScrollList = () => {
+const PublicPlanBox = () => {
   return (
     <ScrollView
     // showsHorizontalScrollIndicator={false} // ซ่อนแถบเลื่อนแนวนอน
@@ -28,7 +28,7 @@ const ColorScrollList = () => {
   );
 };
 
-export default ColorScrollList;
+export default PublicPlanBox;
 const TripCard = () => {
 return (
     <ThemedView style={styles.card}>

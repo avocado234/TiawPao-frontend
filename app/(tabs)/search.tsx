@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import { View, Text ,SafeAreaView, useColorScheme, Pressable} from 'react-native';
-import ColorScrollList from '@/components/ColorScrollList';
+import PublicPlanBox from '@/components/PublicPlanBox';
 import { ThemedText } from '@/components/ThemedText';
 import SvgComponent from '@/components/Bgelement';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -25,7 +25,7 @@ export default function Profile() {
         <AntDesign  name="filter" size={32} color="white" className=' inset-x-safe-offset-96 inset-y-10  font-bold '/>
         </Pressable>
 
-        <ColorScrollList  />
+        <PublicPlanBox  />
       </View>
     </ThemedView>
   );
