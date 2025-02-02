@@ -9,15 +9,11 @@ import "../global.css";
 import { TamaguiProvider, View } from '@tamagui/core'
 import tamaguiConfig from "@/tamagui.config";
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const navigation = useNavigation();
-
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -39,15 +35,8 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
-        <Stack.Screen
-            name="personaldetail"
-            options={{
-              headerShown: false,
-              headerLeft: () => (
-                <Button onPress={() => navigation.goBack()} title="TT" />
-              ),
-            }}
-          />        <Stack.Screen name="onetimepass" options={{ headerShown: false }} />
+        <Stack.Screen name="personaldetail" options={{ headerShown: false }} />
+        <Stack.Screen name="onetimepass" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
