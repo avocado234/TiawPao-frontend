@@ -9,9 +9,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 import ThemedTextInput from "@/components/ThemedTextInput"
-import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
 
-export default function SignUpPage() {
+export default function personaldetail() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,9 +19,8 @@ export default function SignUpPage() {
     const [secureTextConfirm, setSecureTextConfirm] = useState(true);
 
     return (
-        <ThemedSafeAreaView>
         <ThemedView className="flex justify-center items-center h-screen">
-            <ThemedLogo />
+            <ThemedText> Personal Detail</ThemedText>
             <YStack space="$3" alignItems="center" width="100%">
 
                 <View className="w-[70%]">
@@ -82,32 +80,13 @@ export default function SignUpPage() {
 
                 <Pressable
                     className=' bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
-                    onPress={() => router.push("/personaldetail")}
+                    onPress={() => router.push("/(tabs)/plan")}
                 >
                     <Text className='text-xl text-white '>SIGN UP</Text>
                 </Pressable>
 
-                <ThemedText className="py-2 font-semibold"> or sign up with</ThemedText>
-                <Pressable
-                    className="bg-white w-[300px] border border-[#203B82] h-[50px] flex flex-row justify-center items-center rounded-3xl"
-                    onPress={() => router.push("/(tabs)/plan")}
-                >
-                    <Image
-                        source={require("../assets/images/devicon_google.png")}
-                        style={{ width: 24, height: 24, marginRight: 10 }}
-
-                    />
-                    <Text className="text-lg text-[#203B82]">SIGN IN WITH GOOGLE</Text>
-                </Pressable>
-                <XStack>
-                    <ThemedText className="text-lg text-gray-500">Have an account ? </ThemedText>
-                    <Link href="/">
-                        <ThemedText className=" text-lg text-[#203B82] font-bold">Sign In</ThemedText>
-                    </Link>
-                </XStack>
-
             </YStack>
         </ThemedView>
-        </ThemedSafeAreaView>
+
     );
 }

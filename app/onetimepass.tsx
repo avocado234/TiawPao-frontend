@@ -9,9 +9,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 import ThemedTextInput from "@/components/ThemedTextInput"
-import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
 
-export default function SignUpPage() {
+export default function onetimepass() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,7 +19,6 @@ export default function SignUpPage() {
     const [secureTextConfirm, setSecureTextConfirm] = useState(true);
 
     return (
-        <ThemedSafeAreaView>
         <ThemedView className="flex justify-center items-center h-screen">
             <ThemedLogo />
             <YStack space="$3" alignItems="center" width="100%">
@@ -82,7 +80,7 @@ export default function SignUpPage() {
 
                 <Pressable
                     className=' bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
-                    onPress={() => router.push("/personaldetail")}
+                    onPress={() => router.push("/(tabs)/plan")}
                 >
                     <Text className='text-xl text-white '>SIGN UP</Text>
                 </Pressable>
@@ -108,6 +106,6 @@ export default function SignUpPage() {
 
             </YStack>
         </ThemedView>
-        </ThemedSafeAreaView>
+
     );
 }
