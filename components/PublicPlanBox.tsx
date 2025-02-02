@@ -25,7 +25,7 @@ const tripData = [
   { id: 3, user: "Jame Macdonell", nametrip: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
   { id: 4, user: "Jame Macdonell", nametrip: " trip", price: "700$", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
   { id: 5, user: "Jame Macdonell", nametrip: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
-  { id: 6, user: "Jame Macdonell", nametrip: "Phuket trip", price: "500", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
+  { id: 6, user: "Jame Macdonell", nametrip: "last trip", price: "500", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
 
 ];
 
@@ -70,7 +70,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
 
 const styles = StyleSheet.create({
     container: {
-    padding: 20,
+    padding: 15,
     paddingTop: 30,
     },
     cardWrapper: {
