@@ -8,7 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
-
+import ThemedTextInput from "@/components/ThemedTextInput"
 
 export default function SignUpPage() {
     const [username, setUsername] = useState('');
@@ -25,7 +25,7 @@ export default function SignUpPage() {
 
                 <View className="w-[70%]">
                     <ThemedText className="text-[#203B82] py-2">Username </ThemedText>
-                    <TextInput
+                    <ThemedTextInput
                         className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2"
                         onChangeText={setUsername}
                         value={username}
@@ -33,7 +33,7 @@ export default function SignUpPage() {
                 </View>
                 <View className="w-[70%]">
                     <ThemedText className="text-[#203B82] py-2">Email </ThemedText>
-                    <TextInput
+                    <ThemedTextInput
                         className="border border-[#203B82] h-[40px]  w-full rounded-3xl px-4 py-2"
                         onChangeText={setEmail}
                         value={email}
@@ -43,7 +43,7 @@ export default function SignUpPage() {
                     <ThemedText className="py-2">Password</ThemedText>
                     <View className="relative w-full">
 
-                        <TextInput
+                        <ThemedTextInput
                             className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2 pr-12"
                             onChangeText={setPassword}
                             value={password}
@@ -62,7 +62,7 @@ export default function SignUpPage() {
                     <ThemedText className="py-2">Confirm Password</ThemedText>
                     <View className="relative w-full">
 
-                        <TextInput
+                        <ThemedTextInput
                             className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2 pr-12"
                             onChangeText={setConfirmPassword}
                             value={confirmpassword}
