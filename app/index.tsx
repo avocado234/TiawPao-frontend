@@ -7,6 +7,7 @@ import { XStack, YStack } from "tamagui";
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
+import ThemedTextInput  from '@/components/ThemedTextInput';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 
 
@@ -23,22 +24,24 @@ export default function SignInPage() {
 
                 <View className="w-[70%]">
                     <ThemedText className="text-[#203B82] py-2">Username or Email</ThemedText>
-                    <TextInput
+                    <ThemedTextInput
                         className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2"
                         onChangeText={setUsername}
                         value={username}
+                        autoComplete="username"
                     />
                 </View>
                 <View className="w-[70%]">
                     <ThemedText className="py-2">Password</ThemedText>
                     <View className="relative w-full">
 
-                        <TextInput
+                        <ThemedTextInput
                             className="text-clip h-[40px] overflow-hidden border border-[#203B82] w-full max-w-ful rounded-3xl px-4 py-2 pr-12 "
                             onChangeText={setPassword}
                             value={password}
                             secureTextEntry={secureText}
                             maxLength={28}
+                            autoComplete="password"
                         />
                         <Pressable
                             className=" absolute right-4 top-1/2 -translate-y-1/2"
