@@ -46,7 +46,7 @@ const PublicPlanBox = () => {
 
 const TripCard: React.FC<TripCardProps> = ({ trip }) => {
   return (
-    <ThemedView style={styles.card} className=" " >
+    <ThemedView style={styles.card}  >
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Image source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />
@@ -76,9 +76,6 @@ const styles = StyleSheet.create({
     cardWrapper: {
     marginBottom: 15,
     },
-    scrollViewContent: {
-    padding: 20,
-    },
     card: {
     backgroundColor: "#fff",
     borderRadius: 24,
@@ -88,7 +85,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingBottom: 10,
    
   },
   header: {
