@@ -1,116 +1,100 @@
-import React from 'react'
-import { useState } from 'react'
-import { View, TextInput, Pressable, Text } from "react-native";
-import { Image } from 'expo-image';
-import { router, Link } from 'expo-router'
-import { XStack, YStack } from "tamagui";
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedLogo } from '@/components/ThemedLogo';
-import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
-import ThemedTextInput from "@/components/ThemedTextInput"
-import { MaterialIcons } from '@expo/vector-icons'; // Import Material Icons
-import { useNavigation } from 'expo-router';
-export default function onetimepass() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmpassword, setConfirmPassword] = useState('');
-    const [secureText, setSecureText] = useState(true);
-    const [secureTextConfirm, setSecureTextConfirm] = useState(true);
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Pressable, TextInput, Alert } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { YStack, XStack } from 'tamagui';
+import { router } from 'expo-router';
+
+export default function OTPVerification(): JSX.Element {
+    const serverotp = "1234";  // ค่า OTP ที่ถูกต้อง
+    const [otp, setOtp] = useState<string[]>(['', '', '', '']);
+    const [timer, setTimer] = useState<number>(35);
     const navigation = useNavigation();
+    const inputRefs = useRef<(TextInput | null)[]>([]);
+
+    useEffect(() => {
+        const countdown = setInterval(() => {
+            setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(countdown);
+    }, []);
+
+    const handleChange = (value: string, index: number) => {
+        if (/^\d*$/.test(value)) { // รับแค่ตัวเลข
+            const newOtp = [...otp];
+            newOtp[index] = value;
+            setOtp(newOtp);
+
+            if (value !== '' && index < 3) {
+                inputRefs.current[index + 1]?.focus();
+            }
+
+            if (index === 3) {
+                checkOtp(newOtp.join(''));  // ตรวจสอบ OTP เมื่อกรอกครบ
+            }
+        }
+    };
+
+    const handleKeyPress = (event: any, index: number) => {
+        if (event.nativeEvent.key === 'Backspace' && otp[index] === '') {
+            if (index > 0) {
+                inputRefs.current[index - 1]?.focus();
+            }
+        }
+    };
+
+    const checkOtp = (enteredOtp: string) => {
+        if (enteredOtp === serverotp) {
+            router.push("/(tabs)")
+            // Alert.alert("Verify Success", "OTP is correct!", [{ text: "OK", onPress: () => router.push("/(tabs)") }]);
+        } else {
+            Alert.alert("OTP is incorrect. Try again.");
+            setOtp(['', '', '', '']);
+            inputRefs.current[0]?.focus();  // รีเซ็ต OTP และโฟกัสช่องแรก
+        }
+    };
 
     return (
-        <ThemedView className="flex justify-center items-center h-screen">
-            <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 100, left: 20 }}>
+        <View className="flex justify-stretch items-center h-screen bg-white relative">
+        
+            <Pressable onPress={() => navigation.goBack()} className="absolute top-[80px] left-[20px]">
                 <MaterialIcons name="arrow-back" size={30} color="#203B82" />
             </Pressable>
-            <ThemedLogo />
-            <YStack space="$3" alignItems="center" width="100%">
-
-                <View className="w-[70%]">
-                    <ThemedText className="text-[#203B82] py-2">Username </ThemedText>
-                    <ThemedTextInput
-                        className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2"
-                        onChangeText={setUsername}
-                        value={username}
-                    />
-                </View>
-                <View className="w-[70%]">
-                    <ThemedText className="text-[#203B82] py-2">Email </ThemedText>
-                    <ThemedTextInput
-                        className="border border-[#203B82] h-[40px]  w-full rounded-3xl px-4 py-2"
-                        onChangeText={setEmail}
-                        value={email}
-                    />
-                </View>
-                <View className="w-[70%]">
-                    <ThemedText className="py-2">Password</ThemedText>
-                    <View className="relative w-full">
-
-                        <ThemedTextInput
-                            className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2 pr-12"
-                            onChangeText={setPassword}
-                            value={password}
-                            secureTextEntry={secureText}
-                        />
-                        <Pressable
-                            className=" absolute right-4 top-1/2 -translate-y-1/2"
-                            onPress={() => setSecureText(!secureText)}
-                        >
-                            {secureText ? <EyeOff size={20} color="gray" /> : <Eye size={20} color="gray" />}
-                        </Pressable>
-                    </View>
-
-                </View>
-                <View className="w-[70%] pb-5">
-                    <ThemedText className="py-2">Confirm Password</ThemedText>
-                    <View className="relative w-full">
-
-                        <ThemedTextInput
-                            className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2 pr-12"
-                            onChangeText={setConfirmPassword}
-                            value={confirmpassword}
-                            secureTextEntry={secureTextConfirm}
-                        />
-                        <Pressable
-                            className=" absolute right-4 top-1/2 -translate-y-1/2"
-                            onPress={() => setSecureTextConfirm(!secureTextConfirm)}
-                        >
-                            {secureTextConfirm ? <EyeOff size={20} color="gray" /> : <Eye size={20} color="gray" />}
-                        </Pressable>
-                    </View>
-
-                </View>
-
-                <Pressable
-                    className=' bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
-                    onPress={() => router.push("/(tabs)/plan")}
-                >
-                    <Text className='text-xl text-white '>SIGN UP</Text>
-                </Pressable>
-
-                <ThemedText className="py-2 font-semibold"> or sign up with</ThemedText>
-                <Pressable
-                    className="bg-white w-[300px] border border-[#203B82] h-[50px] flex flex-row justify-center items-center rounded-3xl"
-                    onPress={() => router.push("/(tabs)/plan")}
-                >
-                    <Image
-                        source={require("../assets/images/devicon_google.png")}
-                        style={{ width: 24, height: 24, marginRight: 10 }}
-
-                    />
-                    <Text className="text-lg text-[#203B82]">SIGN IN WITH GOOGLE</Text>
-                </Pressable>
-                <XStack>
-                    <ThemedText className="text-lg text-gray-500">Have an account ? </ThemedText>
-                    <Link href="/">
-                        <ThemedText className=" text-lg text-[#203B82] font-bold">Sign In</ThemedText>
-                    </Link>
-                </XStack>
-
+            <View className='mt-[150px] items-center'>
+            <YStack className="w-[80%] mt-[50px]">
+                <Text className="text-2xl font-bold text-[#203B82] mb-3">Verification Code</Text>
+                <Text className="text-gray-500 mt-2 mb-5">
+                    Please enter the 4-digit verification code sent to john***@gmail.com
+                </Text>
+                <Text className='mb-10'>Didn't receive OTP? 
+                    <Pressable disabled={timer !== 0} onPress={() => setTimer(35)} className="mt-2">
+                        <Text className={`${timer === 0 ? `text-[#203B82]` : `text-gray-500`} ml-3 font-bold`}>Resend OTP</Text>
+                    </Pressable>
+                </Text>
             </YStack>
-        </ThemedView>
 
+            {/* ช่องใส่ OTP พร้อม Auto-Focus และ Backspace Navigation */}
+            <XStack space="$2" gap="$2" className="mt-[30px]">
+                {otp.map((digit, index) => (
+                    <TextInput
+                        key={index}
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        value={digit}
+                        onChangeText={(value) => handleChange(value, index)}
+                        onKeyPress={(event) => handleKeyPress(event, index)}
+                        keyboardType="numeric"
+                        maxLength={1}
+                        className="w-[50px] h-[50px] border-b-2 border-gray-400 text-center text-xl"
+                    />
+                ))}
+            </XStack>
+
+            <XStack alignItems="center" space="$2" className="mt-[20px]">
+                <MaterialIcons name="timer" size={20} color="#203B82" />
+                <Text className="text-[#203B82] text-lg my-10">00:{timer < 10 ? `0${timer}` : timer}</Text>
+            </XStack>
+
+            </View>
+        </View>
     );
 }

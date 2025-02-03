@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Pressable, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons'; // Import Material Icons
 import { YStack } from "tamagui";
-import ThemedTextInput from "@/components/ThemedTextInput";
-import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import { ThemedText } from '@/components/ThemedText';
 import { router } from 'expo-router';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
+import ThemedTextInput from "@/components/ThemedTextInput";
+import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 
 export default function PersonalDetail() {
   const [firstname, setFirstname] = useState('');
@@ -15,16 +15,10 @@ export default function PersonalDetail() {
   const [mobilenumber, setMobileNumber] = useState('');
   const [selectedGender, setSelectedGender] = useState(null);
 
-  const navigation = useNavigation();
 
   return (
-    <View className="flex justify-center items-center h-screen relative">
-      
-
-      <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 80, left: 20 }}>
-        <MaterialIcons name="arrow-back" size={30} color="#203B82" />
-      </Pressable>
-
+    <ThemedView className="flex justify-center items-center h-screen relative">
+        <ThemedPressableBackButton/>
       <View className="w-[70%] mt-[50px] mb-[30px]">
         <ThemedText className="text-3xl font-bold text-left">Personal Details</ThemedText>
       </View>
@@ -95,12 +89,12 @@ export default function PersonalDetail() {
         
         <Pressable
           className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-12'
-          onPress={() => router.push("/(tabs)/plan")}
+          onPress={() => router.push("/onetimepass")}
         >
           <Text className='text-xl text-white'>NEXT</Text>
         </Pressable>
         
       </YStack>
-    </View>
+    </ThemedView>
   );
 }

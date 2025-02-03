@@ -24,7 +24,7 @@ export default function ThemedDropDownPicker({ value, setValue, items, style, dr
                 setValue={setValue}
                 items={items}
                 style={[
-                    { borderColor: "#203B82", height: 40, borderRadius: 24, backgroundColor: theme === "dark" ? "#18181B" : "#f2f2f2" }, // Text color based on theme
+                    { borderColor: "#203B82", height: 40, borderRadius: 24, backgroundColor: theme === "dark" ? "#18181B" : "#fff" }, // Text color based on theme
                 ]}
                 placeholderStyle={{
                     color: "#8a8a8a"
