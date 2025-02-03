@@ -18,15 +18,24 @@ export default function PersonalDetail() {
   const navigation = useNavigation();
 
   return (
-    <View className="flex justify-center items-center h-screen">
-        <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 100, left: 20 }}>
-          <MaterialIcons name="arrow-back" size={30} color="#203B82" />
-        </Pressable>
-      <YStack space="$3" alignItems="center" width="100%">
-        <ThemedText className='text-3xl font-bold'>Personal Details</ThemedText>
+    <View className="flex justify-center items-center h-screen relative">
+      
 
+      <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 80, left: 20 }}>
+        <MaterialIcons name="arrow-back" size={30} color="#203B82" />
+      </Pressable>
+
+      <View className="w-[70%] mt-[50px] mb-[30px]">
+        <ThemedText className="text-3xl font-bold text-left">Personal Details</ThemedText>
+      </View>
+
+      <YStack space="$3" alignItems="center" width="100%">
+
+       
         <View className="w-[70%]">
-          <ThemedText className="text-[#203B82] py-2">First Name</ThemedText>
+          <ThemedText className="text-[#203B82] py-2">
+            First Name <Text style={{ color: 'red' }}>*</Text>
+          </ThemedText>
           <ThemedTextInput
             className="border border-[#203B82] h-[45px] w-full rounded-3xl px-4 py-2"
             onChangeText={setFirstname}
@@ -34,8 +43,11 @@ export default function PersonalDetail() {
           />
         </View>
 
+      
         <View className="w-[70%]">
-          <ThemedText className="text-[#203B82] py-2">Last Name</ThemedText>
+          <ThemedText className="text-[#203B82] py-2">
+            Last Name <Text style={{ color: 'red' }}>*</Text>
+          </ThemedText>
           <ThemedTextInput
             className="border border-[#203B82] h-[45px] w-full rounded-3xl px-4 py-2"
             onChangeText={setLastName}
@@ -43,16 +55,23 @@ export default function PersonalDetail() {
           />
         </View>
 
+       
         <View className="w-[70%]">
-          <ThemedText className="py-2">Date of Birth</ThemedText>
+          <ThemedText className="py-2">
+            Date of Birth <Text style={{ color: 'red' }}>*</Text>
+          </ThemedText>
           <ThemedTextInput
             className="border border-[#203B82] h-[45px] w-full rounded-3xl px-4 py-2"
             onChangeText={setDateBirth}
             value={datebirth}
           />
         </View>
+
+        
         <View className="w-[70%]">
-          <ThemedText className="py-2">Mobile Number</ThemedText>
+          <ThemedText className="py-2">
+            Mobile Number <Text style={{ color: 'red' }}>*</Text>
+          </ThemedText>
           <ThemedTextInput
             className="border border-[#203B82] h-[45px] w-full rounded-3xl px-4 py-2"
             onChangeText={setMobileNumber}
@@ -61,7 +80,7 @@ export default function PersonalDetail() {
         </View>
 
         <View className="w-[70%]">
-          <ThemedText className="py-2">Gender</ThemedText>
+          <ThemedText className="py-2 px-2">Gender <Text style={{ color: 'red' }}>*</Text></ThemedText>
           <ThemedDropDownPicker
             value={selectedGender}
             setValue={setSelectedGender}
@@ -73,14 +92,15 @@ export default function PersonalDetail() {
           />
         </View>
 
+        
         <Pressable
-          className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-6'
+          className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-12'
           onPress={() => router.push("/(tabs)/plan")}
         >
-          <Text className='text-xl text-white'>SIGN UP</Text>
+          <Text className='text-xl text-white'>NEXT</Text>
         </Pressable>
+        
       </YStack>
     </View>
   );
 }
-

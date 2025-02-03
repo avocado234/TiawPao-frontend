@@ -2,14 +2,15 @@ import React from 'react'
 import { useState } from 'react'
 import { View, TextInput, Pressable, Text } from "react-native";
 import { Image } from 'expo-image';
-import { router , Link } from 'expo-router'
+import { router, Link } from 'expo-router'
 import { XStack, YStack } from "tamagui";
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 import ThemedTextInput from "@/components/ThemedTextInput"
-
+import { MaterialIcons } from '@expo/vector-icons'; // Import Material Icons
+import { useNavigation } from 'expo-router';
 export default function onetimepass() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -17,9 +18,13 @@ export default function onetimepass() {
     const [confirmpassword, setConfirmPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
     const [secureTextConfirm, setSecureTextConfirm] = useState(true);
+    const navigation = useNavigation();
 
     return (
         <ThemedView className="flex justify-center items-center h-screen">
+            <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 100, left: 20 }}>
+                <MaterialIcons name="arrow-back" size={30} color="#203B82" />
+            </Pressable>
             <ThemedLogo />
             <YStack space="$3" alignItems="center" width="100%">
 
