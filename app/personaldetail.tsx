@@ -11,6 +11,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Entypo from '@expo/vector-icons/Entypo';
 import { useSignupStore } from "@/store/useSignupStore"; 
 import { useColorScheme } from 'react-native';
+
 export default function PersonalDetail() {
   const { username, email, setSignupData } = useSignupStore(); 
   const [firstname, setFirstname] = useState('');
@@ -23,7 +24,7 @@ export default function PersonalDetail() {
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
 
-  const handleNext = () =>{
+  const handleNext = async() =>{
     if (!firstname || !lastname || !dateofbirth || !tel || !gender) {
         alert("Please fill in all fields!");
         return;
@@ -40,6 +41,7 @@ export default function PersonalDetail() {
         tel,
         gender,
     });
+    // const res = await 
     router.push("/onetimepass")
     
   }

@@ -135,7 +135,7 @@ export default function SignUpPage() {
                             style={{ width: 24, height: 24, marginRight: 10 }}
 
                         />
-                        <Text className="text-lg text-[#203B82]">SIGN IN WITH GOOGLE</Text>
+                        <Text className="text-lg text-[#203B82]">SIGN UP WITH GOOGLE</Text>
                     </Pressable>
                     <XStack>
                         <ThemedText className="text-lg text-gray-500">Have an account ? </ThemedText>
