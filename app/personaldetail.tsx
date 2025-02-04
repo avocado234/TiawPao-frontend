@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Pressable, Text, TouchableOpacity } from 'react-native';
+import { View, Pressable, Text, TouchableOpacity, Alert } from 'react-native';
 import { YStack } from "tamagui";
 import { ThemedText } from '@/components/ThemedText';
 import { router } from 'expo-router';
@@ -11,47 +11,63 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Entypo from '@expo/vector-icons/Entypo';
 import { useSignupStore } from "@/store/useSignupStore"; 
 import { useColorScheme } from 'react-native';
-
+import api from '@/utils/axiosInstance'; 
 export default function PersonalDetail() {
-  const { username, email, setSignupData } = useSignupStore(); 
+  const { email ,setSignupData } = useSignupStore(); 
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastName] = useState('');
   const [dateofbirth, setDateofBirth] = useState('');
   const [tel, setTel] = useState('');
   const [gender, setGender] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [loading, setLoading] = useState(false);
   const theme = useColorScheme()
+
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
 
-  const handleNext = async() =>{
+  const handleNext = async () => {
     if (!firstname || !lastname || !dateofbirth || !tel || !gender) {
-        alert("Please fill in all fields!");
-        return;
+      Alert.alert("Error", "Please fill in all fields!");
+      return;
     }
 
     if (!/^\d+$/.test(tel)) {
-        alert("Mobile number must contain only numbers!");
-        return;
+      Alert.alert("Error", "Mobile number must contain only numbers!");
+      return;
     }
-    setSignupData({
-        firstname,
-        lastname,
-        dateofbirth,
-        tel,
-        gender,
-    });
-    // const res = await 
-    router.push("/onetimepass")
-    
-  }
-  const handleConfirm = (date:any) => {
-const today = new Date();
+
+    setSignupData({ firstname, lastname, dateofbirth, tel, gender });
+
+    try {
+      setLoading(true);
+      // console.log(`🔍 Sending OTP to: ${email}`);
+
+      // เรียก API สำหรับ OTP (แก้จาก params เป็น URL โดยตรง)
+      const response = await api.get(`/user/genotp/${email}`);
+
+      if (response.data.message) {
+        Alert.alert("Success", "OTP Sent! Check your email.");
+        router.push("/onetimepass");
+      } else {
+        // Alert.alert("Success", response.data.message);
+        Alert.alert("Error", "Failed to send OTP. Try again.");
+      }
+    } catch (error) {
+      console.error("OTP Error:", error);
+      Alert.alert("Error", "Server error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirm = (date: any) => {
+    const today = new Date();
     if (date > today) {
-        alert("Date of Birth cannot be in the future!");
-        return;
+      Alert.alert("Error", "Date of Birth cannot be in the future!");
+      return;
     }
-    setDateofBirth(date.toISOString().split('T')[0]); 
+    setDateofBirth(date.toISOString().split('T')[0]);
     hideDatePicker();
   };
 
@@ -129,10 +145,13 @@ const today = new Date();
         </View>
 
         <Pressable
-          className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-12'
+          className={`bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-12 ${loading ? "opacity-50" : ""}`}
           onPress={handleNext}
+          disabled={loading}
         >
-          <Text className='text-xl text-white'>NEXT</Text>
+          <Text className='text-xl text-white'>
+            {loading ? "Sending OTP..." : "NEXT"}
+          </Text>
         </Pressable>
       </YStack>
     </ThemedView>

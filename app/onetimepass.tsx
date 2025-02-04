@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable, TextInput, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useSignupStore } from '@/store/useSignupStore';
 import { YStack, XStack } from 'tamagui';
 import { router } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { useColorScheme } from 'react-native';
+import api from '@/utils/axiosInstance';
 export default function OTPVerification(): JSX.Element {
-    const serverotp = "1234";  // ค่า OTP ที่ถูกต้อง
+    const { email,password , firstname,lastname,dateofbirth,tel,gender} = useSignupStore(); 
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
     const theme = useColorScheme()
     const inputRefs = useRef<(TextInput | null)[]>([]);
-
+   
     useEffect(() => {
         const countdown = setInterval(() => {
             setTimer((prev) => (prev > 0 ? prev - 1 : 0));
@@ -46,14 +47,37 @@ export default function OTPVerification(): JSX.Element {
         }
     };
 
-    const checkOtp = (enteredOtp: string) => {
-        if (enteredOtp === serverotp) {
-            router.push("/(tabs)")
-            // Alert.alert("Verify Success", "OTP is correct!", [{ text: "OK", onPress: () => router.push("/(tabs)") }]);
-        } else {
-            Alert.alert("OTP is incorrect. Try again.");
-            setOtp(['', '', '', '']);
-            inputRefs.current[0]?.focus();  // รีเซ็ต OTP และโฟกัสช่องแรก
+    const checkOtp =  async (enteredOtp: string) => {
+        try {
+            const response = await api.post('/user/verifyotp', {
+                email: email,  // ส่ง email ที่ใช้สมัคร
+                otp: enteredOtp, // ส่ง OTP ที่กรอก
+            });
+    
+            if (response.data.message === "OTP verified") {
+                const registerResponse = await api.post("/user/register", {
+                    email,
+                    password,
+                    firstname,
+                    lastname,
+                    dateofbirth,
+                    tel,
+                    gender
+                });
+                if (registerResponse.status === 201) {
+                    Alert.alert("Success", "Registration completed!");
+                    router.replace("/(tabs)");
+                } else {
+                    Alert.alert("Error", "Registration failed. Try again.");
+                }
+            } else {
+                Alert.alert("Error", "Invalid OTP. Try again.");
+                setOtp(['', '', '', '']);
+                inputRefs.current[0]?.focus();  
+            }
+        } catch (error) {
+            console.error("OTP Verification Error:", error);
+            Alert.alert("Error", "Invalid OTP or Server Issue.");
         }
     };
 
