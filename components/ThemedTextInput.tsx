@@ -12,7 +12,7 @@ export default function ThemedTextInput({ className, ...props }: ThemedTextProps
   return (
     <TextInput
       className={
-        `${theme === "dark" ? "text-white" : "text-black"}` +
+        `${theme === "dark" ? "text-white border-blue-500" : "text-black"}` +
         (className ? ` ${className} ` : "")
       }
       {...props}

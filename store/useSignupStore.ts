@@ -8,7 +8,7 @@ interface SignupState {
   firstname: string;
   lastname:string;
   dateofbirth:string;
-  mobilenumber: string;
+  tel: string;
   gender:string;
   otpVerified: boolean;
   setSignupData: (data: Partial<SignupState>) => void;
@@ -21,7 +21,7 @@ export const useSignupStore = create<SignupState>((set) => ({
   email: "",
   firstname: "",
   lastname: "",
-  mobilenumber: "",
+  tel: "",
   dateofbirth:"",
   gender:"",
   otpVerified: false, 
@@ -33,7 +33,7 @@ export const useSignupStore = create<SignupState>((set) => ({
       email: "",
       firstname: "",
       lastname: "",
-      mobilenumber: "",
+      tel: "",
       dateofbirth:"",
       gender:"",
       otpVerified: false,

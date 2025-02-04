@@ -32,6 +32,7 @@ export default function RootLayout() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      {/* <Stack screenOptions={{ gestureEnabled: false }}> */}
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
