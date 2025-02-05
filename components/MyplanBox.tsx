@@ -50,8 +50,8 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
                         </TouchableOpacity>
 
                         {isEditMode && (
-                            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
-                                <FontAwesome name="trash" size={24} color="white" />
+                            <TouchableOpacity  style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
+                                <FontAwesome  name="trash" size={24} color="white" />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -112,8 +112,11 @@ const styles = StyleSheet.create({
 
     deleteButton: {
         backgroundColor: "#FF4C4C",
-        padding: 20,
+        paddingHorizontal: 20,  
+        justifyContent: "center",  
+        alignItems: "center",  
         borderTopRightRadius: 15,
         borderBottomRightRadius: 15,
     },
+    
 });
