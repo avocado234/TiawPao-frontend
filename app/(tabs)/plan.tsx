@@ -4,16 +4,17 @@ import {
   StyleSheet,
   View,
   Image,
-  TouchableNativeFeedback,
   TouchableOpacity,
 } from 'react-native';
-import { ScrollView } from 'tamagui';
-import MyplanBox from '@/components/MyplanBox';
+import MyPlanBox from '@/components/MyplanBox';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { FontAwesome } from '@expo/vector-icons';
+import { Icon } from "@iconify/react";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-
-const plan: React.FC = () => {
+const PlanScreen: React.FC = () => {
+  const [isEditMode, setIsEditMode] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,24 +27,26 @@ const plan: React.FC = () => {
         <View style={styles.headerWrapper}>
           <ThemedText className=' inset-6' style={styles.headerText}>My Plan</ThemedText>
         </View>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContentContainer}
-          showsVerticalScrollIndicator={false}>
-          <MyplanBox />
-        </ScrollView>
+
+        <MyPlanBox isEditMode={isEditMode} />
+
+        {/* ปุ่ม Edit/Check */}
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => setIsEditMode(!isEditMode)}
+        >
+          
+          <MaterialCommunityIcons name={isEditMode ? "file-check-outline" : "pencil"} size={32} color="black" />
+        </TouchableOpacity>
+
       </ThemedView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  themedView: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  themedView: { flex: 1 },
   backgroundImage: {
     position: 'absolute',
     top: -185,
@@ -61,16 +64,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 30,
   },
-  filterContainer: {
-    overflow: 'hidden',
-
+  editButton: {
+    position: "absolute",
+    top: 740,
+    right: 20,
+    backgroundColor: "#1E90FF",
+    padding: 16,
+    borderRadius: 30,
   },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContentContainer: {
-    padding: 10,
-    paddingBottom: 40, 
-}});
+});
 
-export default plan;
+export default PlanScreen;
