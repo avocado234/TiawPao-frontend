@@ -33,9 +33,9 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
                     <TouchableOpacity key={trip.id} activeOpacity={0.8} style={styles.card}>
                         <View>
                             <Text style={styles.tripTitle}>{trip.nametrip}</Text>
-                            <Text style={styles.price}>{trip.price}</Text>
                             <View style={styles.tripInfo}><FontAwesome name="calendar" size={18} color="#fff" /><Text style={styles.dateText}> {trip.date}</Text></View>
                             <View style={styles.tripInfo}><FontAwesome name="map-marker" size={18} color="#fff" /><Text style={styles.dateText}> {trip.location}</Text></View>
+                            <Text style={styles.price}>{trip.price}</Text>
                         </View>
                         {isEditMode && (
                             <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
