@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
 interface Trip {
@@ -30,36 +30,41 @@ const MyPlanBox = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style = {{marginTop: 20}}>
-            <Text style={styles.headerText} >My plan</Text>
-            <TouchableOpacity style={styles.editButton} onPress={() => setIsEditMode(!isEditMode)}>
-                <FontAwesome name={isEditMode ? "check-circle" : "edit"} size={28} color="white" />
-            </TouchableOpacity>
+        <ScrollView
+            contentContainerStyle={styles.scrollContentContainer}
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.container}>
+                <View style={{ marginTop :20}}>
+                    <TouchableOpacity style={styles.editButton} onPress={() => setIsEditMode(!isEditMode)}>
+                        <FontAwesome name={isEditMode ? "check-circle" : "edit"} size={28} color="white" />
+                    </TouchableOpacity>
+                </View>
+                {trips.map((trip) => (
+                    <TouchableOpacity key={trip.id} activeOpacity={0.8} style={styles.card}>
+                        <View >
+                            <Text style={styles.tripTitle}>{trip.nametrip}</Text>
+                            <Text style={styles.price}>{trip.price}</Text>
+                            <View style={styles.tripInfo}><FontAwesome name="calendar" size={18} color="#fff" /><Text style={styles.dateText}> {trip.date}</Text></View>
+                            <View style={styles.tripInfo}><FontAwesome name="map-marker" size={18} color="#fff" /><Text style={styles.dateText}> {trip.location}</Text></View>
+                        </View>
+                        {isEditMode && (
+                            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
+                                <FontAwesome name="trash" size={20} color="white" />
+                            </TouchableOpacity>
+                        )}
+                    </TouchableOpacity>
+                ))}
             </View>
-            {trips.map((trip) => (
-
-                <TouchableOpacity key={trip.id} activeOpacity={0.8} style={styles.card}>
-                    <View >
-                       
-                        <Text style={styles.tripTitle}>{trip.nametrip}</Text>
-                        <Text style={styles.price}>{trip.price}</Text>
-                        <View style={styles.tripInfo}><FontAwesome name="calendar" size={18} color="#fff" /><Text style={styles.dateText}> {trip.date}</Text></View>
-                        <View style={styles.tripInfo}><FontAwesome name="map-marker" size={18} color="#fff" /><Text style={styles.dateText}> {trip.location}</Text></View>
-                    </View>
-                    {isEditMode && (
-                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
-                            <FontAwesome name="trash" size={20} color="white" />
-                        </TouchableOpacity>
-                    )}
-                </TouchableOpacity>
-            ))}
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: { padding: 15 },
+    scrollContentContainer: {
+        padding: 10,
+        paddingBottom: 40,
+    },
     card: {
         backgroundColor: "#203B82",
         padding: 15,
@@ -73,13 +78,13 @@ const styles = StyleSheet.create({
         fontSize: 44,
         color: 'white',
         fontWeight: 'bold',
-        
-      },
+
+    },
     tripTitle: {
         fontSize: 36,
         fontWeight: "bold",
         color: "#fff",
-        
+
     },
     tripInfo: {
         flexDirection: "row",
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
         marginLeft: 4,
     },
     editButton: {
-        top : -45,
+        top: -45,
         alignSelf: "flex-end",
         backgroundColor: "#1E90FF",
         padding: 10,
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "bold",
         fontSize: 20,
-      }
+    }
 });
 
 export default MyPlanBox;

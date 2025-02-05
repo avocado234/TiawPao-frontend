@@ -23,6 +23,9 @@ const plan: React.FC = () => {
           source={require("@/assets/images/Bgcycle.png")}
           style={styles.backgroundImage}
         />
+        <View style={styles.headerWrapper}>
+          <ThemedText className=' inset-6' style={styles.headerText}>My Plan</ThemedText>
+        </View>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContentContainer}
