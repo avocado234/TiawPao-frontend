@@ -19,7 +19,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const FILTER_PANEL_HEIGHT = 200; // ปรับความสูงของ Filter Panel ตามที่ต้องการ
+const FILTER_PANEL_HEIGHT = 180; // ปรับความสูงของ Filter Panel ตามที่ต้องการ
 
 const Search: React.FC = () => {
   // State สำหรับ toggle เปิด/ปิด Filter Panel
