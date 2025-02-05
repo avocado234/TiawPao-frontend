@@ -19,7 +19,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const FILTER_PANEL_HEIGHT = 180; // ปรับความสูงของ Filter Panel ตามที่ต้องการ
+const FILTER_PANEL_HEIGHT = 200; // ปรับความสูงของ Filter Panel ตามที่ต้องการ
 
 const Search: React.FC = () => {
   // State สำหรับ toggle เปิด/ปิด Filter Panel
@@ -55,7 +55,7 @@ const Search: React.FC = () => {
           style={styles.backgroundImage}
         />
         <View style={styles.headerWrapper}>
-          <ThemedText className=' inset-6' style={styles.headerText}>Public Plan</ThemedText>
+          <ThemedText className=' inset-5' style={styles.headerText}>Public Plan</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity onPress={toggleFilter}>
               <AntDesign
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     height: '90%',
   },
   headerWrapper: {
-    marginTop: 40,
+    marginTop: 30,
     paddingHorizontal: 20,
   },
   headerText: {

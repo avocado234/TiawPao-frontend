@@ -9,11 +9,9 @@ import {
 import MyPlanBox from '@/components/MyplanBox';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { FontAwesome } from '@expo/vector-icons';
-import { Icon } from "@iconify/react";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-const PlanScreen: React.FC = () => {
+const plan: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   return (
@@ -74,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlanScreen;
+export default plan;

@@ -14,7 +14,7 @@ const initialTrips: Trip[] = [
     { id: 1, nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", location: "Pattaya, Chonburi" },
     { id: 2, nametrip: "Chiang Mai Tour", price: "600$", date: "13 June - 19 June", location: "Chiang Mai" },
     { id: 3, nametrip: "Go Khon Kaen", price: "700$", date: "13 June - 19 June", location: "Khon Kaen" },
-    { id: 4, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+    { id: 4, nametrip: "Rayong First Time 111", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
 ];
 
 const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
@@ -65,16 +65,16 @@ const styles = StyleSheet.create({
     },
 
     card: {
+        maxHeight: 145,
         backgroundColor: "#203B82",
         padding: 20,
-        
-        borderTopLeftRadius: 24,
-        borderBottomLeftRadius: 24,
+        borderTopLeftRadius: 15,
+        borderBottomLeftRadius: 15,
         flex: 1,
     },
 
     tripTitle: {
-        fontSize: 36,
+        fontSize: 30,
         fontWeight: "bold",
         color: "#fff",
     },
@@ -93,9 +93,9 @@ const styles = StyleSheet.create({
     deleteButton: {
         backgroundColor: "#FF4C4C",
         padding: 20,
-        borderTopRightRadius: 24,
-        borderBottomRightRadius: 24,
-        height :153,
+        borderTopRightRadius: 15,
+        borderBottomRightRadius: 15,
+        height :144.1,
         
     },
 });
