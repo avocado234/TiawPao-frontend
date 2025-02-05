@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -185,
     right: -180,
-    width: '200%',
+    width: '250%',
     height: '90%',
   },
   headerWrapper: {

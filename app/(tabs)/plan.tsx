@@ -34,7 +34,7 @@ const plan: React.FC = () => {
           onPress={() => setIsEditMode(!isEditMode)}
         >
           
-          <MaterialCommunityIcons name={isEditMode ? "file-check-outline" : "pencil"} size={32} color="black" />
+          <MaterialCommunityIcons name={isEditMode ? "file-check-outline" : "pencil"} size={32} color="#fff" />
         </TouchableOpacity>
 
       </ThemedView>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 740,
     right: 20,
-    backgroundColor: "#1E90FF",
+    backgroundColor: "#5680EC",
     padding: 16,
     borderRadius: 30,
   },

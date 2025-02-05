@@ -14,7 +14,11 @@ const initialTrips: Trip[] = [
     { id: 1, nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", location: "Pattaya, Chonburi" },
     { id: 2, nametrip: "Chiang Mai Tour", price: "600$", date: "13 June - 19 June", location: "Chiang Mai" },
     { id: 3, nametrip: "Go Khon Kaen", price: "700$", date: "13 June - 19 June", location: "Khon Kaen" },
-    { id: 4, nametrip: "Rayong First Time 111", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+    { id: 4, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+    { id: 5, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+    { id: 6, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+    { id: 7, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+    { id: 8, nametrip: "Rayong First Time 12", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
 ];
 
 const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
@@ -28,9 +32,11 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
         <ScrollView contentContainerStyle={styles.scrollContentContainer}>
             <View style={styles.container}>
                 {trips.map((trip) => (
-                    <View key={trip.id} style={styles.cardWrapper}>
-                        <TouchableOpacity activeOpacity={0.8} style={styles.card}>
-                            <View>
+                    <View key={trip.id}
+                        style={[styles.cardWrapper, isEditMode ? styles.cardWrapperEdit : {}]}>
+                        <TouchableOpacity activeOpacity={0.8}
+                            style={[styles.card, isEditMode ? styles.cardEdit : {}]}>
+                            <View className=" left-5">
                                 <Text style={styles.tripTitle}>{trip.nametrip}</Text>
                                 <View style={styles.tripInfo}>
                                     <FontAwesome name="calendar" size={24} color="#fff" />
@@ -42,9 +48,10 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
                                 </View>
                             </View>
                         </TouchableOpacity>
+
                         {isEditMode && (
                             <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
-                                <FontAwesome className=" top-14" name="trash" size={24} color="white" />
+                                <FontAwesome name="trash" size={24} color="white" />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -54,27 +61,40 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
     );
 };
 
+export default MyPlanBox;
 const styles = StyleSheet.create({
     container: { padding: 15, flex: 1 },
-    scrollContentContainer: { paddingBottom: 50 },
+    scrollContentContainer: { paddingBottom: 55 },
 
     cardWrapper: {
         flexDirection: "row",
-        alignItems: "center",
+
         marginBottom: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        elevation: 5,
+    },
+
+    cardWrapperEdit: {
+        shadowOpacity: 0,
     },
 
     card: {
-        maxHeight: 145,
         backgroundColor: "#203B82",
         padding: 20,
-        borderTopLeftRadius: 15,
-        borderBottomLeftRadius: 15,
+        borderRadius: 15,
         flex: 1,
     },
 
+    cardEdit: {
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+    },
+
     tripTitle: {
-        fontSize: 30,
+        fontSize: 32,
         fontWeight: "bold",
         color: "#fff",
     },
@@ -95,9 +115,5 @@ const styles = StyleSheet.create({
         padding: 20,
         borderTopRightRadius: 15,
         borderBottomRightRadius: 15,
-        height :144.1,
-        
     },
 });
-
-export default MyPlanBox;
