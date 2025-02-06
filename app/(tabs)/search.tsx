@@ -55,7 +55,7 @@ const Search: React.FC = () => {
           style={styles.backgroundImage}
         />
         <View style={styles.headerWrapper}>
-          <ThemedText className=' inset-6' style={styles.headerText}>Public Plan</ThemedText>
+          <ThemedText className=' inset-5' style={styles.headerText}>Public Plan</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity onPress={toggleFilter}>
               <AntDesign
@@ -95,11 +95,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -185,
     right: -180,
-    width: '200%',
+    width: '250%',
     height: '90%',
   },
   headerWrapper: {
-    marginTop: 40,
+    marginTop: 30,
     paddingHorizontal: 20,
   },
   headerText: {
