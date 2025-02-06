@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 
     dateText: {
         color: "#fff",
-        marginLeft: 4,
+        
     },
 
     deleteButton: {
