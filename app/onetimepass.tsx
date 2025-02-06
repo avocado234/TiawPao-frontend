@@ -8,7 +8,11 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { useColorScheme } from 'react-native';
-import api from '@/utils/axiosInstance';
+import api from '@/utils/axiosInstance'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/config/firebaseconfig";
+
+
 export default function OTPVerification(): JSX.Element {
     const { email,password , firstname,lastname,dateofbirth,tel,gender} = useSignupStore(); 
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
@@ -55,6 +59,11 @@ export default function OTPVerification(): JSX.Element {
             });
     
             if (response.data.message === "OTP verified") {
+                    try {
+                    await createUserWithEmailAndPassword(auth,email,password)
+                  } catch (err) {
+                    Alert.alert("SignupFail")
+                  }
                 const registerResponse = await api.post("/user/register", {
                     email,
                     password,
