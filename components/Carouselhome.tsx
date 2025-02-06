@@ -7,6 +7,7 @@ import {
     Dimensions,
     NativeScrollEvent,
     NativeSyntheticEvent,
+    TouchableOpacity,
 } from "react-native";
 
 interface CarouselItem {
@@ -50,9 +51,9 @@ const Carousel: React.FC = () => {
     };
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
-        <View>
+        <TouchableOpacity>
             <Image source={item.image} style={styles.image} />
-        </View>
+        </TouchableOpacity>
     );
 
     const renderDotIndicators = () => (
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
     image: {
     
         height: 210,
-        width: Dimensions.get("window").width,
+        width: 410,
         resizeMode: "cover",
     },
     dotContainer: {
@@ -106,9 +107,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 6,
     },
     activeDot: {
-        backgroundColor: "#203B82",
+        backgroundColor: "#000",
     },
     inactiveDot: {
-        backgroundColor: "#fff",
+        opacity : 0.3,
+        backgroundColor: "#000",
     },
 });
