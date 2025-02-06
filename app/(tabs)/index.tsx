@@ -1,57 +1,89 @@
-import { StyleSheet,Text } from "react-native";
-import { Activity, Airplay } from "@tamagui/lucide-icons";
+import React, { useState } from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+} from 'react-native';
+import { ScrollView } from 'tamagui';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import Bgelement from '@/components/Bgelement';
+import { router } from 'expo-router';
+import Carousel from '@/components/Carouselhome';
 
 
-import { Button, View, XGroup, XStack, YStack } from "tamagui";
 
-export default function HomeScreen() {
+const Search: React.FC = () => {
   return (
-    <View  style={styles.container}>
-      <YStack padding="$3" gap="$3">
-        <Text className='font-bold text-red-400 text-xl'>max</Text>
-        <Button>Plain</Button>
-        <Button alignSelf="center" icon={Airplay} size="$6">
-          Large
-        </Button>
-        <XStack gap="$2" justifyContent="center">
-          <Button size="$3" theme="active">
-            Active
-          </Button>
-          <Button size="$3" variant="outlined">
-            Outlined
-          </Button>
-        </XStack>
-        <XStack gap="$2" marginHorizontal="auto">
-          <Button themeInverse size="$3">
-            Inverse
-          </Button>
-          <Button iconAfter={Activity} size="$3">
-            iconAfter
-          </Button>
-        </XStack>
-        <XGroup>
-          <XGroup.Item>
-            <Button width="50%" size="$2" disabled opacity={0.5}>
-              disabled
-            </Button>
-          </XGroup.Item>
+    <SafeAreaView style={styles.container}>
+      <ThemedView style={styles.themedView}>
+      <Bgelement/>
+        <View style={styles.headerWrapper}>
+          <ThemedText className=' top-5' style={styles.headerText}>Hidfdfdfdfdfd</ThemedText>
+          <TouchableNativeFeedback>
+            <TouchableOpacity  onPress={() => router.push('./profile')}>
+              <Image className="absolute end-5 -top-16" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />
+            </TouchableOpacity>
+          </TouchableNativeFeedback>
+        </View>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View className='top-10'>
+          <Carousel/>
+          </View>
 
-          <XGroup.Item>
-            <Button width="50%" size="$2" chromeless>
-              chromeless
-            </Button>
-          </XGroup.Item>
-        </XGroup>
-      </YStack>
-    </View>
+        </ScrollView>
+      </ThemedView>
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+  },
+  themedView: {
+    flex: 1,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: -185,
+    right: -180,
+    width: '200%',
+    height: '90%',
+  },
+  headerWrapper: {
+    marginTop: 30,
+    paddingHorizontal: 20,
+  },
+  headerText: {
+    fontSize: 36 ,
+    color: 'white',
+    fontWeight: 'bold',
+    marginBottom: 30,
+  },
+  filterContainer: {
+    overflow: 'hidden',
+  
+  },
+  avatar: {
+    width: 54,
+    height: 54,
+    borderRadius: 50,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    padding: 10,
+    paddingBottom: 40, // เพิ่ม padding ด้านล่างเพื่อให้ scroll ถึงเนื้อหาสุดท้ายได้
   },
 });
+
+export default Search;
