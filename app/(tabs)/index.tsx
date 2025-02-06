@@ -37,6 +37,10 @@ const Search: React.FC = () => {
           <View className='top-10'>
           <Carousel/>
           </View>
+          <View className=' top-12'>
+            <ThemedText className=' text-2xl font-bold opacity-50'> Journey together</ThemedText>
+          </View>
+          
 
         </ScrollView>
       </ThemedView>
@@ -50,13 +54,6 @@ const styles = StyleSheet.create({
   },
   themedView: {
     flex: 1,
-  },
-  backgroundImage: {
-    position: 'absolute',
-    top: -185,
-    right: -180,
-    width: '200%',
-    height: '90%',
   },
   headerWrapper: {
     marginTop: 30,
