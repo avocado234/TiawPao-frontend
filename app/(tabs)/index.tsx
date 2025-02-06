@@ -1,14 +1,15 @@
 import { StyleSheet,Text } from "react-native";
 import { Activity, Airplay } from "@tamagui/lucide-icons";
 
-
+import {auth} from "@/config/firebaseconfig";
 import { Button, View, XGroup, XStack, YStack } from "tamagui";
 
 export default function HomeScreen() {
+  const user = auth.currentUser;
   return (
     <View  style={styles.container}>
       <YStack padding="$3" gap="$3">
-        <Text className='font-bold text-red-400 text-xl'>max</Text>
+        <Text className='font-bold text-red-400 text-xl'>Welcome User Email:{user?.email}</Text>
         <Button>Plain</Button>
         <Button alignSelf="center" icon={Airplay} size="$6">
           Large
