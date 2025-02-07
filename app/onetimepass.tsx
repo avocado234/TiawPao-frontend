@@ -97,7 +97,7 @@ export default function OTPVerification(): JSX.Element {
             <YStack className="w-[80%] mt-[50px]">
                 <ThemedText className="text-3xl font-bold text-[#203B82] mb-3">Verification Code</ThemedText>
                 <ThemedText className={`${theme == 'dark' ? `text-gray-400`:`text-gray-500`}  mt-2 mb-5 text-lg`}>
-                    Please enter the 4-digit verification code sent to john***@gmail.com
+                    Please enter the 4-digit verification code sent to {email}
                 </ThemedText>
                 <ThemedText className='mb-10 text-lg'>Didn't receive OTP? 
                     <Pressable disabled={timer !== 0} onPress={() => setTimer(35)} className="mt-2">

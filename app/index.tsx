@@ -32,7 +32,7 @@ export default function SignInPage() {
             <YStack space="$3" alignItems="center" width="100%">
 
                 <View className="w-[70%]">
-                    <ThemedText className="text-[#203B82] py-2">email or Email</ThemedText>
+                    <ThemedText className="text-[#203B82] py-2">Email</ThemedText>
                     <ThemedTextInput
                         className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2"
                         onChangeText={setEmail}
