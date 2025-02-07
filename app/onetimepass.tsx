@@ -8,7 +8,11 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { useColorScheme } from 'react-native';
-import api from '@/utils/axiosInstance';
+import api from '@/utils/axiosInstance'
+import { createUserWithEmailAndPassword} from "firebase/auth";
+import { auth } from "@/config/firebaseconfig";
+
+
 export default function OTPVerification(): JSX.Element {
     const { email,password , firstname,lastname,dateofbirth,tel,gender} = useSignupStore(); 
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
@@ -55,6 +59,11 @@ export default function OTPVerification(): JSX.Element {
             });
     
             if (response.data.message === "OTP verified") {
+                    try {
+                        await createUserWithEmailAndPassword(auth,email,password)
+                    } catch (err) {
+                        Alert.alert("Sign Up Fail")
+                    }
                 const registerResponse = await api.post("/user/register", {
                     email,
                     password,
@@ -88,7 +97,7 @@ export default function OTPVerification(): JSX.Element {
             <YStack className="w-[80%] mt-[50px]">
                 <ThemedText className="text-3xl font-bold text-[#203B82] mb-3">Verification Code</ThemedText>
                 <ThemedText className={`${theme == 'dark' ? `text-gray-400`:`text-gray-500`}  mt-2 mb-5 text-lg`}>
-                    Please enter the 4-digit verification code sent to john***@gmail.com
+                    Please enter the 4-digit verification code sent to {email}
                 </ThemedText>
                 <ThemedText className='mb-10 text-lg'>Didn't receive OTP? 
                     <Pressable disabled={timer !== 0} onPress={() => setTimer(35)} className="mt-2">

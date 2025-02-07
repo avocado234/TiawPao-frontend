@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { View, TextInput, Pressable, Text } from "react-native";
+import { View, TextInput, Pressable, Text,Alert } from "react-native";
 import { Image } from 'expo-image';
 import { router,Link } from 'expo-router'
 import { XStack, YStack } from "tamagui";
@@ -9,13 +9,22 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import ThemedTextInput  from '@/components/ThemedTextInput';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from "@/config/firebaseconfig";
 
 export default function SignInPage() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
-
+    const handelSignIn = async() => {
+        try {
+            await signInWithEmailAndPassword(auth,email,password)
+            Alert.alert("Success","Sign In Success!")
+            router.replace("/(tabs)")
+        } catch (err) {
+            Alert.alert("Error","Sign In Fail Please Try Again")
+        }
+    }
 
     return (
         <ThemedView className="flex justify-center items-center h-screen">
@@ -23,12 +32,12 @@ export default function SignInPage() {
             <YStack space="$3" alignItems="center" width="100%">
 
                 <View className="w-[70%]">
-                    <ThemedText className="text-[#203B82] py-2">Username or Email</ThemedText>
+                    <ThemedText className="text-[#203B82] py-2">Email</ThemedText>
                     <ThemedTextInput
                         className="border border-[#203B82] h-[40px] w-full rounded-3xl px-4 py-2"
-                        onChangeText={setUsername}
-                        value={username}
-                        autoComplete="username"
+                        onChangeText={setEmail}
+                        value={email}
+                        autoComplete="email"
                     />
                 </View>
                 <View className="w-[70%]">
@@ -58,7 +67,7 @@ export default function SignInPage() {
                 </View>
                 <Pressable
                     className='bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
-                    onPress={() => router.push("/(tabs)/plan")}
+                    onPress={handelSignIn}
                 >
                     <Text className='text-xl text-white'>SIGN IN</Text>
                 </Pressable>
