@@ -18,6 +18,7 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
+import Bgelement from '@/components/Bgelement';
 
 const FILTER_PANEL_HEIGHT = 200; // ปรับความสูงของ Filter Panel ตามที่ต้องการ
 
@@ -49,11 +50,7 @@ const Search: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
-        <Image
-          className="absolute -top-96"
-          source={require("@/assets/images/Bgcycle.png")}
-          style={styles.backgroundImage}
-        />
+        <Bgelement/>
         <View style={styles.headerWrapper}>
           <ThemedText className=' inset-5' style={styles.headerText}>Public Plan</ThemedText>
           <TouchableNativeFeedback>
@@ -95,7 +92,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -185,
     right: -180,
-    width: '250%',
+    width: '200%',
     height: '90%',
   },
   headerWrapper: {

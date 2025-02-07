@@ -1,10 +1,23 @@
-import * as React from "react"
-import Svg, { Circle } from "react-native-svg"
-const SvgComponent = (props) => (
-  <Svg xmlns="http://www.w3.org/2000/svg" width={2400} height={1080} className=" absolute" {...props}>
-    <Circle cx={200} cy={100} r={300} fill="#5680EC" opacity={0.26} />
-    <Circle cx={200} cy={60} r={300} fill="#5680EC" opacity={0.52} />
-    <Circle cx={200} cy={20} r={300} fill="#5680EC" opacity={1}/>
-  </Svg>
-)
-export default SvgComponent
+import * as React from "react";
+import { Image, StyleSheet } from "react-native";
+
+const Bgelement = () => {
+  return (
+    <Image
+      source={require("@/assets/images/Bgcycle.png")}
+      style={styles.backgroundImage}
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    position: "absolute",
+    top: -185,
+    right: -180,
+    width: "200%",
+    height: "90%",
+  },
+});
+
+export default Bgelement;
