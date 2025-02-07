@@ -17,21 +17,20 @@ import Carousel from '@/components/Carouselhome';
 
 import {auth} from "@/config/firebaseconfig";
 import {Button} from 'react-native'
-import {View, XGroup, XStack, YStack } from "tamagui";
+import {XGroup, XStack, YStack } from "tamagui";
 import { signOut } from "firebase/auth";
 import {useRouter} from "expo-router";
+  
 
-export default function HomeScreen() {
+
+
+const homepage: React.FC = () => {
   const router = useRouter();
   const handelSignOut = async()=>{
       await signOut(auth)
       router.replace('/')
   }
   const user = auth.currentUser;
-
-
-
-const Search: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
@@ -62,7 +61,7 @@ const Search: React.FC = () => {
     </SafeAreaView>
   );
 };
-
+export default homepage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -98,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Search;
+
