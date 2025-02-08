@@ -62,7 +62,9 @@ export default function SignInPage() {
 
 
                     <View className="w-full flex items-end">
-                        <ThemedText className="py-2 font-semibold">Forget password?</ThemedText>
+                        <Link href="/forgetpassword">
+                            <ThemedText className="py-2 font-semibold">Forget password?</ThemedText>
+                        </Link>
                     </View>
                 </View>
                 <Pressable
