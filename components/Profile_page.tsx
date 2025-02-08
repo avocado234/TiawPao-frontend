@@ -4,10 +4,12 @@ import React from 'react';
 import { useState } from 'react'
 import { ThemedText } from "./ThemedText";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, StyleSheet, Text, useColorScheme,TextInput} from 'react-native';
+import { View, StyleSheet, Text, useColorScheme,TextInput,Pressable} from 'react-native';
 import { XStack, YStack,Select, Card } from "tamagui";
-
 import { Button } from 'tamagui';
+import {auth} from "@/config/firebaseconfig";
+import {signOut} from "firebase/auth"; 
+import { useRouter } from 'expo-router';
 
 const Propage = () => {
   //Set Value to UpdateUsername
@@ -109,6 +111,14 @@ const Propage = () => {
     Profile_Background = '#203B82';
     Border_Color = '#203B82';
     Border_Width = 0;
+  }
+  const router = useRouter();
+  const handelSignOut = async() => {
+    try {
+      await signOut(auth).then(() =>{router.replace("/signin")})
+    } catch (error) {
+      console.log('Sign out error:', error)
+    }
   }
 
   return (
@@ -216,7 +226,12 @@ const Propage = () => {
         onPress={Noapproved}
         ><Text style={[styles.font_yesorno,{color:backGround_Color}]}>No</Text></Button>)}
       </XStack>
-     
+        <Pressable
+              className='bg-[#5680EC]  h-[50px] flex justify-center items-center rounded-3xl'
+              onPress={handelSignOut}
+          >
+              <Text className='text-xl text-white'>Logout</Text>
+          </Pressable>
     </View>
   );
 };

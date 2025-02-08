@@ -37,30 +37,32 @@ export default function RootLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+
+  useEffect(() => {
+    if (!loading) {
+
+      const isOnHome = segments[0] === '(tabs)';
+      
+      if (user && !isOnHome) {
+        // ถ้าล็อกอินแล้ว แต่ตอนนี้ยังอยู่หน้า login => ไปหน้า Home (tabs)
+        router.replace('/(tabs)'); 
+      } else if (!user && isOnHome) {
+        // ถ้ายังไม่ล็อกอิน แต่ตอนนี้อยู่ใน (tabs) => กลับไปหน้า login
+        router.replace('/');
+      }
+    }
+  }, [user, loading, segments]);
+
   useEffect(() => {
     console.log("Starting onAuthStateChanged");
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("onAuthStateChanged triggered, user:", user);
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
+      console.log("onAuthStateChanged triggered, user:", currentuser);
+      setUser(currentuser);
       setLoading(false);
     });
   
     return () => unsubscribe();
   }, []);
- 
-
-  // useEffect(() => {
-  //   if (loading) return;              // รอโหลดข้อมูลก่อน
-
-  //   const inAuthGroup = segments[0] === '(tabs)';
-
-  //   if (!user && !inAuthGroup) { 
-  //     router.replace("/");            // ถ้าไม่ได้ล็อกอินให้ไปหน้า login
-  //   } else if (user && inAuthGroup) {
-  //     router.replace("/(tabs)");      // ถ้าล็อกอินแล้วแต่เข้าหน้า login ให้ออกไปหน้า home
-  //   }
-  // }, [user, loading, segments]);
-
   
   useEffect(() => {
     if (loaded) {
@@ -75,12 +77,25 @@ export default function RootLayout() {
       </View>
     );
   }
+  
 
   if (!loaded) {
     return null;
   }
   
+  // useEffect(() => {
+  //   if (loading) return;              // รอโหลดข้อมูลก่อน
 
+  //   const inAuthGroup = segments[0] === '(tabs)';
+
+  //   if (!user && !inAuthGroup) { 
+  //     router.replace("/");            // ถ้าไม่ได้ล็อกอินให้ไปหน้า login
+  //   } else if (user && inAuthGroup) {
+  //     router.replace("/(tabs)");      // ถ้าล็อกอินแล้วแต่เข้าหน้า login ให้ออกไปหน้า home
+  //   }
+  // }, [user, loading, segments]);
+
+  
   return (
     <TamaguiProvider config={tamaguiConfig}>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -88,6 +103,7 @@ export default function RootLayout() {
       {/* <AuthProvider> */}
         {/* <Stack> */}
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="signin" options={{ headerShown: false }} />
           <Stack.Screen name="signup" options={{ headerShown: false }} />
           <Stack.Screen name="personaldetail" options={{ headerShown: false }} />
           <Stack.Screen name="onetimepass" options={{ headerShown: false }} />
