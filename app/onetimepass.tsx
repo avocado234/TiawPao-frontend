@@ -66,7 +66,6 @@ export default function OTPVerification(): JSX.Element {
                     }
                 const registerResponse = await api.post("/user/register", {
                     email,
-                    password,
                     firstname,
                     lastname,
                     dateofbirth,
