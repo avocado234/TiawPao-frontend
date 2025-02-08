@@ -5,8 +5,10 @@ import { useState } from 'react'
 import { ThemedText } from "./ThemedText";
 import { FontAwesome } from "@expo/vector-icons";
 import { View, StyleSheet, Text, useColorScheme,TextInput} from 'react-native';
+import { ThemedSafeAreaView } from './ThemedSafeAreaView';
+import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { XStack, YStack,Select, Card } from "tamagui";
-
 import { Button } from 'tamagui';
 
 const Propage = () => {
@@ -117,6 +119,7 @@ const Propage = () => {
       <Button style={[styles.Component_Picture_profile,{backgroundColor: Profile_Background}]}>
         <Text>Clicker</Text>
       </Button>
+      <ThemedSafeAreaView color='transparnet'  >
 
       {/*Comment : Just Hi Traveler */}
       <View style={styles.Component_big_username}>
@@ -207,7 +210,6 @@ const Propage = () => {
             ></TextInput>
         </YStack>
       </View>
-      
       <XStack style={{ paddingLeft: 10,paddingRight: 10,justifyContent: 'space-between', width: '100%' }}>
         {!get_visible && (<Button style={[styles.Component_yesorno,{backgroundColor:Border_Color,color:backGround_Color}]}
         onPress={Approved}
@@ -216,7 +218,11 @@ const Propage = () => {
         onPress={Noapproved}
         ><Text style={[styles.font_yesorno,{color:backGround_Color}]}>No</Text></Button>)}
       </XStack>
-     
+      <YStack>
+              {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
+              {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
+      </YStack>
+      </ThemedSafeAreaView>
     </View>
   );
 };
@@ -239,7 +245,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: [{ translateX: '-50%' }, { translateY: '20%' }],
+    transform: [{ translateX: '-50%' }, { translateY: '15%' }],
     flex: 1,
     justifyContent: 'center',
     //alignItems: 'center',
@@ -250,7 +256,8 @@ const styles = StyleSheet.create({
     position: 'relative',
     justifyContent: 'center', 
     //alignItems: 'center',
-    //marginTop:-50,
+    marginTop:10,
+    marginBottom:10,
     top:0,
     zIndex: 5,
     width: '100%',
@@ -273,6 +280,9 @@ const styles = StyleSheet.create({
     backgroundColor:'transparent',
     justifyContent: "space-between"
   },
+  conponent_button_transparent: {
+    backgroundColor: 'transparent',
+},
   Component_edit_box: {
     justifyContent: 'center',
     alignItems: 'center', 
