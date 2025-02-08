@@ -48,7 +48,7 @@ export default function PersonalDetail() {
 
       if (response.data.message) {
         Alert.alert("Success", "OTP Sent! Check your email.");
-        router.push("/onetimepass");
+        router.push("/onetimepass?isRegister=true");
       } else {
         // Alert.alert("Success", response.data.message);
         Alert.alert("Error", "Failed to send OTP. Try again.");

@@ -39,3 +39,6 @@ export const useSignupStore = create<SignupState>((set) => ({
       otpVerified: false,
     }),
 }));
+
+
+

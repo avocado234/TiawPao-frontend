@@ -92,6 +92,8 @@ export default function RootLayout() {
           <Stack.Screen name="personaldetail" options={{ headerShown: false }} />
           <Stack.Screen name="onetimepass" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="forgetpassword" options={{ headerShown : false }} />
+          <Stack.Screen name="resetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       {/* </AuthProvider> */}
