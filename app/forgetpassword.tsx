@@ -51,13 +51,6 @@ export default function ForgetPassword() {
         return emailRegex.test(email);
     };
 
-    useEffect(() => {
-        const countdown = setInterval(() => {
-            setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-        }, 1000);
-        return () => clearInterval(countdown);
-    }, []);
-
 
 
     return (
@@ -106,10 +99,6 @@ export default function ForgetPassword() {
                             {loading ? "Sending OTP..." : "Send Email"}
                         </Text>
                     </Pressable>
-                    <XStack alignItems="center" space="$2" className="mt-[20px]">
-                        <MaterialIcons name="timer" size={20} color={theme == 'dark' ? "#fff" : "#203B82"} />
-                        <ThemedText className=" text-lg my-10">00:{timer < 10 ? `0${timer}` : timer}</ThemedText>
-                    </XStack>
 
                 </View>
             </ThemedView>
