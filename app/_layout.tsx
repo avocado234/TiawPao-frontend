@@ -38,20 +38,20 @@ export default function RootLayout() {
   const [loading, setLoading] = useState(true);
 
 
-  useEffect(() => {
-    if (!loading) {
+  // useEffect(() => {
+  //   if (!loading) {
 
-      const isOnHome = segments[0] === '(tabs)';
+  //     const isOnHome = segments[0] === '(tabs)';
       
-      if (user && !isOnHome) {
-        // ถ้าล็อกอินแล้ว แต่ตอนนี้ยังอยู่หน้า login => ไปหน้า Home (tabs)
-        router.replace('/(tabs)'); 
-      } else if (!user && isOnHome) {
-        // ถ้ายังไม่ล็อกอิน แต่ตอนนี้อยู่ใน (tabs) => กลับไปหน้า login
-        router.replace('/');
-      }
-    }
-  }, [user, loading, segments]);
+  //     if (user && !isOnHome) {
+  //       // ถ้าล็อกอินแล้ว แต่ตอนนี้ยังอยู่หน้า login => ไปหน้า Home (tabs)
+  //       router.replace('/(tabs)'); 
+  //     } else if (!user && isOnHome) {
+  //       // ถ้ายังไม่ล็อกอิน แต่ตอนนี้อยู่ใน (tabs) => กลับไปหน้า login
+  //       router.replace('/signin');
+  //     }
+  //   }
+  // }, [user, loading, segments]);
 
   useEffect(() => {
     console.log("Starting onAuthStateChanged");
