@@ -38,11 +38,11 @@ const Search: React.FC = () => {
   const toggleFilter = () => {
     if (filterOpen) {
       // ถ้าเปิดอยู่อยู่แล้ว ให้ปิดโดย animate height กลับเป็น 0
-      filterHeight.value = withTiming(0, { duration: 300 });
+      filterHeight.value = withTiming(0, { duration: 500 });
       setFilterOpen(false);
     } else {
       // ถ้าปิดอยู่ ให้เปิดโดย animate height จาก 0 เป็น FILTER_PANEL_HEIGHT
-      filterHeight.value = withTiming(FILTER_PANEL_HEIGHT, { duration: 300 });
+      filterHeight.value = withTiming(FILTER_PANEL_HEIGHT, { duration: 500 });
       setFilterOpen(true);
     }
   };
