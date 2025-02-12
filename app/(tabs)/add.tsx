@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { View, Pressable, TextInput } from "react-native";
+import { View, Pressable, TextInput, Image, StyleSheet } from "react-native";
 import { router } from 'expo-router'
 import { XStack, YStack, Button, Select, Sheet } from "tamagui";
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
-import { ArrowLeft, Calendar, Home, Search, Plus, Map, User, Globe, Lock } from "@tamagui/lucide-icons";
+import { ArrowLeft, Calendar, Home, Search, Plus, Map, User, Globe, Lock, MoveLeft } from "@tamagui/lucide-icons";
 import ThemedTextInput from "@/components/ThemedTextInput";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { RadioButton } from '@/components/RadioButton';
@@ -20,8 +20,14 @@ export default function CreateTrip() {
   const [selectedOption, setSelectedOption] = useState('Public');
 
   return (
-    
-    <ThemedSafeAreaView> 
+    <ThemedSafeAreaView>
+      <Image
+        className="absolute -top-48"
+        source={require("@/assets/images/Bgcycle.png")}
+        style={[styles.backgroundImage] }
+        // style={[styles.backgroundImage, { transform: [{ rotate: '-80deg' }] }]}
+      />
+      
       {/* Header */}
       <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
         <Pressable onPress={() => router.back()}>
@@ -124,33 +130,33 @@ export default function CreateTrip() {
         
       {/* Date Selection */}
       <Pressable>
-  <ThemedText>Who can view</ThemedText>
-  <YStack padding="$4" space="$4">
-    <Pressable onPress={() => setSelectedOption("Public")}>
-      <YStack space="$2">
-        <RadioButton
-          label="Public"
-          selected={selectedOption === "Public"}
-        />
-        <ThemedText className="text-gray-500 text-sm">
-          Everyone can see this trip
-        </ThemedText>
-      </YStack>
-    </Pressable>
+<ThemedText>Who can view</ThemedText>
+<YStack padding="$4" space="$4">
+  <Pressable onPress={() => setSelectedOption("Public")}>
+    <YStack space="$2">
+      <RadioButton
+        label="Public"
+        selected={selectedOption === "Public"}
+      />
+      <ThemedText className="text-gray-500 text-sm">
+        Everyone can see this trip
+      </ThemedText>
+    </YStack>
+  </Pressable>
 
-    <Pressable onPress={() => setSelectedOption("Private")}>
-      <YStack space="$2">
-        <RadioButton
-          label="Private"
-          selected={selectedOption === "Private"}
-        />
-        <ThemedText className="text-gray-500 text-sm ">
-        {/* <ThemedText className="text-gray-500 text-sm ml-[26px]"> */}
-          Only you can see this trip
-        </ThemedText>
-      </YStack>
-    </Pressable>
-  </YStack>
+  <Pressable onPress={() => setSelectedOption("Private")}>
+    <YStack space="$2">
+      <RadioButton
+        label="Private"
+        selected={selectedOption === "Private"}
+      />
+      <ThemedText className="text-gray-500 text-sm ">
+      {/* <ThemedText className="text-gray-500 text-sm ml-[26px]"> */}
+        Only you can see this trip
+      </ThemedText>
+    </YStack>
+  </Pressable>
+</YStack>
 </Pressable>
 
 
@@ -167,30 +173,40 @@ export default function CreateTrip() {
         </Button>
       </YStack>
 
-     
+   
 
-      {/* Date Pickers */}
-      {showStartDatePicker && (
-        <DateTimePicker
-          value={startDate}
-          mode="date"
-          onChange={(event, date) => {
-            setShowStartDatePicker(false);
-            if (date) setStartDate(date);
-          }}
-        />
-      )}
-      {showEndDatePicker && (
-        <DateTimePicker
-          value={endDate}
-          mode="date"
-          onChange={(event, date) => {
-            setShowEndDatePicker(false);
-            if (date) setEndDate(date);
-          }}
-        />
-      )}
-    </ThemedSafeAreaView>
-    
-  );
+    {/* Date Pickers */}
+    {showStartDatePicker && (
+      <DateTimePicker
+        value={startDate}
+        mode="date"
+        onChange={(event, date) => {
+          setShowStartDatePicker(false);
+          if (date) setStartDate(date);
+        }}
+      />
+    )}
+    {showEndDatePicker && (
+      <DateTimePicker
+        value={endDate}
+        mode="date"
+        onChange={(event, date) => {
+          setShowEndDatePicker(false);
+          if (date) setEndDate(date);
+        }}
+      />
+    )}
+  </ThemedSafeAreaView>
+  
+);
 }
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    zIndex: -1,
+    opacity: 0.5,
+  },
+});
