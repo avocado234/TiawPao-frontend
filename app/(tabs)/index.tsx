@@ -37,10 +37,10 @@ const homepage: React.FC = () => {
       <ThemedView style={styles.themedView}>
         <Bgelement />
         <View style={styles.headerWrapper}>
-          <ThemedText className=' top-5' style={styles.headerText}>Hidfdfdfdfdfd</ThemedText>
+          <ThemedText className=' top-5' style={styles.headerText}>Jame</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity onPress={() => router.push('./profile')}>
-              <Image className="absolute end-5 -top-16" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />
+              <Image className="absolute end-5 bottom-[18]" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />
             </TouchableOpacity>
           </TouchableNativeFeedback>
         </View>
@@ -49,22 +49,28 @@ const homepage: React.FC = () => {
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false}
         >
-          <View className='top-10'>
+          <View className='top-9'>
             <Carousel />
           </View>
           <View className="top-12">
             <ThemedText className="text-2xl font-bold ">Journey together</ThemedText>
           </View>
-          <View className=' top-14' style={{ flexDirection: "row", gap: 12 }}>
+          <View className=' top-14' >
             <Homebox />
           </View>
           <View className="top-14">
             <ThemedText className="text-2xl font-bold ">Food & Drink</ThemedText>
           </View>
-          <View className=' top-14' style={{ flexDirection: "row", gap: 12 }}>
+          <View className=' top-14' >
             <Homebox />
           </View>
-         
+          <View className="top-14">
+            <ThemedText className="text-2xl font-bold ">Food & Drink</ThemedText>
+          </View>
+          <View className=' top-14' >
+            <Homebox />
+          </View>
+
 
         </ScrollView>
       </ThemedView>

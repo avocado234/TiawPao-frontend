@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface Place {
@@ -39,20 +39,6 @@ const places: Place[] = [
         rating: 4.9,
         image: require("@/assets/images/Watarun.png"),
     },
-    {
-        id: "5",
-        name: "Wat Arun",
-        location: "Bangkok",
-        rating: 4.9,
-        image: require("@/assets/images/Watarun.png"),
-    },
-    {
-        id: "6",
-        name: "Wat Arun",
-        location: "Bangkok",
-        rating: 4.9,
-        image: require("@/assets/images/Watarun.png"),
-    },
 ];
 
 interface PlaceCardProps {
@@ -61,14 +47,14 @@ interface PlaceCardProps {
 
 const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
     return (
-        <View className="bg-gray-100 rounded-xl overflow-hidden mr-3 shadow-md w-40 ">
-            <Image source={place.image} className="w-full h-24" />
-            <View className="p-3">
-                <Text className="text-lg font-bold">{place.name}</Text>
-                <Text className="text-sm text-gray-500">{place.location}</Text>
-                <View className="flex-row items-center mt-1">
+        <View style={styles.card}>
+            <Image source={place.image} style={styles.image} />
+            <View className="p-3" >
+                <Text className=" text-[16px] font-bold">{place.name}</Text>
+                <Text style={styles.location}>{place.location}</Text>
+                <View style={styles.ratingContainer}>
                     <MaterialIcons name="star" size={16} color="gold" />
-                    <Text className="text-sm ml-1">{place.rating}</Text>
+                    <Text style={styles.ratingText}>{place.rating}</Text>
                 </View>
             </View>
         </View>
@@ -77,9 +63,13 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
 
 const Homebox: React.FC = () => {
     return (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="py-3 flex-row">
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContainer}
+        >
             {places.map((place) => (
-                <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={() => console.log(place.name)} className=" flex-row">
+                <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={() => console.log(place.name)}>
                     <PlaceCard place={place} />
                 </TouchableOpacity>
             ))}
@@ -88,3 +78,37 @@ const Homebox: React.FC = () => {
 };
 
 export default Homebox;
+
+const styles = StyleSheet.create({
+    scrollContainer: {
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+    },
+    card: {
+        backgroundColor: "#F8F9FA",
+        borderRadius: 16,
+        shadowRadius: 6,
+        overflow :"hidden",
+        elevation: 4,
+        width: 160,
+        marginRight: 12,
+    },
+    image: {
+        width: "100%",
+        height: 100,
+        borderRadius : 10,
+    },
+    location: {
+        fontSize: 14,
+        color: "#6B7280",
+    },
+    ratingContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 2,
+    },
+    ratingText: {
+        fontSize: 14,
+        marginLeft: 4,
+    },
+});
