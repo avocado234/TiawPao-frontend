@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300, // 🔹 ปรับขนาดใหม่
     resizeMode: "cover",
-    marginRight: 0,
+    
   },
 
   subImage: {
