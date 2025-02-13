@@ -6,23 +6,30 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
 import { ArrowLeft, Calendar, Home, Search, Plus, Map, User, Globe, Lock, MoveLeft } from "@tamagui/lucide-icons";
 import ThemedTextInput from "@/components/ThemedTextInput";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { RadioButton } from '@/components/RadioButton';
 import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
+import Bgelement from '@/components/Bgelement';
 
 type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western' | 'southern';
 
 export default function CreateTrip() {
   const [tripName, setTripName] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [visibility, setVisibility] = useState('public');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Public');
   const [selectedProvince, setSelectedProvince] = useState('');
   const [isRegionOpen, setIsRegionOpen] = useState(false);
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [showStartTime, setShowStartTime] = useState(false);
+  const [showEndTime, setShowEndTime] = useState(false);
+  const [isStartDatePickerVisible, setStartDatePickerVisible] = useState(false);
+  const [isEndDatePickerVisible, setEndDatePickerVisible] = useState(false);
 
   const regions = [
     { value: 'central', label: 'Central Thailand' },
@@ -134,13 +141,17 @@ export default function CreateTrip() {
     return provinces[selectedRegion as RegionKey] || [];
   };
 
+  const formatDateTime = (date: Date) => {
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    })}`;
+  };
+
   return (
     <ThemedSafeAreaView>
-      <Image
-        className="absolute -top-48"
-        source={require("@/assets/images/Bgcycle.png")}
-        style={[styles.backgroundImage]}
-      />
+      <Bgelement />
       
       {/* Header */}
       <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
@@ -161,13 +172,16 @@ export default function CreateTrip() {
             <ThemedText style={{ marginBottom: 8 }}>Trip name</ThemedText>
             <ThemedTextInput
               className='border border-black-300'
-              placeholder="e.g., Vacation in Thailand"
+              placeholder="e.g.Vacation in Thailand"
               value={tripName}
               onChangeText={setTripName}
+              placeholderTextColor="$gray10"
               style={{ 
                 borderRadius: 8,
                 padding: 12,
-                height: 40
+                height: 50,
+                backgroundColor: '$background',
+                color: '$color',
               }}
             />
           </View>
@@ -175,87 +189,119 @@ export default function CreateTrip() {
           {/* Region */}
           <View style={{ marginBottom: 16, zIndex: 3 }}>
             <ThemedText style={{ marginBottom: 8 }}>Region</ThemedText>
-            <ThemedDropDownPicker
-              items={regions}
-              value={selectedRegion}
-              setValue={(value) => {
-                setSelectedRegion(value);
-                setSelectedProvince('');
-              }}
-              style={{ 
-                borderRadius: 8,
-                height: 40
-              }}
-              open={isRegionOpen}
-              setOpen={setIsRegionOpen}
-            />
+            <View style={{ flexGrow: 1 }}>
+              <ThemedDropDownPicker
+                items={regions}
+                value={selectedRegion}
+                setValue={(value) => {
+                  setSelectedRegion(value);
+                  setSelectedProvince('');
+                }}
+                placeholder="Select a region"
+                style={{ 
+                  borderRadius: 8,
+                  height: 40
+                }}
+                open={isRegionOpen}
+                setOpen={setIsRegionOpen}
+                listMode="SCROLLVIEW"
+                dropDownContainerStyle={{
+                  borderWidth: 1,
+                  borderColor: '#e5e7eb',
+                  borderRadius: 8,
+                  backgroundColor: 'white',
+                  zIndex: 1000,
+                  elevation: 5,
+                }}
+              />
+            </View>
           </View>
 
           {/* Province */}
           <View style={{ marginBottom: 16, zIndex: 2 }}>
             <ThemedText style={{ marginBottom: 8 }}>Province</ThemedText>
-            <ThemedDropDownPicker
-              items={getFilteredProvinces()}
-              value={selectedProvince}
-              setValue={setSelectedProvince}
-              placeholder="Select a province"
-              disabled={!selectedRegion}
-              style={{ 
-                borderRadius: 8,
-                height: 40
-              }}
-            />
+            <View style={{ flexGrow: 1 }}>
+              <ThemedDropDownPicker
+                items={getFilteredProvinces()}
+                value={selectedProvince}
+                setValue={setSelectedProvince}
+                placeholder="Select a province"
+                disabled={!selectedRegion}
+                style={{ 
+                  borderRadius: 8,
+                  height: 40
+                }}
+                listMode="SCROLLVIEW"
+                dropDownContainerStyle={{
+                  borderWidth: 1,
+                  borderColor: '#e5e7eb',
+                  borderRadius: 8,
+                  backgroundColor: 'white',
+                  zIndex: 1000,
+                  elevation: 5,
+                }}
+              />
+            </View>
           </View>
 
           {/* Date Selection */}
-          <XStack style={{ 
-            gap: 16, 
-            marginBottom: 16
-          }}>
+          <XStack style={{ gap: 16, marginBottom: 16 }}>
             {/* Start Date */}
             <View style={{ flex: 1 }}>
-              <ThemedText style={{ marginBottom: 8 }}>Start date</ThemedText>
-              <XStack style={{ 
-                alignItems: 'center',
-                borderWidth: 1,
-                borderRadius: 8,
-                padding: 8,
-                height: 40,
-              }}>
-                <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
-                <DateTimePicker
-                  value={startDate}
-                  mode="date"
-                  onChange={(event, date) => {
-                    setShowStartDatePicker(false);
-                    if (date) setStartDate(date);
-                  }}
-                  style={{ transform: [{ scale: 0.7 }] }}
-                />
-              </XStack>
+              <ThemedText style={{ marginBottom: 8 }}>Start date & time</ThemedText>
+              <Pressable onPress={() => setStartDatePickerVisible(true)}>
+                <XStack style={{ 
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  padding: 8,
+                  height: 40,
+                }}>
+                  <Calendar size={16} color="#6c757d" style={{ marginRight: 8 }} />
+                  <ThemedText>{formatDateTime(startDate)}</ThemedText>
+                </XStack>
+              </Pressable>
+              <DateTimePickerModal
+                isVisible={isStartDatePickerVisible}
+                mode="datetime"
+                display="inline"
+                date={startDate}
+                onConfirm={(date) => {
+                  setStartDate(date);
+                  setStartDatePickerVisible(false);
+                }}
+                onCancel={() => setStartDatePickerVisible(false)}
+                is24Hour={false}
+              />
             </View>
 
             {/* End Date */}
             <View style={{ flex: 1 }}>
-              <ThemedText style={{ marginBottom: 8 }}>End date</ThemedText>
-              <XStack style={{ 
-                alignItems: 'center',
-                borderWidth: 1,
-                borderRadius: 8,
-                padding: 8,
-                height: 40,
-              }}>
-                <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
-                <DateTimePicker
-                  value={endDate}
-                  mode="date"
-                  onChange={(event, date) => {
-                    setShowEndDatePicker(false);
-                    if (date) setEndDate(date);
-                  }}
-                  style={{ transform: [{ scale: 0.7 }] }}
-                />
-              </XStack>
+              <ThemedText style={{ marginBottom: 8 }}>End date & time</ThemedText>
+              <Pressable onPress={() => setEndDatePickerVisible(true)}>
+                <XStack style={{ 
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  padding: 8,
+                  height: 40,
+                }}>
+                  <Calendar size={16} color="#6c757d" style={{ marginRight: 8 }} />
+                  <ThemedText>{formatDateTime(endDate)}</ThemedText>
+                </XStack>
+              </Pressable>
+              <DateTimePickerModal
+                isVisible={isEndDatePickerVisible}
+                mode="datetime"
+                display="inline"
+                date={endDate}
+                onConfirm={(date) => {
+                  setEndDate(date);
+                  setEndDatePickerVisible(false);
+                }}
+                onCancel={() => setEndDatePickerVisible(false)}
+                is24Hour={false}
+              />
             </View>
           </XStack>
 
@@ -298,7 +344,17 @@ export default function CreateTrip() {
                 height: 45,
                 justifyContent: 'center'
               }}
-              onPress={() => {/* Handle manual creation */}}
+              onPress={() => router.push({
+                pathname: '/showTrip',
+                params: {
+                  tripName,
+                  region: selectedRegion,
+                  province: selectedProvince,
+                  startDate: startDate.toISOString(),
+                  endDate: endDate.toISOString(),
+                  visibility: selectedOption
+                }
+              })}
             >
               <ThemedText style={{ color: 'white', textAlign: 'center' }}>
                 Create Plan Manually
@@ -321,28 +377,6 @@ export default function CreateTrip() {
           </YStack>
         </YStack>
       </View>
-
-      {/* Date Pickers */}
-      {showStartDatePicker && (
-        <DateTimePicker
-          value={startDate}
-          mode="date"
-          onChange={(event, date) => {
-            setShowStartDatePicker(false);
-            if (date) setStartDate(date);
-          }}
-        />
-      )}
-      {showEndDatePicker && (
-        <DateTimePicker
-          value={endDate}
-          mode="date"
-          onChange={(event, date) => {
-            setShowEndDatePicker(false);
-            if (date) setEndDate(date);
-          }}
-        />
-      )}
     </ThemedSafeAreaView>
   );
 }
