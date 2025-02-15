@@ -78,7 +78,7 @@ export default function RootLayout() {
   useEffect(() => {
     console.log("Starting onAuthStateChanged");
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
-      // console.log("onAuthStateChanged triggered, user:", currentuser);
+      console.log("onAuthStateChanged triggered, user:", currentuser);
       setUsercur(currentuser);
       if(!currentuser){
         resetUserData();

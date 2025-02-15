@@ -32,7 +32,7 @@ const homepage: React.FC = () => {
       <ThemedView style={styles.themedView}>
       <Bgelement/>
         <View style={styles.headerWrapper}>
-          <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
+          <ThemedText className=' top-5' style={styles.headerText}>DATA</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity  onPress={() => router.push('./profile')}>
               <Image className="absolute end-5 -top-16" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />

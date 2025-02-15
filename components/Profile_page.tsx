@@ -287,12 +287,7 @@ const Propage = () => {
               editable={get_edit}
               selectionColor={placeholder_Color}
             ></TextInput>
-              <Pressable
-                    className='bg-red-500 w-full h-[50px] mt-5 flex justify-center items-center rounded-3xl'
-                    onPress={handelSingOut}
-                >
-                    <Text className='text-xl text-white'>Logout</Text>
-              </Pressable>
+              
           </YStack>
         </View>
         <XStack style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between', width: '100%' }}>
@@ -307,7 +302,14 @@ const Propage = () => {
           {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
           {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
         </YStack>
+        
       </ThemedSafeAreaView>
+      <Pressable
+            className='bg-red-500 w-full h-[50px] mt-5 flex justify-center items-center rounded-3xl'
+            onPress={handelSingOut}
+        >
+            <Text className='text-xl text-white'>Logout</Text>
+      </Pressable>
     </View>
   );
 };
