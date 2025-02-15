@@ -1,4 +1,4 @@
-import React, { useContext,useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable, TextInput, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSignupStore } from '@/store/useSignupStore';
@@ -19,7 +19,7 @@ import { auth } from '@/config/firebaseconfig';
 // };
 
 export default function OTPVerification(): JSX.Element {
-    const { email, username,password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
+    const { email, username, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
     const theme = useColorScheme();
@@ -32,9 +32,9 @@ export default function OTPVerification(): JSX.Element {
         return () => clearInterval(countdown);
     }, []);
 
-    const resetPassword = async (email:string) => {
+    const resetPassword = async (email: string) => {
         const auth = getAuth();
-        
+
         try {
             await sendPasswordResetEmail(auth, email);
             console.log("Reset email sent successfully");
@@ -72,37 +72,35 @@ export default function OTPVerification(): JSX.Element {
     const checkOtp = async (enteredOtp: string) => {
         try {
             const response = await api.post('/user/verifyotp', {
-                email: email, 
+                email: email,
                 otp: enteredOtp,
             });
 
             if (response.data.message === 'OTP verified') {
-                if (isRegisterBool) {
-                    try {
-                        await createUserWithEmailAndPassword(auth, email, password);
-                        Alert.alert("Success!","Sign Up Success!");
-                    } catch (err) {
-                        Alert.alert('Sign Up Fail');
-                        return
-                    }
-                    const registerResponse = await api.post('/user/register', {
-                        username,
-                        email,
-                        password,
-                        username,
-                        firstname,
-                        lastname,
-                        dateofbirth,
-                        tel,
-                        gender,
-                    });
-                    if (registerResponse.status === 201) {
-                        Alert.alert('Success', 'Registration completed!');
-                        router.replace('/(tabs)');
-                    } else {
-                        Alert.alert('Error', 'Registration failed. Try again.');
-                    }
-                } 
+                try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    Alert.alert("Success!", "Sign Up Success!");
+                } catch (err) {
+                    Alert.alert('Sign Up Fail');
+                    return
+                }
+                const registerResponse = await api.post('/user/register', {
+                    email,
+                    password,
+                    username,
+                    firstname,
+                    lastname,
+                    dateofbirth,
+                    tel,
+                    gender,
+                });
+                if (registerResponse.status === 201) {
+                    Alert.alert('Success', 'Registration completed!');
+                    router.replace('/(tabs)');
+                } else {
+                    Alert.alert('Error', 'Registration failed. Try again.');
+                }
+
 
             } else {
                 Alert.alert('Error', 'Invalid OTP. Try again.');
@@ -128,9 +126,8 @@ export default function OTPVerification(): JSX.Element {
                         Didn't receive OTP?
                         <Pressable disabled={timer !== 0} onPress={() => setTimer(35)} className="mt-2">
                             <Text
-                                className={`${timer === 0 ? '' : 'text-gray-500'} ${
-                                    theme == 'dark' ? `text-blue-400` : `text-blue-700`
-                                } ml-3 font-bold text-lg`}
+                                className={`${timer === 0 ? '' : 'text-gray-500'} ${theme == 'dark' ? `text-blue-400` : `text-blue-700`
+                                    } ml-3 font-bold text-lg`}
                             >
                                 Resend OTP
                             </Text>
