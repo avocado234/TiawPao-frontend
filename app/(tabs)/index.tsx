@@ -18,12 +18,12 @@ import Carousel from '@/components/Carouselhome';
 import {Button} from 'react-native'
 import {XGroup, XStack, YStack } from "tamagui";
 import {useRouter} from "expo-router";
-import { useuserStore } from '@/store/useUser';
+import { useUserStore } from '@/store/useUser';
 
 
 
 const homepage: React.FC = () => {
-  const { firstname} = useuserStore(); 
+  const user = useUserStore((state) => state.user);
 
   const router = useRouter();
   
@@ -32,7 +32,7 @@ const homepage: React.FC = () => {
       <ThemedView style={styles.themedView}>
       <Bgelement/>
         <View style={styles.headerWrapper}>
-          <ThemedText className=' top-5' style={styles.headerText}>{firstname}</ThemedText>
+          <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity  onPress={() => router.push('./profile')}>
               <Image className="absolute end-5 -top-16" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />

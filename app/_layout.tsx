@@ -15,7 +15,7 @@ import { ActivityIndicator } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import {auth} from '../config/firebaseconfig'
 import api from '../utils/axiosInstance';
-import { useuserStore } from '../store/useUser';
+import { useUserStore } from '../store/useUser';
 
 import { onAuthStateChanged ,User} from 'firebase/auth';
 
@@ -23,7 +23,7 @@ import { onAuthStateChanged ,User} from 'firebase/auth';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { setuserData,resetuserData } = useuserStore();
+  const { setUserData,resetUserData } = useUserStore();
 
   const colorScheme = useColorScheme();
   // const { user, loading } = useContext(AuthContext);
@@ -56,8 +56,7 @@ export default function RootLayout() {
     try{
       const userData: any = await api.get(`/user/getuser/${email}`);
       const dataUser = userData.data;
-      console.log(dataUser);
-      setuserData({
+      setUserData({
         username: dataUser.Username,
         email: dataUser.Email,
         firstname: dataUser.Firstname,
@@ -82,7 +81,7 @@ export default function RootLayout() {
       // console.log("onAuthStateChanged triggered, user:", currentuser);
       setUsercur(currentuser);
       if(!currentuser){
-        resetuserData();
+        resetUserData();
       }
       setLoading(false);
     });
