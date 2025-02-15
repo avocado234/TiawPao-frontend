@@ -18,7 +18,7 @@ import { auth } from '@/config/firebaseconfig';
 // };
 
 export default function OTPVerification(): JSX.Element {
-    const { email, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
+    const { email, username,password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
     const { email: forgetEmail } = useForgetStore(); // This is for the email from the Forgot Password flow
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
@@ -75,6 +75,7 @@ export default function OTPVerification(): JSX.Element {
                         Alert.alert('Sign Up Fail');
                     }
                     const registerResponse = await api.post('/user/register', {
+                        username,
                         email,
                         password,
                         firstname,
