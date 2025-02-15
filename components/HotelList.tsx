@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
 interface Hotel {
@@ -53,22 +53,21 @@ const hotels: Hotel[] = [
         rating: 4.9,
         image: require("@/assets/images/Oldtown.png"),
     },
-
 ];
 
 const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
     return (
-        <View className=" flex-1 rounded-2xl bg-white shadow-lg flex-row  mb-4">
-            <Image source={hotel.image} className="w-26 h-32 rounded-2xl" />
+        <View className="flex-1 rounded-2xl bg-white shadow-lg flex-row mb-4">
+            <Image source={hotel.image} className="w-28 h-full rounded-xl " />
             <View className="ml-3 flex-1 p-1">
-                <Text className="text-xl font-bold text-gray-800">{hotel.name}</Text>
-                <Text className="text-s text-gray-500">{hotel.description}</Text>
-                <View className="flex-row items-center mt-1">
+                <Text className="text-2xl font-bold text-gray-800">{hotel.name}</Text>
+                <Text className="text-s text-gray-500" numberOfLines={2} ellipsizeMode="tail">{hotel.description}</Text>
+                <View className="flex-row items-center mt-2">
                     <MaterialIcons name="star" size={16} color="gold" />
-                    <Text className="text-sm ml-1 text-gray-700">{hotel.rating}</Text>
+                    <Text className="text-sm ml-2 text-gray-700">{hotel.rating}</Text>
                 </View>
                 <TouchableOpacity activeOpacity={0.5} onPress={() => console.log(hotel.name)}>
-                    <Text className="text-blue-500 text-right text-m font-semibold mt-1 right-5">more details</Text>
+                    <Text className="text-blue-500 text-right text-m font-semibold right-2 bottom-2">more details</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -77,13 +76,13 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
 
 const HotelList: React.FC = () => {
     return (
-        <FlatList
-            data={hotels}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <HotelCard hotel={item} />}
+        <ScrollView className=" p-1"
             showsVerticalScrollIndicator={false}
-            className="mt-4"
-        />
+            contentContainerStyle={{ paddingBottom: 20}}>
+            {hotels.map((hotel) => (
+                <HotelCard key={hotel.id} hotel={hotel} />
+            ))}
+        </ScrollView>
     );
 };
 

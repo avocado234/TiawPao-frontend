@@ -67,7 +67,7 @@ const homepage: React.FC = () => {
           <View className="top-14">
             <ThemedText className="text-2xl font-bold">Hotels</ThemedText>
           </View>
-          <View className="top-14 p-1">
+          <View className="top-14 ">
             <HotelList />
           </View>
 
