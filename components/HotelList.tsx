@@ -78,7 +78,7 @@ const HotelList: React.FC = () => {
     return (
         <ScrollView className=" p-1"
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20}}>
+            contentContainerStyle={{ paddingBottom: 20,paddingVertical: 10}}>
             {hotels.map((hotel) => (
                 <HotelCard key={hotel.id} hotel={hotel} />
             ))}

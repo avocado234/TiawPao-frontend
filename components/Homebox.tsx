@@ -49,7 +49,7 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
     return (
         <View style={styles.card}>
             <Image source={place.image} style={styles.image} />
-            <View className="p-3" >
+            <View className="p-2" >
                 <Text className=" text-[16px] font-bold">{place.name}</Text>
                 <Text style={styles.location}>{place.location}</Text>
                 <View style={styles.ratingContainer}>
@@ -81,7 +81,6 @@ export default Homebox;
 
 const styles = StyleSheet.create({
     scrollContainer: {
-        paddingHorizontal: 16,
         paddingVertical: 10,
     },
     card: {
