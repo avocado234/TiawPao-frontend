@@ -18,7 +18,7 @@ import { auth } from '@/config/firebaseconfig';
 // };
 
 export default function OTPVerification(): JSX.Element {
-    const { email, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
+    const { email, username,password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
     const { email: forgetEmail } = useForgetStore(); // This is for the email from the Forgot Password flow
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
@@ -67,17 +67,18 @@ export default function OTPVerification(): JSX.Element {
             });
 
             if (response.data.message === 'OTP verified') {
-
                 if (isRegisterBool) {
                     try {
                         await createUserWithEmailAndPassword(auth, email, password);
                         Alert.alert("Success!","Sign Up Success!");
                     } catch (err) {
                         Alert.alert('Sign Up Fail');
+                        return
                     }
                     const registerResponse = await api.post('/user/register', {
-                        targetEmail,
+                        email,
                         password,
+                        username,
                         firstname,
                         lastname,
                         dateofbirth,
@@ -92,9 +93,6 @@ export default function OTPVerification(): JSX.Element {
                     }
                 } else {
                     Alert.alert("Forget Password");
-
-                    // Handle password reset logic here
-                    // Example: You can show a password reset screen or trigger the password change API
                     Alert.alert('Success', 'OTP Verified. You can now reset your password.');
                     router.push('/resetpassword');
                 }

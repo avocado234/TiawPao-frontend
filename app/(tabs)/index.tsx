@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useContext, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,28 +15,24 @@ import { router } from 'expo-router';
 import Carousel from '@/components/Carouselhome';
 
 
-import {auth} from "@/config/firebaseconfig";
 import {Button} from 'react-native'
 import {XGroup, XStack, YStack } from "tamagui";
-import { signOut } from "firebase/auth";
 import {useRouter} from "expo-router";
-  
+import { useuserStore } from '@/store/useUser';
 
 
 
 const homepage: React.FC = () => {
+  const { firstname} = useuserStore(); 
+
   const router = useRouter();
-  const handelSignOut = async()=>{
-      await signOut(auth)
-      router.replace('/')
-  }
-  const user = auth.currentUser;
+  
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
       <Bgelement/>
         <View style={styles.headerWrapper}>
-          <ThemedText className=' top-5' style={styles.headerText}>Hidfdfdfdfdfd</ThemedText>
+          <ThemedText className=' top-5' style={styles.headerText}>{firstname}</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity  onPress={() => router.push('./profile')}>
               <Image className="absolute end-5 -top-16" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />

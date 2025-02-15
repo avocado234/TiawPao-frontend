@@ -100,8 +100,7 @@ const Propage = () => {
   const handelSingOut = async() => {
       try {
         await signOut(auth).then(() => {
-          router.replace("/signin")
-
+          router.replace('/signin')
         });
         
       } catch (error) {
@@ -288,12 +287,12 @@ const Propage = () => {
               editable={get_edit}
               selectionColor={placeholder_Color}
             ></TextInput>
-            <Pressable
+              <Pressable
                     className='bg-red-500 w-full h-[50px] mt-5 flex justify-center items-center rounded-3xl'
                     onPress={handelSingOut}
                 >
                     <Text className='text-xl text-white'>Logout</Text>
-                </Pressable>
+              </Pressable>
           </YStack>
         </View>
         <XStack style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between', width: '100%' }}>

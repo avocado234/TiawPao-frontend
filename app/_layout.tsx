@@ -14,10 +14,8 @@ import { useRouter, useSegments } from "expo-router";
 import { ActivityIndicator } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import {auth} from '../config/firebaseconfig'
-import { UserProvider } from '@/context/userContext';
 import api from '../utils/axiosInstance';
-import { UserContext, UserData } from '../context/userContext';
-import { useContext } from 'react';
+import { useuserStore } from '../store/useUser';
 
 import { onAuthStateChanged ,User} from 'firebase/auth';
 
@@ -25,6 +23,8 @@ import { onAuthStateChanged ,User} from 'firebase/auth';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { setuserData,resetuserData } = useuserStore();
+
   const colorScheme = useColorScheme();
   // const { user, loading } = useContext(AuthContext);
   const router = useRouter();
@@ -33,7 +33,6 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-  const { user, setUser } = useContext(UserContext);
   const [usercur, setUsercur] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -51,24 +50,39 @@ export default function RootLayout() {
   //       router.replace('/signin');
   //     }
   //   }
-  // }, [user, loading, segments]);
-  const getUserData = async (user: any) => {
+  // }, [usercur, loading, segments]);
+
+  const getUserData = async (email: any) => {
     try{
-      const userData: UserData = await api.post(`/user/getuser/${user?.email}`);
-      setUser(userData);
+      const userData: any = await api.get(`/user/getuser/${email}`);
+      const dataUser = userData.data;
+      console.log(dataUser);
+      setuserData({
+        username: dataUser.Username,
+        email: dataUser.Email,
+        firstname: dataUser.Firstname,
+        lastname: dataUser.Lastname,
+        dateofbirth: dataUser.DateOfBirth,
+        tel: dataUser.Tel,
+        gender: dataUser.Gender,
+      });
     }catch(err){
       console.log(err);
     }
   };
   useEffect(() => {
+     if(usercur){
+      getUserData(usercur.email);
+     }
+  }, [usercur]);
+
+  useEffect(() => {
     console.log("Starting onAuthStateChanged");
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
-      console.log("onAuthStateChanged triggered, user:", currentuser);
+      // console.log("onAuthStateChanged triggered, user:", currentuser);
       setUsercur(currentuser);
-      if(usercur){
-        getUserData(currentuser);
-      }else{
-        setUser(null);
+      if(!currentuser){
+        resetuserData();
       }
       setLoading(false);
     });
@@ -111,7 +125,6 @@ export default function RootLayout() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <UserProvider>
       <Stack screenOptions={{ gestureEnabled: false }}>
       {/* <AuthProvider> */}
         {/* <Stack> */}
@@ -126,7 +139,6 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
       {/* </AuthProvider> */}
-      </UserProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
     </TamaguiProvider>

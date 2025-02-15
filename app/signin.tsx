@@ -9,14 +9,23 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import ThemedTextInput  from '@/components/ThemedTextInput';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword ,signOut} from "firebase/auth";
 import {auth} from "@/config/firebaseconfig";
-import api from "@/utils/axiosInstance";
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
+    const handelSignOut = async() => {
+        try {
+          await signOut(auth).then(() => {
+            router.replace('/signin')
+          });
+          
+        } catch (error) {
+          console.log(error);
+        }
+    };
     const handelSignIn = async() => {
         try {
             await signInWithEmailAndPassword(auth,email,password)
