@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { useColorScheme } from 'react-native';
 import api from '@/utils/axiosInstance';
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/config/firebaseconfig';
 
@@ -19,12 +20,10 @@ type OTPVerificationProps = {
 
 export default function OTPVerification({ isRegister }: OTPVerificationProps): JSX.Element {
     const { email, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
-    const { email: forgetEmail } = useForgetStore(); // This is for the email from the Forgot Password flow
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
     const theme = useColorScheme();
     const inputRefs = useRef<(TextInput | null)[]>([]);
-    const targetEmail = isRegister ? email : forgetEmail; // Use the appropriate email based on context
 
     useEffect(() => {
         const countdown = setInterval(() => {
@@ -32,6 +31,19 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
         }, 1000);
         return () => clearInterval(countdown);
     }, []);
+
+    const resetPassword = async (email:string) => {
+        const auth = getAuth();
+        
+        try {
+            await sendPasswordResetEmail(auth, email);
+            console.log("Reset email sent successfully");
+            alert("Check your email for the reset link.");
+        } catch (error) {
+            console.error("Error sending reset email:", (error as any).message);
+            alert((error as Error).message);
+        }
+    };
 
     const handleChange = (value: string, index: number) => {
         if (/^\d*$/.test(value)) {
@@ -60,7 +72,7 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
     const checkOtp = async (enteredOtp: string) => {
         try {
             const response = await api.post('/user/verifyotp', {
-                email: targetEmail, 
+                email: email, 
                 otp: enteredOtp,
             });
 
@@ -86,12 +98,7 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
                     } else {
                         Alert.alert('Error', 'Registration failed. Try again.');
                     }
-                } else {
-                    // Handle password reset logic here
-                    // Example: You can show a password reset screen or trigger the password change API
-                    Alert.alert('Success', 'OTP Verified. You can now reset your password.');
-                    router.push('/resetpassword');
-                }
+                } 
             } else {
                 Alert.alert('Error', 'Invalid OTP. Try again.');
                 setOtp(['', '', '', '']);
@@ -110,7 +117,7 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
                 <YStack className="w-[80%] mt-[50px]">
                     <ThemedText className="text-3xl font-bold text-[#203B82] mb-3">Verification Code</ThemedText>
                     <ThemedText className={`${theme == 'dark' ? `text-gray-400` : `text-gray-500`} mt-2 mb-5 text-lg`}>
-                        Please enter the 4-digit verification code sent to {targetEmail}
+                        Please enter the 4-digit verification code sent to {email}
                     </ThemedText>
                     <ThemedText className="mb-10 text-lg">
                         Didn't receive OTP?
