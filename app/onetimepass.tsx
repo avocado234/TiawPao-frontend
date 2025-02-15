@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useSignupStore } from '@/store/useSignupStore';
 import { useForgetStore } from '@/store/useForgetStore';
 import { YStack, XStack } from 'tamagui';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
@@ -13,18 +13,20 @@ import api from '@/utils/axiosInstance';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/config/firebaseconfig';
 
-type OTPVerificationProps = {
-    isRegister: boolean; // Flag to determine if this is for registration or password reset
-};
+// type OTPVerificationProps = {
+//     isRegister: boolean; // Flag to determine if this is for registration or password reset
+// };
 
-export default function OTPVerification({ isRegister }: OTPVerificationProps): JSX.Element {
+export default function OTPVerification(): JSX.Element {
     const { email, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
     const { email: forgetEmail } = useForgetStore(); // This is for the email from the Forgot Password flow
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
     const theme = useColorScheme();
     const inputRefs = useRef<(TextInput | null)[]>([]);
-    const targetEmail = isRegister ? email : forgetEmail; // Use the appropriate email based on context
+    const { isRegister } = useLocalSearchParams(); // Retrieve params from router
+    const isRegisterBool = isRegister === 'true'; // Convert to boolean
+    const targetEmail = isRegisterBool ? email : forgetEmail; // Use the appropriate email based on context
 
     useEffect(() => {
         const countdown = setInterval(() => {
@@ -65,14 +67,17 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
             });
 
             if (response.data.message === 'OTP verified') {
-                if (isRegister) {
+
+                if (isRegisterBool) {
+                    Alert.alert("Register");
+
                     try {
                         await createUserWithEmailAndPassword(auth, email, password);
                     } catch (err) {
                         Alert.alert('Sign Up Fail');
                     }
                     const registerResponse = await api.post('/user/register', {
-                        email,
+                        targetEmail,
                         password,
                         firstname,
                         lastname,
@@ -87,6 +92,8 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
                         Alert.alert('Error', 'Registration failed. Try again.');
                     }
                 } else {
+                    Alert.alert("Forget Password");
+
                     // Handle password reset logic here
                     // Example: You can show a password reset screen or trigger the password change API
                     Alert.alert('Success', 'OTP Verified. You can now reset your password.');

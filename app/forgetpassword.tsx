@@ -33,7 +33,11 @@ export default function ForgetPassword() {
             if (response.data.message) {
                 Alert.alert("Success", "OTP Sent! Check your email.");
                 setForgetData({email }); 
-                router.push("/onetimepass?isRegister=false");
+                // router.push("/onetimepass?isRegister=false");
+                router.push({
+                    pathname: '/onetimepass',
+                    params: { isRegister: 'false' }, // Pass parameters as an object
+                });
             } else {
                 // Alert.alert("Success", response.data.message);
                 Alert.alert("Error", "Failed to send OTP. Try again.");
