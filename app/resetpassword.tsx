@@ -8,14 +8,30 @@ import { EyeOff, Eye } from '@tamagui/lucide-icons';
 import React, { useState } from 'react';
 import { View, Pressable, useColorScheme } from 'react-native';
 import { YStack, XStack } from 'tamagui';
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { useForgetStore } from '@/store/useForgetStore';
 
 export default function ResetPassword() {
 
     const theme = useColorScheme()
+        const { email } = useForgetStore(); // This is for the email from the Forgot Password flow
     const [password, setPassword] = useState<string>('');
     const [confirmpassword, setConfirmPassword] = useState<string>('');
     const [secureText, setSecureText] = useState<boolean>(true);
     const [secureTextConfirm, setSecureTextConfirm] = useState<boolean>(true);
+
+    const resetPassword = async (email:string) => {
+        const auth = getAuth();
+      
+        try {
+          await sendPasswordResetEmail(auth, email);
+          console.log("Reset email sent successfully");
+          alert("Check your email for the reset link.");
+        } catch (error) {
+          console.error("Error sending reset email:", (error as any).message);
+          alert((error as Error).message);
+        }
+      };
 
 
 
@@ -76,7 +92,8 @@ export default function ResetPassword() {
                     )}
 
                     <Pressable
-                        className=' bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'>
+                        className=' bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
+                        >
                         <ThemedText className='text-xl text-white '>Change Password</ThemedText>
                     </Pressable>
 
