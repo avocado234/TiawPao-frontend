@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
-export interface User {
+export interface UserData {
   id: string;
   username: string;
   password: string;
@@ -13,8 +13,8 @@ export interface User {
 }
 
 interface UserContextType {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  user: UserData | null;
+  setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
 }
 
 export const UserContext = createContext<UserContextType>({
@@ -27,7 +27,7 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

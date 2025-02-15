@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useContext,useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable, TextInput, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSignupStore } from '@/store/useSignupStore';
@@ -62,17 +62,16 @@ export default function OTPVerification(): JSX.Element {
     const checkOtp = async (enteredOtp: string) => {
         try {
             const response = await api.post('/user/verifyotp', {
-                email: targetEmail, 
+                email: email, 
                 otp: enteredOtp,
             });
 
             if (response.data.message === 'OTP verified') {
 
                 if (isRegisterBool) {
-                    Alert.alert("Register");
-
                     try {
                         await createUserWithEmailAndPassword(auth, email, password);
+                        Alert.alert("Success!","Sign Up Success!");
                     } catch (err) {
                         Alert.alert('Sign Up Fail');
                     }

@@ -15,8 +15,9 @@ import { ActivityIndicator } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import {auth} from '../config/firebaseconfig'
 import { UserProvider } from '@/context/userContext';
-
-
+import api from '../utils/axiosInstance';
+import { UserContext, UserData } from '../context/userContext';
+import { useContext } from 'react';
 
 import { onAuthStateChanged ,User} from 'firebase/auth';
 
@@ -32,8 +33,8 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-
-  const [user, setUser] = useState<User | null>(null);
+  const { user, setUser } = useContext(UserContext);
+  const [usercur, setUsercur] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
 
@@ -51,12 +52,24 @@ export default function RootLayout() {
   //     }
   //   }
   // }, [user, loading, segments]);
-
+  const getUserData = async (user: any) => {
+    try{
+      const userData: UserData = await api.post(`/user/getuser/${user?.email}`);
+      setUser(userData);
+    }catch(err){
+      console.log(err);
+    }
+  };
   useEffect(() => {
     console.log("Starting onAuthStateChanged");
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
       console.log("onAuthStateChanged triggered, user:", currentuser);
-      setUser(currentuser);
+      setUsercur(currentuser);
+      if(usercur){
+        getUserData(currentuser);
+      }else{
+        setUser(null);
+      }
       setLoading(false);
     });
   

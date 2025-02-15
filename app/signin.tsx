@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { View, TextInput, Pressable, Text,Alert } from "react-native";
 import { Image } from 'expo-image';
 import { router,Link } from 'expo-router'
@@ -11,6 +11,7 @@ import ThemedTextInput  from '@/components/ThemedTextInput';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 import { signInWithEmailAndPassword } from "firebase/auth";
 import {auth} from "@/config/firebaseconfig";
+import api from "@/utils/axiosInstance";
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
@@ -19,6 +20,7 @@ export default function SignInPage() {
     const handelSignIn = async() => {
         try {
             await signInWithEmailAndPassword(auth,email,password)
+
             Alert.alert("Success","Sign In Success!")
             router.replace("/(tabs)")
         } catch (err) {
