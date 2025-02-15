@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useContext,useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable, TextInput, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSignupStore } from '@/store/useSignupStore';
 import { useForgetStore } from '@/store/useForgetStore';
 import { YStack, XStack } from 'tamagui';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
@@ -14,12 +14,12 @@ import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/config/firebaseconfig';
 
-type OTPVerificationProps = {
-    isRegister: boolean; // Flag to determine if this is for registration or password reset
-};
+// type OTPVerificationProps = {
+//     isRegister: boolean; // Flag to determine if this is for registration or password reset
+// };
 
-export default function OTPVerification({ isRegister }: OTPVerificationProps): JSX.Element {
-    const { email, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
+export default function OTPVerification(): JSX.Element {
+    const { email, username,password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
     const theme = useColorScheme();
@@ -77,15 +77,19 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
             });
 
             if (response.data.message === 'OTP verified') {
-                if (isRegister) {
+                if (isRegisterBool) {
                     try {
                         await createUserWithEmailAndPassword(auth, email, password);
+                        Alert.alert("Success!","Sign Up Success!");
                     } catch (err) {
                         Alert.alert('Sign Up Fail');
+                        return
                     }
                     const registerResponse = await api.post('/user/register', {
+                        username,
                         email,
                         password,
+                        username,
                         firstname,
                         lastname,
                         dateofbirth,
@@ -99,6 +103,7 @@ export default function OTPVerification({ isRegister }: OTPVerificationProps): J
                         Alert.alert('Error', 'Registration failed. Try again.');
                     }
                 } 
+
             } else {
                 Alert.alert('Error', 'Invalid OTP. Try again.');
                 setOtp(['', '', '', '']);
