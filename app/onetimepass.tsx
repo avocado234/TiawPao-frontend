@@ -69,15 +69,13 @@ export default function OTPVerification(): JSX.Element {
             if (response.data.message === 'OTP verified') {
 
                 if (isRegisterBool) {
-                    Alert.alert("Register");
-
                     try {
                         await createUserWithEmailAndPassword(auth, email, password);
                     } catch (err) {
                         Alert.alert('Sign Up Fail');
                     }
                     const registerResponse = await api.post('/user/register', {
-                        targetEmail,
+                        email,
                         password,
                         firstname,
                         lastname,
