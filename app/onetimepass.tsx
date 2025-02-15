@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useContext,useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable, TextInput, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSignupStore } from '@/store/useSignupStore';
@@ -62,22 +62,24 @@ export default function OTPVerification(): JSX.Element {
     const checkOtp = async (enteredOtp: string) => {
         try {
             const response = await api.post('/user/verifyotp', {
-                email: targetEmail, 
+                email: email, 
                 otp: enteredOtp,
             });
 
             if (response.data.message === 'OTP verified') {
-
                 if (isRegisterBool) {
                     try {
                         await createUserWithEmailAndPassword(auth, email, password);
+                        Alert.alert("Success!","Sign Up Success!");
                     } catch (err) {
                         Alert.alert('Sign Up Fail');
+                        return
                     }
                     const registerResponse = await api.post('/user/register', {
                         username,
                         email,
                         password,
+                        username,
                         firstname,
                         lastname,
                         dateofbirth,
@@ -92,9 +94,6 @@ export default function OTPVerification(): JSX.Element {
                     }
                 } else {
                     Alert.alert("Forget Password");
-
-                    // Handle password reset logic here
-                    // Example: You can show a password reset screen or trigger the password change API
                     Alert.alert('Success', 'OTP Verified. You can now reset your password.');
                     router.push('/resetpassword');
                 }
