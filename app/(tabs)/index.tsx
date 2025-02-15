@@ -21,7 +21,7 @@ import { XGroup, XStack, YStack } from "tamagui";
 import { signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Homebox from '@/components/Homebox';
-
+import HotelList from '@/components/HotelList';
 
 
 
@@ -65,10 +65,10 @@ const homepage: React.FC = () => {
             <Homebox />
           </View>
           <View className="top-14">
-            <ThemedText className="text-2xl font-bold ">Food & Drink</ThemedText>
+            <ThemedText className="text-2xl font-bold">Hotels</ThemedText>
           </View>
-          <View className=' top-14' >
-            <Homebox />
+          <View className="top-14 p-1">
+            <HotelList />
           </View>
 
 
