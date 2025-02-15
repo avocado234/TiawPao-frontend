@@ -13,9 +13,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useRouter, useSegments } from "expo-router";
 import { ActivityIndicator } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-
 import {auth} from '../config/firebaseconfig'
-
+import { UserProvider } from '@/context/userContext';
 
 
 
@@ -99,6 +98,7 @@ export default function RootLayout() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <UserProvider>
       <Stack screenOptions={{ gestureEnabled: false }}>
       {/* <AuthProvider> */}
         {/* <Stack> */}
@@ -113,6 +113,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
       {/* </AuthProvider> */}
+      </UserProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
     </TamaguiProvider>
