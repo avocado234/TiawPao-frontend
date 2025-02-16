@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import { View, TextInput, Pressable, Text,Alert } from "react-native";
 import { Image } from 'expo-image';
 import { router,Link } from 'expo-router'
@@ -9,16 +9,27 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedLogo } from '@/components/ThemedLogo';
 import ThemedTextInput  from '@/components/ThemedTextInput';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword ,signOut} from "firebase/auth";
 import {auth} from "@/config/firebaseconfig";
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
+    const handelSignOut = async() => {
+        try {
+          await signOut(auth).then(() => {
+            router.replace('/signin')
+          });
+          
+        } catch (error) {
+          console.log(error);
+        }
+    };
     const handelSignIn = async() => {
         try {
             await signInWithEmailAndPassword(auth,email,password)
+
             Alert.alert("Success","Sign In Success!")
             router.replace("/(tabs)")
         } catch (err) {

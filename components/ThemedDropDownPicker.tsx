@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { useColorScheme, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { MaterialIcons } from "@expo/vector-icons"; // Import icons from Expo (or use react-native-vector-icons)
 
-type ThemedDropDownProps = {
-    value: any;
-    setValue: (value: any) => void;
-    items: { label: string; value: any }[];
-    style?: object;
-    dropDownContainerStyle?: object;
-};
+interface ThemedDropDownProps {
+    items: { value: string; label: string }[];
+    value: string;
+    setValue: Dispatch<SetStateAction<string>>;
+    placeholder?: string;
+    disabled?: boolean;
+    onSelect?: (value: string) => void;
+}
 
 export default function ThemedDropDownPicker({ value, setValue, items, style, dropDownContainerStyle, ...props }: ThemedDropDownProps) {
     const theme = useColorScheme();

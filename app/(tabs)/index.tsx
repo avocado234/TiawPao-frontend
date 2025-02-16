@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useContext, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,7 @@ import { router } from 'expo-router';
 import Carousel from '@/components/Carouselhome';
 
 
+
 import { auth } from "@/config/firebaseconfig";
 import { Button } from 'react-native'
 import { XGroup, XStack, YStack } from "tamagui";
@@ -22,16 +23,22 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Homebox from '@/components/Homebox';
 import HotelList from '@/components/HotelList';
+import { useUserStore } from '@/store/useUser';
+
 
 
 
 const homepage: React.FC = () => {
+  const user = useUserStore((state) => state.user);
+
   const router = useRouter();
+
   const handelSignOut = async () => {
     await signOut(auth)
     router.replace('/')
   }
   const user = auth.currentUser;
+  
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>

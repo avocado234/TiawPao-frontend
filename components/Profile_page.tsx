@@ -4,7 +4,7 @@ import React from 'react';
 import { useState } from 'react'
 import { ThemedText } from "./ThemedText";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, StyleSheet, Text, useColorScheme, TextInput,ScrollView ,Alert} from 'react-native';
+import { View, StyleSheet, Text, useColorScheme, TextInput,ScrollView ,Alert,Pressable} from 'react-native';
 import { ThemedSafeAreaView } from './ThemedSafeAreaView';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Picker } from '@react-native-picker/picker';
@@ -12,14 +12,16 @@ import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { XStack, YStack, Select, Card } from "tamagui";
 import { Button } from 'tamagui';
-
+import {auth} from "@/config/firebaseconfig";
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'expo-router';
 const Propage = () => {
   //Set Value to UpdateUsername
   const theme = useColorScheme();
   const [get_visible, set_visible] = useState(true);
   const [get_bool, set_bool] = useState(false);
   const [get_edit, set_edit] = useState(false);
-
+ 
   //Username  & Temp user_name
   const [user_name, set_user_name] = useState('JameMc');
   const [temp_user_name, temp_set_user_name] = useState(user_name);
@@ -93,6 +95,17 @@ const Propage = () => {
 
   const get_date = (date:Date) => {
     return date.toLocaleDateString('en-EN'); 
+  };
+  const router = useRouter();
+  const handelSingOut = async() => {
+      try {
+        await signOut(auth).then(() => {
+          router.replace('/signin')
+        });
+        
+      } catch (error) {
+        console.log(error);
+      }
   };
 
   const date_confirm = (selectedDate :Date) => { 
@@ -274,6 +287,7 @@ const Propage = () => {
               editable={get_edit}
               selectionColor={placeholder_Color}
             ></TextInput>
+              
           </YStack>
         </View>
         <XStack style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between', width: '100%' }}>
@@ -288,7 +302,14 @@ const Propage = () => {
           {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
           {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
         </YStack>
+        
       </ThemedSafeAreaView>
+      <Pressable
+            className='bg-red-500 w-full h-[50px] mt-5 flex justify-center items-center rounded-3xl'
+            onPress={handelSingOut}
+        >
+            <Text className='text-xl text-white'>Logout</Text>
+      </Pressable>
     </View>
   );
 };
