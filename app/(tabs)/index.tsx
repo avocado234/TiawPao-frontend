@@ -33,8 +33,8 @@ const homepage: React.FC = () => {
   }
   const user = auth.currentUser;
   return (
-    <SafeAreaView style={styles.container}>
-      <ThemedView style={styles.themedView}>
+    <SafeAreaView  className=' flex-1' >
+      <ThemedView className=' flex-1'>
         <Bgelement />
         <View style={styles.headerWrapper}>
           <ThemedText className=' top-5' style={styles.headerText}>Jame</ThemedText>
@@ -45,7 +45,7 @@ const homepage: React.FC = () => {
           </TouchableNativeFeedback>
         </View>
         <ScrollView
-          style={styles.scrollView}
+          className=' flex-1'
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false}
         >
@@ -70,8 +70,6 @@ const homepage: React.FC = () => {
           <View className="top-14 ">
             <HotelList />
           </View>
-
-
         </ScrollView>
       </ThemedView>
     </SafeAreaView>
@@ -79,12 +77,6 @@ const homepage: React.FC = () => {
 };
 export default homepage;
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  themedView: {
-    flex: 1,
-  },
   headerWrapper: {
     marginTop: 30,
     paddingHorizontal: 20,
@@ -97,15 +89,11 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     overflow: 'hidden',
-
   },
   avatar: {
     width: 54,
     height: 54,
     borderRadius: 50,
-  },
-  scrollView: {
-    flex: 1,
   },
   scrollContentContainer: {
     padding: 10,
