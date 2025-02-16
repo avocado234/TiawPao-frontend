@@ -32,12 +32,6 @@ const homepage: React.FC = () => {
   const user = useUserStore((state) => state.user);
 
   const router = useRouter();
-
-  const handelSignOut = async () => {
-    await signOut(auth)
-    router.replace('/')
-  }
-  const user = auth.currentUser;
   
   return (
     <SafeAreaView style={styles.container}>
