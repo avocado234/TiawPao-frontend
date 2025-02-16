@@ -31,8 +31,6 @@ export default function CreateTrip() {
   const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
-  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [isProvinceOpen, setIsProvinceOpen] = useState(false);
   
   const regionHeight = useSharedValue(0);
