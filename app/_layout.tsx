@@ -13,11 +13,9 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useRouter, useSegments } from "expo-router";
 import { ActivityIndicator } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-
 import {auth} from '../config/firebaseconfig'
-
-
-
+import api from '../utils/axiosInstance';
+import { useUserStore } from '../store/useUser';
 
 import { onAuthStateChanged ,User} from 'firebase/auth';
 
@@ -25,6 +23,8 @@ import { onAuthStateChanged ,User} from 'firebase/auth';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { setUserData,resetUserData } = useUserStore();
+
   const colorScheme = useColorScheme();
   // const { user, loading } = useContext(AuthContext);
   const router = useRouter();
@@ -33,8 +33,7 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-
-  const [user, setUser] = useState<User | null>(null);
+  const [usercur, setUsercur] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
 
@@ -51,13 +50,39 @@ export default function RootLayout() {
   //       router.replace('/signin');
   //     }
   //   }
-  // }, [user, loading, segments]);
+  // }, [usercur, loading, segments]);
+
+  const getUserData = async (email: any) => {
+    try{
+      const userData: any = await api.get(`/user/getuser/${email}`);
+      const dataUser = userData.data;
+      setUserData({
+        username: dataUser.Username,
+        email: dataUser.Email,
+        firstname: dataUser.Firstname,
+        lastname: dataUser.Lastname,
+        dateofbirth: dataUser.DateOfBirth,
+        tel: dataUser.Tel,
+        gender: dataUser.Gender,
+      });
+    }catch(err){
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+     if(usercur){
+      getUserData(usercur.email);
+     }
+  }, [usercur]);
 
   useEffect(() => {
     console.log("Starting onAuthStateChanged");
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
       console.log("onAuthStateChanged triggered, user:", currentuser);
-      setUser(currentuser);
+      setUsercur(currentuser);
+      if(!currentuser){
+        resetUserData();
+      }
       setLoading(false);
     });
   
@@ -111,6 +136,7 @@ export default function RootLayout() {
           <Stack.Screen name="forgetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="resetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="+not-found" />
+          <Stack.Screen name="tripManually" options={{ headerShown: false }} />
         </Stack>
       {/* </AuthProvider> */}
       <StatusBar style="auto" />

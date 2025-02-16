@@ -9,6 +9,7 @@ import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButto
 import ThemedTextInput from '@/components/ThemedTextInput';
 import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
 import api from '@/utils/axiosInstance';
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { useForgetStore } from '@/store/useForgetStore';
 
 export default function ForgetPassword() {
@@ -19,32 +20,18 @@ export default function ForgetPassword() {
     
 
     const theme = useColorScheme()
-
-
-    const handleNext = async () => {
-
-        try {
-            setLoading(true);
-            // console.log(`🔍 Sending OTP to: ${email}`);
-
-            // เรียก API สำหรับ OTP (แก้จาก params เป็น URL โดยตรง)
-            const response = await api.get(`/user/genotp/${email}`);
-
-            if (response.data.message) {
-                Alert.alert("Success", "OTP Sent! Check your email.");
-                setForgetData({email }); 
-                router.push("/onetimepass?isRegister=false");
-            } else {
-                // Alert.alert("Success", response.data.message);
-                Alert.alert("Error", "Failed to send OTP. Try again.");
+    const resetPassword = async (email:string) => {
+            const auth = getAuth();
+            
+            try {                
+                await sendPasswordResetEmail(auth, email);
+                console.log("Reset email sent successfully");
+                alert("Check your email for the reset link.");
+            } catch (error) {
+                console.error("Error sending reset email:", (error as any).message);
+                alert((error as Error).message);
             }
-        } catch (error) {
-            console.error("OTP Error:", error);
-            Alert.alert("Error", "Server error. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
 
     const validateEmailFormat = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,7 +52,7 @@ export default function ForgetPassword() {
                             {/* No worries! Just enter your email below, and
                             we'll send you a link to reset your password. */}
                             No problem. Just enter your email address 
-                            below - we’ll send you a OTP Code 
+                            below - we’ll send a link to reset your password for your email.
                         </ThemedText>
                         {/* <ThemedText className='mb-10 text-lg'>Didn't receive Email?
                             <Pressable disabled={timer !== 0} onPress={() => setTimer(35)} className="mt-2">
@@ -91,12 +78,11 @@ export default function ForgetPassword() {
                 <Text className='text-xl text-white '>Send Email</Text>
             </Pressable> */}
                     <Pressable
-                        className={`bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-5 ${loading ? "opacity-50" : ""}`}
-                        onPress={handleNext}
-                        disabled={loading}
+                        className={`bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl mt-5`}
+                        onPress={() => {resetPassword(email)}}
                     >
                         <Text className='text-xl text-white'>
-                            {loading ? "Sending OTP..." : "Send Email"}
+                            Send Email
                         </Text>
                     </Pressable>
 
