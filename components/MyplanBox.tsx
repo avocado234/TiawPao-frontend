@@ -37,7 +37,7 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
                         <TouchableOpacity activeOpacity={0.8}
                             style={[styles.card, isEditMode ? styles.cardEdit : {}]}>
                             <View className=" left-5">
-                                <Text style={styles.tripTitle}>{trip.nametrip}</Text>
+                                <Text style={styles.tripTitle} numberOfLines={1} ellipsizeMode="tail">{trip.nametrip}</Text>
                                 <View style={styles.tripInfo}>
                                     <FontAwesome name="calendar" size={24} color="#fff" />
                                     <Text style={styles.dateText}> {trip.date}</Text>

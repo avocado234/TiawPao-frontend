@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     height: '90%',
   },
   headerWrapper: {
-    marginTop: 30,
-    paddingHorizontal: 20,
+    marginTop: 20,
+    paddingHorizontal: 50,
   },
   headerText: {
     fontSize: 44,
@@ -64,9 +64,9 @@ const styles = StyleSheet.create({
   },
   editButton: {
     position: "absolute",
-    top: 740,
-    right: 20,
     backgroundColor: "#5680EC",
+    end : "5%",
+    top : "83%",
     padding: 16,
     borderRadius: 30,
   },
