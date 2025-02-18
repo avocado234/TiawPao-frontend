@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ArrowLeft, Calendar, Clock, ChevronDown } from "@tamagui/lucide-icons";
 import ThemedTextInput from "@/components/ThemedTextInput";
-import DateTimePicker from '@react-native-community/datetimepicker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import { RadioButton } from '@/components/RadioButton';
 import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import Bgelement from '@/components/Bgelement';
@@ -269,7 +269,7 @@ export default function CreateTrip() {
             height: 45,
             marginBottom: 8
           }}>
-            <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
+            {/* <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
             <DateTimePicker
               value={startDate}
               mode="date"
@@ -277,7 +277,7 @@ export default function CreateTrip() {
                 if (date) setStartDate(date);
               }}
               style={{ transform: [{ scale: 0.7 }] }}
-            />
+            /> */}
           </XStack>
           <XStack style={{ 
             alignItems: 'center',
@@ -287,7 +287,7 @@ export default function CreateTrip() {
             padding: 8,
             height: 45,
           }}>
-            <Clock size={16} color="#6c757d" style={{ marginRight: -25 }} />
+            {/* <Clock size={16} color="#6c757d" style={{ marginRight: -25 }} />
             <DateTimePicker
               value={startTime}
               mode="time"
@@ -295,7 +295,7 @@ export default function CreateTrip() {
                 if (date) setStartTime(date);
               }}
               style={{ transform: [{ scale: 0.7 }] }}
-            />
+            /> */}
           </XStack>
         </View>
 
@@ -311,7 +311,7 @@ export default function CreateTrip() {
             height: 45,
             marginBottom: 8
           }}>
-            <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
+            {/* <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
             <DateTimePicker
               value={endDate}
               mode="date"
@@ -319,7 +319,7 @@ export default function CreateTrip() {
                 if (date) setEndDate(date);
               }}
               style={{ transform: [{ scale: 0.7 }] }}
-            />
+            /> */}
           </XStack>
           <XStack style={{ 
             alignItems: 'center',
@@ -329,7 +329,7 @@ export default function CreateTrip() {
             padding: 8,
             height: 45,
           }}>
-            <Clock size={16} color="#6c757d" style={{ marginRight: -25 }} />
+            {/* <Clock size={16} color="#6c757d" style={{ marginRight: -25 }} />
             <DateTimePicker
               value={endTime}
               mode="time"
@@ -337,7 +337,7 @@ export default function CreateTrip() {
                 if (date) setEndTime(date);
               }}
               style={{ transform: [{ scale: 0.7 }] }}
-            />
+            /> */}
           </XStack>
         </View>
       </XStack>
@@ -433,7 +433,7 @@ export default function CreateTrip() {
         />
 
         {/* Date Pickers */}
-        {showStartDatePicker && (
+        {/* {showStartDatePicker && (
           <DateTimePicker
             value={startDate}
             mode="date"
@@ -442,8 +442,8 @@ export default function CreateTrip() {
               if (date) setStartDate(date);
             }}
           />
-        )}
-        {showEndDatePicker && (
+        )} */}
+        {/* {showEndDatePicker && (
           <DateTimePicker
             value={endDate}
             mode="date"
@@ -452,7 +452,7 @@ export default function CreateTrip() {
               if (date) setEndDate(date);
             }}
           />
-        )}
+        )} */}
       </ThemedView>
     </SafeAreaView>
   );

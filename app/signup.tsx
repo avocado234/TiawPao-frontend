@@ -210,19 +210,6 @@ export default function SignUpPage() {
           >
             <Text className="text-xl text-white">SIGN UP</Text>
           </Pressable>
-
-          <ThemedText className="py-2 font-semibold"> or sign up with</ThemedText>
-          <Pressable
-            className="bg-white w-[300px] border border-[#203B82] h-[50px] flex flex-row justify-center items-center rounded-3xl"
-            onPress={() => router.push("/(tabs)/plan")}
-          >
-            <Image
-              source={require("../assets/images/devicon_google.png")}
-              style={{ width: 24, height: 24, marginRight: 10 }}
-            />
-            <Text className="text-lg text-[#203B82]">SIGN UP WITH GOOGLE</Text>
-          </Pressable>
-
           <XStack>
             <ThemedText className="text-lg text-gray-500">Have an account ? </ThemedText>
             <Link href="/">

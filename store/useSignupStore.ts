@@ -7,7 +7,7 @@ interface SignupState {
   email: string;
   firstname: string;
   lastname:string;
-  dateofbirth:string;
+  date_of_birth:string;
   tel: string;
   gender:string;
   otpVerified: boolean;
@@ -22,7 +22,7 @@ export const useSignupStore = create<SignupState>((set) => ({
   firstname: "",
   lastname: "",
   tel: "",
-  dateofbirth:"",
+  date_of_birth:"",
   gender:"",
   otpVerified: false, 
   setSignupData: (data) => set((state) => ({ ...state, ...data })),
@@ -34,7 +34,7 @@ export const useSignupStore = create<SignupState>((set) => ({
       firstname: "",
       lastname: "",
       tel: "",
-      dateofbirth:"",
+      date_of_birth:"",
       gender:"",
       otpVerified: false,
     }),

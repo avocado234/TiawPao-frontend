@@ -9,7 +9,7 @@ import { ThemedSafeAreaView } from './ThemedSafeAreaView';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Picker } from '@react-native-picker/picker';
 import DropDownPicker from "react-native-dropdown-picker";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { XStack, YStack, Select, Card } from "tamagui";
 import { Button } from 'tamagui';
 import {auth} from "@/config/firebaseconfig";
@@ -245,13 +245,13 @@ const Propage = () => {
                 <Button style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color ,justifyContent: 'center', alignItems: 'center'}]}
                 onPress={showDatePicker}
                 >
-                  <DateTimePickerModal
+                  {/* <DateTimePickerModal
                    isVisible={show_date}
                     mode="date"
                     date={temp_date}
                     onConfirm={date_confirm}
                     onCancel={date_cancle} // Hide picker when canceled
-                  />
+                  /> */}
                     <Text style={[styles.font_Date_gender_inside, { color: Border_Color }]}>{get_date(temp_date)}</Text>
                     <XStack style={{marginRight:-30,marginTop:-2}}>
                     <Entypo name="calendar" size={24} color={theme === 'dark' ? "#fff" : "#203B82" } />

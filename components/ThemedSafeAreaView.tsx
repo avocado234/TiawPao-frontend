@@ -12,7 +12,7 @@ export function ThemedSafeAreaView({ children, color } : ThemedSafeAreaViewProps
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor: color ? color : (theme === 'dark' ? '#18181B' : '#FFF')}}>
+            <SafeAreaView style={{ flex: 1,backgroundColor: color ? color : (theme === 'dark' ? '#18181B' : '#FFF')}}>
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: color ? color : (theme === 'dark' ? '#18181B' : '#FFF') }}
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                     <ScrollView style={{ flex: 1, backgroundColor: color ? color : (theme === 'dark' ? '#18181B' : '#FFF') }}>
