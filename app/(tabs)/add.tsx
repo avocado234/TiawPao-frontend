@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { View, Pressable, TextInput, Image, StyleSheet, SafeAreaView, FlatList } from "react-native";
-import { router } from 'expo-router'
-import { XStack, YStack, Button, Select, Sheet } from "tamagui";
+import React, { useState } from 'react';
+import { View, Pressable, StyleSheet, SafeAreaView, FlatList, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { router } from 'expo-router';
+import { XStack, YStack, Button } from 'tamagui';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { ArrowLeft, Calendar, Clock, ChevronDown } from "@tamagui/lucide-icons";
+import { ArrowLeft, Calendar, Clock } from "@tamagui/lucide-icons";
 import ThemedTextInput from "@/components/ThemedTextInput";
-// import DateTimePicker from '@react-native-community/datetimepicker';
 import { RadioButton } from '@/components/RadioButton';
 import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import Bgelement from '@/components/Bgelement';
@@ -31,6 +31,8 @@ export default function CreateTrip() {
   const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [isProvinceOpen, setIsProvinceOpen] = useState(false);
   
   const regionHeight = useSharedValue(0);
@@ -195,7 +197,6 @@ export default function CreateTrip() {
     ]
   };
   
-
   const getFilteredProvinces = () => {
     if (!selectedRegion) return [];
     return provinces[selectedRegion as RegionKey] || [];
@@ -217,6 +218,35 @@ export default function CreateTrip() {
     });
   };
 
+  // Date/time change handlers
+  const onChangeStartDate = (event: any, selectedDate?: Date) => {
+    setShowStartDatePicker(Platform.OS === 'ios'); // On Android, dismiss after selection
+    if (event.type === 'set' && selectedDate) {
+      setStartDate(selectedDate);
+    }
+  };
+
+  const onChangeEndDate = (event: any, selectedDate?: Date) => {
+    setShowEndDatePicker(Platform.OS === 'ios');
+    if (event.type === 'set' && selectedDate) {
+      setEndDate(selectedDate);
+    }
+  };
+
+  const onChangeStartTime = (event: any, selectedTime?: Date) => {
+    setShowStartTimePicker(Platform.OS === 'ios');
+    if (event.type === 'set' && selectedTime) {
+      setStartTime(selectedTime);
+    }
+  };
+
+  const onChangeEndTime = (event: any, selectedTime?: Date) => {
+    setShowEndTimePicker(Platform.OS === 'ios');
+    if (event.type === 'set' && selectedTime) {
+      setEndTime(selectedTime);
+    }
+  };
+
   const renderContent = () => (
     <YStack style={{ padding: 16, flex: 1, gap: 16 }}>
       {/* Trip Name */}
@@ -236,9 +266,8 @@ export default function CreateTrip() {
         <ThemedDropDownPicker
           items={regions}
           value={selectedRegion}
-          setValue={setSelectedRegion}
-          onSelect={(value) => {
-            setSelectedRegion(value);
+          setValue={(val: any) => {
+            setSelectedRegion(val);
             setSelectedProvince('');
           }}
         />
@@ -260,85 +289,37 @@ export default function CreateTrip() {
         {/* Start Date and Time */}
         <View style={{ flex: 1 }}>
           <ThemedText className="text-[#203B82] py-2">Start date</ThemedText>
-          <XStack style={{ 
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: '#203B82',
-            borderRadius: 8,
-            padding: 8,
-            height: 45,
-            marginBottom: 8
-          }}>
-            {/* <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
-            <DateTimePicker
-              value={startDate}
-              mode="date"
-              onChange={(event, date) => {
-                if (date) setStartDate(date);
-              }}
-              style={{ transform: [{ scale: 0.7 }] }}
-            /> */}
-          </XStack>
-          <XStack style={{ 
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: '#203B82',
-            borderRadius: 8,
-            padding: 8,
-            height: 45,
-          }}>
-            {/* <Clock size={16} color="#6c757d" style={{ marginRight: -25 }} />
-            <DateTimePicker
-              value={startTime}
-              mode="time"
-              onChange={(event, date) => {
-                if (date) setStartTime(date);
-              }}
-              style={{ transform: [{ scale: 0.7 }] }}
-            /> */}
-          </XStack>
+          <Pressable onPress={() => setShowStartDatePicker(true)}>
+            <XStack style={styles.pickerContainer}>
+              <Calendar size={16} color="#6c757d" style={{ marginRight: 8 }} />
+              <ThemedText>{startDate.toLocaleDateString()}</ThemedText>
+            </XStack>
+          </Pressable>
+          <ThemedText className="text-[#203B82] py-2" style={{ marginTop: 8 }}>Start time</ThemedText>
+          <Pressable onPress={() => setShowStartTimePicker(true)}>
+            <XStack style={styles.pickerContainer}>
+              <Clock size={16} color="#6c757d" style={{ marginRight: 8 }} />
+              <ThemedText>{startTime.toLocaleTimeString()}</ThemedText>
+            </XStack>
+          </Pressable>
         </View>
 
         {/* End Date and Time */}
         <View style={{ flex: 1 }}>
           <ThemedText className="text-[#203B82] py-2">End date</ThemedText>
-          <XStack style={{ 
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: '#203B82',
-            borderRadius: 8,
-            padding: 8,
-            height: 45,
-            marginBottom: 8
-          }}>
-            {/* <Calendar size={16} color="#6c757d" style={{ marginRight: -25 }} />
-            <DateTimePicker
-              value={endDate}
-              mode="date"
-              onChange={(event, date) => {
-                if (date) setEndDate(date);
-              }}
-              style={{ transform: [{ scale: 0.7 }] }}
-            /> */}
-          </XStack>
-          <XStack style={{ 
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: '#203B82',
-            borderRadius: 8,
-            padding: 8,
-            height: 45,
-          }}>
-            {/* <Clock size={16} color="#6c757d" style={{ marginRight: -25 }} />
-            <DateTimePicker
-              value={endTime}
-              mode="time"
-              onChange={(event, date) => {
-                if (date) setEndTime(date);
-              }}
-              style={{ transform: [{ scale: 0.7 }] }}
-            /> */}
-          </XStack>
+          <Pressable onPress={() => setShowEndDatePicker(true)}>
+            <XStack style={styles.pickerContainer}>
+              <Calendar size={16} color="#6c757d" style={{ marginRight: 8 }} />
+              <ThemedText>{endDate.toLocaleDateString()}</ThemedText>
+            </XStack>
+          </Pressable>
+          <ThemedText className="text-[#203B82] py-2" style={{ marginTop: 8 }}>End time</ThemedText>
+          <Pressable onPress={() => setShowEndTimePicker(true)}>
+            <XStack style={styles.pickerContainer}>
+              <Clock size={16} color="#6c757d" style={{ marginRight: 8 }} />
+              <ThemedText>{endTime.toLocaleTimeString()}</ThemedText>
+            </XStack>
+          </Pressable>
         </View>
       </XStack>
 
@@ -422,7 +403,9 @@ export default function CreateTrip() {
           </Pressable>
         </XStack>
         
-        <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>Create a Trip</ThemedText>
+        <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
+          Create a Trip
+        </ThemedText>
         
         <FlatList
           data={[{ key: 'content' }]}
@@ -432,27 +415,39 @@ export default function CreateTrip() {
           nestedScrollEnabled={true}
         />
 
-        {/* Date Pickers */}
-        {/* {showStartDatePicker && (
+        {/* Date/Time Pickers */}
+        {showStartDatePicker && (
           <DateTimePicker
             value={startDate}
             mode="date"
-            onChange={(event, date) => {
-              setShowStartDatePicker(false);
-              if (date) setStartDate(date);
-            }}
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={onChangeStartDate}
           />
-        )} */}
-        {/* {showEndDatePicker && (
+        )}
+        {showEndDatePicker && (
           <DateTimePicker
             value={endDate}
             mode="date"
-            onChange={(event, date) => {
-              setShowEndDatePicker(false);
-              if (date) setEndDate(date);
-            }}
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={onChangeEndDate}
           />
-        )} */}
+        )}
+        {showStartTimePicker && (
+          <DateTimePicker
+            value={startTime}
+            mode="time"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={onChangeStartTime}
+          />
+        )}
+        {showEndTimePicker && (
+          <DateTimePicker
+            value={endTime}
+            mode="time"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={onChangeEndTime}
+          />
+        )}
       </ThemedView>
     </SafeAreaView>
   );
@@ -464,6 +459,14 @@ const styles = StyleSheet.create({
   },
   themedView: {
     flex: 1,
+  },
+  pickerContainer: {
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#203B82',
+    borderRadius: 8,
+    padding: 8,
+    height: 45,
   },
   backgroundImage: {
     width: '100%',
