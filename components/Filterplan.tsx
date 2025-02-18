@@ -45,6 +45,7 @@ const Filterplan: React.FC<FilterplanProps> = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    backgroundColor : "#203B82",
   },
   title: {
     fontSize: 18,
