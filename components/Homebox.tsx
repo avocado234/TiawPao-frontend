@@ -66,7 +66,6 @@ const Homebox: React.FC = () => {
     const PresstoHomedetail = () => {
         router.push({
           pathname: "/homedetail",
-          
         });
       };
     return (
