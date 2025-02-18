@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 interface Place {
     id: string;
@@ -62,6 +63,12 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
 };
 
 const Homebox: React.FC = () => {
+    const PresstoHomedetail = () => {
+        router.push({
+          pathname: "/homedetail",
+          
+        });
+      };
     return (
         <ScrollView
             horizontal
@@ -69,7 +76,7 @@ const Homebox: React.FC = () => {
             contentContainerStyle={styles.scrollContainer}
         >
             {places.map((place) => (
-                <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={() => console.log(place.name)}>
+                <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={PresstoHomedetail} >
                     <PlaceCard place={place} />
                 </TouchableOpacity>
             ))}
