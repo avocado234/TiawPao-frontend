@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     width: "100%",
-    marginBottom: 10,
-    paddingBottom: 10,
+    marginBottom: 5,
+    paddingBottom: 5,
    
   },
   header: {

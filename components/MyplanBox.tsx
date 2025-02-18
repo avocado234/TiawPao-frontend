@@ -29,26 +29,25 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.scrollContentContainer}>
+        
             <View style={styles.container}>
                 {trips.map((trip) => (
                     <View key={trip.id}
                         style={[styles.cardWrapper, isEditMode ? styles.cardWrapperEdit : {}]}>
                         <TouchableOpacity activeOpacity={0.8}
                             style={[styles.card, isEditMode ? styles.cardEdit : {}]}>
-                            <View className=" left-5">
+                            <View className=" left-3">
                                 <Text style={styles.tripTitle} numberOfLines={1} ellipsizeMode="tail">{trip.nametrip}</Text>
                                 <View style={styles.tripInfo}>
                                     <FontAwesome name="calendar" size={24} color="#fff" />
-                                    <Text style={styles.dateText}> {trip.date}</Text>
+                                    <Text className=" color-white " > {trip.date}</Text>
                                 </View>
                                 <View style={styles.tripInfo}>
                                     <FontAwesome name="map-marker" size={24} color="#fff" />
-                                    <Text style={styles.dateText}> {trip.location}</Text>
+                                    <Text className=" color-white" > {trip.location}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
-
                         {isEditMode && (
                             <TouchableOpacity  style={styles.deleteButton} onPress={() => handleDelete(trip.id)}>
                                 <FontAwesome  name="trash" size={24} color="white" />
@@ -57,7 +56,7 @@ const MyPlanBox = ({ isEditMode }: { isEditMode: boolean }) => {
                     </View>
                 ))}
             </View>
-        </ScrollView>
+       
     );
 };
 
@@ -68,7 +67,6 @@ const styles = StyleSheet.create({
 
     cardWrapper: {
         flexDirection: "row",
-
         marginBottom: 10,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
@@ -83,8 +81,8 @@ const styles = StyleSheet.create({
 
     card: {
         backgroundColor: "#203B82",
-        padding: 20,
-        borderRadius: 15,
+        padding: 15,
+        borderRadius: 20,
         flex: 1,
     },
 
@@ -102,14 +100,8 @@ const styles = StyleSheet.create({
     tripInfo: {
         flexDirection: "row",
         alignItems: "center",
-        marginVertical: 4,
+        marginVertical: 5,
     },
-
-    dateText: {
-        color: "#fff",
-        
-    },
-
     deleteButton: {
         backgroundColor: "#FF4C4C",
         paddingHorizontal: 20,  

@@ -52,11 +52,11 @@ const Search: React.FC = () => {
       <ThemedView style={styles.themedView}>
         <Bgelement/>
         <View style={styles.headerWrapper}>
-          <ThemedText className=' inset-5' style={styles.headerText}>Public Plan</ThemedText>
+          <ThemedText className='' style={styles.headerText}>Public Plan</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity onPress={toggleFilter}>
               <AntDesign
-                className="absolute end-5 -top-16"
+                className="absolute end-0 bottom-6"
                 name="filter"
                 size={36}
                 color="white"
@@ -71,7 +71,7 @@ const Search: React.FC = () => {
         {/* เนื้อหา Scrollable */}
         <ScrollView
           style={styles.scrollView}
-          contentContainerStyle={styles.scrollContentContainer}
+         
           showsVerticalScrollIndicator={false}
         >
           <PublicPlanBox />
@@ -82,28 +82,19 @@ const Search: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 , paddingVertical: 60},
   themedView: {
     flex: 1,
   },
-  backgroundImage: {
-    position: 'absolute',
-    top: -185,
-    right: -180,
-    width: '200%',
-    height: '90%',
-  },
   headerWrapper: {
-    marginTop: 30,
+    marginTop: 10,
     paddingHorizontal: 20,
   },
   headerText: {
     fontSize: 44,
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 10,
   },
   filterContainer: {
     overflow: 'hidden',
@@ -112,10 +103,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  scrollContentContainer: {
-    padding: 10,
-    paddingBottom: 40, // เพิ่ม padding ด้านล่างเพื่อให้ scroll ถึงเนื้อหาสุดท้ายได้
-  },
+ 
 });
 
 export default Search;

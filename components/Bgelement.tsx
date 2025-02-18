@@ -13,10 +13,10 @@ const Bgelement = () => {
 const styles = StyleSheet.create({
   backgroundImage: {
     position: "absolute",
-    top: -185,
+    top: -200,
     right: -180,
     width: "200%",
-    height: "90%",
+    height: "80%",
   },
 });
 
