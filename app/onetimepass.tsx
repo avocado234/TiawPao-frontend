@@ -19,7 +19,7 @@ import { auth } from '@/config/firebaseconfig';
 // };
 
 export default function OTPVerification(): JSX.Element {
-    const { email, username, password, firstname, lastname, dateofbirth, tel, gender } = useSignupStore();
+    const { email, username, password, firstname, lastname, date_of_birth, tel, gender } = useSignupStore();
     const [otp, setOtp] = useState<string[]>(['', '', '', '']);
     const [timer, setTimer] = useState<number>(35);
     const theme = useColorScheme();
@@ -75,7 +75,7 @@ export default function OTPVerification(): JSX.Element {
                 email: email,
                 otp: enteredOtp,
             });
-
+            // console.log(date_of_birth," Type:",typeof date_of_birth);
             if (response.data.message === 'OTP verified') {
                 try {
                     await createUserWithEmailAndPassword(auth, email, password);
@@ -85,13 +85,13 @@ export default function OTPVerification(): JSX.Element {
                     return
                 }
                 const registerResponse = await api.post('/user/register', {
-                    email,
-                    password,
+                    image:'https://firebasestorage.googleapis.com/v0/b/cybergeek-storage-image.appspot.com/o/blank-profile-picture-973460_1280.png?alt=media&token=8e0b08a9-2543-402a-bf86-2b500557f9eb',
                     username,
+                    email,
+                    tel,
                     firstname,
                     lastname,
-                    dateofbirth,
-                    tel,
+                    date_of_birth,
                     gender,
                 });
                 if (registerResponse.status === 201) {

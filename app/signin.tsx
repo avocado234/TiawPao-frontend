@@ -11,21 +11,22 @@ import ThemedTextInput  from '@/components/ThemedTextInput';
 import { Eye, EyeOff } from "@tamagui/lucide-icons"; // Using Tamagui Icons
 import { signInWithEmailAndPassword ,signOut} from "firebase/auth";
 import {auth} from "@/config/firebaseconfig";
+import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [secureText, setSecureText] = useState(true);
-    const handelSignOut = async() => {
-        try {
-          await signOut(auth).then(() => {
-            router.replace('/signin')
-          });
+    // const handelSignOut = async() => {
+    //     try {
+    //       await signOut(auth).then(() => {
+    //         router.replace('/signin')
+    //       });
           
-        } catch (error) {
-          console.log(error);
-        }
-    };
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    // };
     const handelSignIn = async() => {
         try {
             await signInWithEmailAndPassword(auth,email,password)
@@ -72,7 +73,7 @@ export default function SignInPage() {
                     </View>
 
 
-                    <View className="w-full flex items-end">
+                    <View className="w-full flex mt-4 items-end">
                         <Link href="/forgetpassword">
                             <ThemedText className="py-2 font-semibold">Forget password?</ThemedText>
                         </Link>
@@ -85,7 +86,7 @@ export default function SignInPage() {
                     <Text className='text-xl text-white'>SIGN IN</Text>
                 </Pressable>
 
-                <ThemedText className="py-2 font-semibold"> or sign in with</ThemedText>
+                {/* <ThemedText className="py-2 font-semibold"> or sign in with</ThemedText>
                 <Pressable
                     className="bg-white w-[300px] border border-[#203B82] h-[50px] flex flex-row justify-center items-center rounded-3xl"
                     onPress={() => router.push("/(tabs)/plan")}
@@ -96,7 +97,7 @@ export default function SignInPage() {
 
                     />
                     <Text className="text-lg text-[#203B82]">SIGN IN WITH GOOGLE</Text>
-                </Pressable>
+                </Pressable> */}
                 <XStack>
                     <ThemedText className="text-lg text-gray-500">Don't have an account ? </ThemedText>
                     <Link href="/signup">
@@ -106,6 +107,6 @@ export default function SignInPage() {
 
             </YStack>
         </ThemedView>
-
+        
     );
 }
