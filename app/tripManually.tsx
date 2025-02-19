@@ -5,6 +5,7 @@ import Bgelement from "@/components/Bgelement";
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 
 export default function TripManually() {
@@ -65,8 +66,7 @@ export default function TripManually() {
               <TouchableOpacity style={styles.editButton}>
                 
                 <Text style={styles.editButtonText}>Edit</Text>
-                <Icon name="create-outline" size={20} color="#203B82" style={styles.editIcon} />
-                <Icon name="pencil-outline" size={20} color="#203B82" style={styles.editIcon} />
+                <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
               </TouchableOpacity>
             </View>
 
@@ -145,6 +145,7 @@ export default function TripManually() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 40,
   },
   themedView: {
     flex: 1,
@@ -157,6 +158,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 8,
     overflow: 'hidden',
+    opacity: 1,
   },
   tripImage: {
     width: '100%',
@@ -175,12 +177,12 @@ const styles = StyleSheet.create({
   },
   tripDate: {
     fontSize: 16,
-    color: '#6c757d',
+    color: '#f0f0f0',
     marginVertical: 4,
   },
   province: {
     fontSize: 16,
-    color: '#6c757d',
+    color: '#f0f0f0',
   },
   dayContainer: {
     backgroundColor: '#f0f0f0',
@@ -217,7 +219,7 @@ const styles = StyleSheet.create({
   tripContent: {
     flex: 1,
     padding: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: 'transparent',
     justifyContent: 'flex-end',
   },
   iconContainer: {
@@ -262,9 +264,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   backButton: {
-    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     alignItems: 'center',
-    
+    flexDirection: 'row',
+    marginBottom: 8,
   },
   backButtonText: {
     fontSize: 16,
