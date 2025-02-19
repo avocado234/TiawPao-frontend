@@ -3,78 +3,63 @@ import {
   SafeAreaView,
   StyleSheet,
   View,
-  Image,
-  TouchableNativeFeedback,
   TouchableOpacity,
+  Dimensions,
+  ScrollView,
 } from 'react-native';
-import { ScrollView } from 'tamagui';
-import PublicPlanBox from '@/components/PublicPlanBox';
 import { ThemedText } from '@/components/ThemedText';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { ThemedView } from '@/components/ThemedView';
-import Filterplan from '@/components/Filterplan';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
 import Bgelement from '@/components/Bgelement';
+import Filterplan from '@/components/Filterplan';
+import TripCard from '@/components/TripCard';
 
-const FILTER_PANEL_HEIGHT = 200; // ปรับความสูงของ Filter Panel ตามที่ต้องการ
+const { width, height } = Dimensions.get('window');
+const FILTER_PANEL_HEIGHT = height * 0.28;
+
+const tripData = [
+  { id: 1, user: "Jame Macdonell", nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", rating: "4.8", location: "Chonburi", description: "This plan is very good plan in Pattaya" },
+  { id: 2, user: "Jame Macdonell", nametrip: "Bangkok trip", price: "600$", date: "1 Feb - 3 Feb", rating: "4.5", location: "Bangkok", description: "This plan is very good plan in Pattaya" },
+  { id: 3, user: "Jame Macdonell", nametrip: "Phuket trip", price: "700$", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
+  { id: 4, user: "Jame Macdonell", nametrip: "Krabi trip", price: "300$", date: "10 Mar - 12 Mar", rating: "4.9", location: "Krabi", description: "Beautiful beaches and nice weather" },
+];
 
 const Search: React.FC = () => {
-  // State สำหรับ toggle เปิด/ปิด Filter Panel
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-
-  // Shared value สำหรับความสูงของ Filter Panel
+  const [filteredTrips, setFilteredTrips] = useState(tripData);
   const filterHeight = useSharedValue(0);
 
-  // สไตล์แบบแอนิเมชันสำหรับ Filter Panel โดยใช้ความสูงที่เปลี่ยนแปลงได้
-  const animatedFilterStyle = useAnimatedStyle(() => ({
-    height: filterHeight.value,
-  }));
+  const animatedFilterStyle = useAnimatedStyle(() => ({ height: filterHeight.value }));
 
-  // Toggle Filter Panel เมื่อกดปุ่ม filter
   const toggleFilter = () => {
-    if (filterOpen) {
-      // ถ้าเปิดอยู่อยู่แล้ว ให้ปิดโดย animate height กลับเป็น 0
-      filterHeight.value = withTiming(0, { duration: 500 });
-      setFilterOpen(false);
-    } else {
-      // ถ้าปิดอยู่ ให้เปิดโดย animate height จาก 0 เป็น FILTER_PANEL_HEIGHT
-      filterHeight.value = withTiming(FILTER_PANEL_HEIGHT, { duration: 500 });
-      setFilterOpen(true);
-    }
+    filterHeight.value = withTiming(filterOpen ? 0 : FILTER_PANEL_HEIGHT, { duration: 500 });
+    setFilterOpen(!filterOpen);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
-        <Bgelement/>
+        <Bgelement />
         <View style={styles.headerWrapper}>
-          <ThemedText className='' style={styles.headerText}>Public Plan</ThemedText>
-          <TouchableNativeFeedback>
-            <TouchableOpacity onPress={toggleFilter}>
-              <AntDesign
-                className="absolute end-0 bottom-6"
-                name="filter"
-                size={36}
-                color="white"
-              />
-            </TouchableOpacity>
-          </TouchableNativeFeedback>
+          <ThemedText style={styles.headerText}>Public Plan</ThemedText>
+          <TouchableOpacity onPress={toggleFilter}>
+            <AntDesign name="filter" size={width * 0.08} color="white" />
+          </TouchableOpacity>
         </View>
-        {/* Filter Panel */}
         <Animated.View style={[styles.filterContainer, animatedFilterStyle]}>
-          <Filterplan />
+          <Filterplan trips={tripData} setFilteredTrips={setFilteredTrips} />
         </Animated.View>
-        {/* เนื้อหา Scrollable */}
-        <ScrollView
-          style={styles.scrollView}
-         
-          showsVerticalScrollIndicator={false}
-        >
-          <PublicPlanBox />
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          {filteredTrips.map((trip) => (
+            <TouchableOpacity key={trip.id} activeOpacity={0.8} style={{ alignItems: "center"}}>
+              <TripCard trip={trip}  />
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </ThemedView>
     </SafeAreaView>
@@ -82,28 +67,32 @@ const Search: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 , paddingVertical: 60},
-  themedView: {
-    flex: 1,
-  },
+  container: { flex: 1 },
+  themedView: { flex: 1 },
   headerWrapper: {
-    marginTop: 10,
-    paddingHorizontal: 20,
+    marginTop: height * 0.05,
+    paddingHorizontal: width * 0.05,
+    marginBottom: height * 0.02,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerText: {
-    fontSize: 44,
+    fontSize: width * 0.1,
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 10,
   },
   filterContainer: {
     overflow: 'hidden',
-  
   },
   scrollView: {
     flex: 1,
   },
- 
+  scrollContainer: {
+    flexGrow: 1,
+    minHeight: height,
+    paddingBottom: height * 0.1,
+  },
 });
 
 export default Search;
