@@ -4,7 +4,7 @@ import Bgelement from "@/components/Bgelement";
 
 
 
-export default function TripManually() {
+export default function genAi() {
   return (
     
       <ThemedView style={styles.themedView}>
