@@ -217,6 +217,22 @@ export default function CreateTrip() {
     });
   };
 
+  const handleCreatePlanAi = () => {
+    router.push({
+      pathname: "/tripGenAi",
+      params: {
+        tripName: tripName,
+        region: selectedRegion,
+        province: selectedProvince,
+        startDate: startDate.toISOString(),
+        startTime: startTime.toISOString(),
+        endDate: endDate.toISOString(),
+        endTime: endTime.toISOString(),
+        visibility: selectedOption
+      }
+    });
+  };
+
   const renderContent = () => (
     <YStack style={{ padding: 16, flex: 1, gap: 16 }}>
       {/* Trip Name */}
@@ -400,7 +416,7 @@ export default function CreateTrip() {
             height: 45,
             justifyContent: 'center'
           }}
-          onPress={() => {/* Handle AI generation */}}
+          onPress={handleCreatePlanAi}
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Use AI Generate
