@@ -138,6 +138,8 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="tripManually" options={{ headerShown: false }} />
           <Stack.Screen name="tripGenAi" options={{ headerShown: false }} />
+          <Stack.Screen name="genaiselected"/>
+
         </Stack>
       {/* </AuthProvider> */}
       <StatusBar style="auto" />
