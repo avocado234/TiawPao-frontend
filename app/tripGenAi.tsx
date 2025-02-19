@@ -20,7 +20,7 @@ const Goto_GenProbs = () =>{
 const param = useLocalSearchParams();
 const {tripName,region,province,startDate,startTime,endDate,endTime,visibility} = param;
   router.push({
-    pathname: "/genaiSelected",
+    pathname: "/genaiselected",
     params: {
       tripName: tripName,
       region: region,
