@@ -3,9 +3,9 @@ import {
   SafeAreaView,
   StyleSheet,
   View,
-  Image,
-  TouchableOpacity,
   ScrollView,
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import MyPlanBox from '@/components/MyplanBox';
 import { ThemedText } from '@/components/ThemedText';
@@ -13,52 +13,65 @@ import { ThemedView } from '@/components/ThemedView';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Bgelement from '@/components/Bgelement';
 
-const plan: React.FC = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
+const { width, height } = Dimensions.get('window');
+
+const Plan: React.FC = () => {
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
-        <Bgelement/>
+        <Bgelement />
         <View style={styles.headerWrapper}>
-          <ThemedText className='px-5' style={styles.headerText}>My Plan</ThemedText>
-        <ScrollView showsVerticalScrollIndicator={false} >
-        <MyPlanBox isEditMode={isEditMode} />
+          <ThemedText style={styles.headerText}>My Plan</ThemedText>
+        </View>
+        <ScrollView 
+          showsVerticalScrollIndicator={false} 
+          contentContainerStyle={styles.scrollContainer}>
+          <MyPlanBox isEditMode={isEditMode} />
         </ScrollView>
-        {/* ปุ่ม Edit/Check */}
+        {/* Edit Button */}
         <TouchableOpacity
           style={styles.editButton}
           onPress={() => setIsEditMode(!isEditMode)}
         >
-          
-          <MaterialCommunityIcons name={isEditMode ? "file-check-outline" : "pencil"} size={32} color="#fff" />
+          <MaterialCommunityIcons 
+            name={isEditMode ? 'file-check-outline' : 'pencil'} 
+            size={width * 0.08} 
+            color="#fff" 
+          />
         </TouchableOpacity>
-        </View>
       </ThemedView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 , paddingVertical: 60},
+  container: { flex: 1 },
   themedView: { flex: 1 },
   headerWrapper: {
-    marginTop: 10,
+    marginTop: height * 0.05, 
+  
   },
   headerText: {
-    fontSize: 44,
+    fontSize: width * 0.1,
+    marginHorizontal: 20, 
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: height * 0.02,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: height * 0.06, 
   },
   editButton: {
-    position: "absolute",
-    backgroundColor: "#5680EC",
-    end : "5%",
-    top : "80%",
-    padding: 16,
-    borderRadius: 30,
+    position: 'absolute',
+    backgroundColor: '#5680EC',
+    right: width * 0.05, 
+    bottom: height * 0.1,
+    padding: width * 0.04,
+    borderRadius: width * 0.1,
   },
 });
 
-export default plan;
+export default Plan;
