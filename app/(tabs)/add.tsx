@@ -218,6 +218,23 @@ export default function CreateTrip() {
     });
   };
 
+  const handleCreatePlanAi = () => {
+    router.push({
+      pathname: "/tripGenAi",
+      params: {
+        tripName: tripName,
+        region: selectedRegion,
+        province: selectedProvince,
+        startDate: startDate.toISOString(),
+        startTime: startTime.toISOString(),
+        endDate: endDate.toISOString(),
+        endTime: endTime.toISOString(),
+        visibility: selectedOption
+      }
+    });
+  };
+
+
   // Date/time change handlers
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
     setShowStartDatePicker(Platform.OS === 'ios'); // On Android, dismiss after selection
@@ -381,7 +398,7 @@ export default function CreateTrip() {
             height: 45,
             justifyContent: 'center'
           }}
-          onPress={() => {/* Handle AI generation */}}
+          onPress={handleCreatePlanAi}
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Use AI Generate
