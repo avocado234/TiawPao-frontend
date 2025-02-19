@@ -3,27 +3,43 @@ import { StyleSheet, Image, ScrollView, SafeAreaView, Pressable } from "react-na
 import { Text, Button, View, XGroup, XStack, YStack } from "tamagui";
 import { ArrowLeft, Bold } from "@tamagui/lucide-icons";
 import Expecard from '@/components/experiencecard';
-import { router } from "expo-router";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
 
 const homedetail = () => {
+    const router = useRouter();
+    const param = useLocalSearchParams();
+    let pic;
+    const { id, name, location, image } = param;
+    if (id === "1") {
+        pic = require(`@/assets/images/koh-larn-thailand.jpg`);
+    }
+    if (id === "2") {
+        pic = require(`@/assets/images/Oldtown.png`);
+    }
+    if (id === "3") {
+        pic = require(`@/assets/images/Doiinthanon.png`);
+    }
+    if (id === "4") {
+        pic = require(`@/assets/images/wat-arun.jpg`);
+    }
     const PresstoHome = () => {
-            router.push({
-              pathname: "/plan",
-            });
-          };
+        router.push({
+            pathname: "/(tabs)",
+        });
+    };
     return (
         <View style={styles.themedView}>
             <XStack style={styles.test}>
                 <Pressable>
-                    <ArrowLeft size={24} onPress={PresstoHome}/>
+                    <ArrowLeft size={24} onPress={PresstoHome} />
                 </Pressable>
             </XStack>
             <YStack style={styles.topbackground}>
-                <Text style={styles.texttopic}>Koh Larn</Text>
-                <Text style={styles.texttopic2}>Pattaya Chonburi</Text>
+                <Text style={styles.texttopic}>{name}</Text>
+                <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
             <ScrollView>
-                <Image source={require("@/assets/images/koh-larn-thailand.jpg")}
+                <Image source={pic}
                     style={styles.imagemain}
                     resizeMode='cover' />
                 <YStack>
@@ -31,15 +47,15 @@ const homedetail = () => {
                     <Text style={styles.texttopic3}> The way to Experience Koh Larn </Text>
                     <Text style={styles.texttopic4}> Activities </Text>
                     <View className=''>
-                        <Expecard/>
+                        <Expecard />
                     </View>
                     <Text style={styles.texttopic4}> Food & Drink </Text>
                     <View className=''>
-                        <Expecard/>
+                        <Expecard />
                     </View>
                     <Text style={styles.texttopic4}> Hotel </Text>
                     <View className=''>
-                        <Expecard/>
+                        <Expecard />
                     </View>
                 </YStack>
             </ScrollView>

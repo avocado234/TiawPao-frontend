@@ -63,10 +63,19 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
 };
 
 const Homebox: React.FC = () => {
-    const PresstoHomedetail = () => {
+    const PresstoHomedetail = (place : Place) => {
+        console.log("place.id")
+        console.log(place.id);
         router.push({
           pathname: "/homedetail",
+          params: {
+            id: place.id,
+            name: place.name,
+            location: place.location,
+            image: place.image,
+        },
         });
+        
       };
     return (
         <ScrollView
@@ -75,7 +84,7 @@ const Homebox: React.FC = () => {
             contentContainerStyle={styles.scrollContainer}
         >
             {places.map((place) => (
-                <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={PresstoHomedetail} >
+                <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={() => PresstoHomedetail(place)}>
                     <PlaceCard place={place} />
                 </TouchableOpacity>
             ))}
