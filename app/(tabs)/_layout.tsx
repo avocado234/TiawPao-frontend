@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { View ,Text} from 'tamagui';
-
+import Stack from 'expo-router';
 export default function TabLayout() {
 
   return (
