@@ -3,40 +3,44 @@ import {
   SafeAreaView,
   StyleSheet,
   View,
-  Image,
+  ScrollView,
   TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import MyPlanBox from '@/components/MyplanBox';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Bgelement from '@/components/Bgelement';
 
-const plan: React.FC = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
+const { width, height } = Dimensions.get('window');
+
+const Plan: React.FC = () => {
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
-        <Image
-          className="absolute -top-96"
-          source={require("@/assets/images/Bgcycle.png")}
-          style={styles.backgroundImage}
-        />
+        <Bgelement />
         <View style={styles.headerWrapper}>
-          <ThemedText className=' inset-6' style={styles.headerText}>My Plan</ThemedText>
+          <ThemedText style={styles.headerText}>My Plan</ThemedText>
         </View>
-
-        <MyPlanBox isEditMode={isEditMode} />
-
-        {/* ปุ่ม Edit/Check */}
+        <ScrollView 
+          showsVerticalScrollIndicator={false} 
+          contentContainerStyle={styles.scrollContainer}>
+          <MyPlanBox isEditMode={isEditMode} />
+        </ScrollView>
+        {/* Edit Button */}
         <TouchableOpacity
           style={styles.editButton}
           onPress={() => setIsEditMode(!isEditMode)}
         >
-          
-          <MaterialCommunityIcons name={isEditMode ? "file-check-outline" : "pencil"} size={32} color="#fff" />
+          <MaterialCommunityIcons 
+            name={isEditMode ? 'file-check-outline' : 'pencil'} 
+            size={width * 0.08} 
+            color="#fff" 
+          />
         </TouchableOpacity>
-
       </ThemedView>
     </SafeAreaView>
   );
@@ -45,31 +49,29 @@ const plan: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   themedView: { flex: 1 },
-  backgroundImage: {
-    position: 'absolute',
-    top: -185,
-    right: -180,
-    width: '200%',
-    height: '90%',
-  },
   headerWrapper: {
-    marginTop: 20,
-    paddingHorizontal: 50,
+    marginTop: height * 0.05, 
+  
   },
   headerText: {
-    fontSize: 44,
+    fontSize: width * 0.1,
+    marginHorizontal: 20, 
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: height * 0.02,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: height * 0.06, 
   },
   editButton: {
-    position: "absolute",
-    backgroundColor: "#5680EC",
-    end : "5%",
-    top : "83%",
-    padding: 16,
-    borderRadius: 30,
+    position: 'absolute',
+    backgroundColor: '#5680EC',
+    right: width * 0.05, 
+    bottom: height * 0.1,
+    padding: width * 0.04,
+    borderRadius: width * 0.1,
   },
 });
 
-export default plan;
+export default Plan;
