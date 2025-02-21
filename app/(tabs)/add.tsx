@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
-import { View, Pressable, StyleSheet, SafeAreaView, FlatList, Platform } from 'react-native';
+import {
+  View,
+  Pressable,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Platform,
+  Modal,
+  Button
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
-import { XStack, YStack, Button } from 'tamagui';
+import { XStack, YStack, Button as TamaguiButton } from 'tamagui';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ArrowLeft, Calendar, Clock } from "@tamagui/lucide-icons";
@@ -18,6 +27,26 @@ import Animated, {
 } from 'react-native-reanimated';
 
 type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western' | 'southern';
+
+// คอมโพเนนต์สำหรับแสดง DateTimePicker เป็น modal บน iOS
+const DatePickerModal = ({ visible, mode, value, onChange, onClose }:any) => {
+  return (
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <DateTimePicker
+            value={value}
+            mode={mode}
+            display="spinner" // ใช้ spinner สำหรับ iOS
+            onChange={onChange}
+            style={{ backgroundColor: 'white' }}
+          />
+          <Button title="Close" onPress={onClose} />
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 export default function CreateTrip() {
   const [tripName, setTripName] = useState('');
@@ -41,7 +70,7 @@ export default function CreateTrip() {
   const regionChevronRotation = useSharedValue(0);
   const provinceChevronRotation = useSharedValue(0);
   
-  const DROPDOWN_HEIGHT = 200; // Adjust height as needed
+  const DROPDOWN_HEIGHT = 200; // ปรับความสูงได้ตามต้องการ
 
   const animatedRegionStyle = useAnimatedStyle(() => ({
     height: regionHeight.value,
@@ -220,30 +249,38 @@ export default function CreateTrip() {
 
   // Date/time change handlers
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
-    setShowStartDatePicker(Platform.OS === 'ios'); // On Android, dismiss after selection
     if (event.type === 'set' && selectedDate) {
       setStartDate(selectedDate);
+    }
+    if (Platform.OS === 'android') {
+      setShowStartDatePicker(false);
     }
   };
 
   const onChangeEndDate = (event: any, selectedDate?: Date) => {
-    setShowEndDatePicker(Platform.OS === 'ios');
     if (event.type === 'set' && selectedDate) {
       setEndDate(selectedDate);
+    }
+    if (Platform.OS === 'android') {
+      setShowEndDatePicker(false);
     }
   };
 
   const onChangeStartTime = (event: any, selectedTime?: Date) => {
-    setShowStartTimePicker(Platform.OS === 'ios');
     if (event.type === 'set' && selectedTime) {
       setStartTime(selectedTime);
+    }
+    if (Platform.OS === 'android') {
+      setShowStartTimePicker(false);
     }
   };
 
   const onChangeEndTime = (event: any, selectedTime?: Date) => {
-    setShowEndTimePicker(Platform.OS === 'ios');
     if (event.type === 'set' && selectedTime) {
       setEndTime(selectedTime);
+    }
+    if (Platform.OS === 'android') {
+      setShowEndTimePicker(false);
     }
   };
 
@@ -355,11 +392,11 @@ export default function CreateTrip() {
 
       {/* Action Buttons */}
       <View style={{ 
-        marginTop: 'auto',  // Push buttons to bottom
+        marginTop: 'auto',  // ดันปุ่มให้ไปด้านล่าง
         paddingBottom: 20,
         zIndex: 1
       }}>
-        <Button
+        <TamaguiButton
           style={{ 
             backgroundColor: '#3b82f6', 
             borderRadius: 8,
@@ -372,9 +409,9 @@ export default function CreateTrip() {
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Create Plan Manually
           </ThemedText>
-        </Button>
+        </TamaguiButton>
 
-        <Button
+        <TamaguiButton
           style={{ 
             backgroundColor: '#10b981', 
             borderRadius: 8,
@@ -386,7 +423,7 @@ export default function CreateTrip() {
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Use AI Generate
           </ThemedText>
-        </Button>
+        </TamaguiButton>
       </View>
     </YStack>
   );
@@ -416,37 +453,72 @@ export default function CreateTrip() {
         />
 
         {/* Date/Time Pickers */}
-        {showStartDatePicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeStartDate}
-          />
-        )}
-        {showEndDatePicker && (
-          <DateTimePicker
-            value={endDate}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeEndDate}
-          />
-        )}
-        {showStartTimePicker && (
-          <DateTimePicker
-            value={startTime}
-            mode="time"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeStartTime}
-          />
-        )}
-        {showEndTimePicker && (
-          <DateTimePicker
-            value={endTime}
-            mode="time"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeEndTime}
-          />
+        {Platform.OS === 'ios' ? (
+          <>
+            <DatePickerModal
+              visible={showStartDatePicker}
+              mode="date"
+              value={startDate}
+              onChange={onChangeStartDate}
+              onClose={() => setShowStartDatePicker(false)}
+            />
+            <DatePickerModal
+              visible={showEndDatePicker}
+              mode="date"
+              value={endDate}
+              onChange={onChangeEndDate}
+              onClose={() => setShowEndDatePicker(false)}
+            />
+            <DatePickerModal
+              visible={showStartTimePicker}
+              mode="time"
+              value={startTime}
+              onChange={onChangeStartTime}
+              onClose={() => setShowStartTimePicker(false)}
+            />
+            <DatePickerModal
+              visible={showEndTimePicker}
+              mode="time"
+              value={endTime}
+              onChange={onChangeEndTime}
+              onClose={() => setShowEndTimePicker(false)}
+            />
+          </>
+        ) : (
+          <>
+            {showStartDatePicker && (
+              <DateTimePicker
+                value={startDate}
+                mode="date"
+                display="default"
+                onChange={onChangeStartDate}
+              />
+            )}
+            {showEndDatePicker && (
+              <DateTimePicker
+                value={endDate}
+                mode="date"
+                display="default"
+                onChange={onChangeEndDate}
+              />
+            )}
+            {showStartTimePicker && (
+              <DateTimePicker
+                value={startTime}
+                mode="time"
+                display="default"
+                onChange={onChangeStartTime}
+              />
+            )}
+            {showEndTimePicker && (
+              <DateTimePicker
+                value={endTime}
+                mode="time"
+                display="default"
+                onChange={onChangeEndTime}
+              />
+            )}
+          </>
         )}
       </ThemedView>
     </SafeAreaView>
@@ -475,4 +547,15 @@ const styles = StyleSheet.create({
     zIndex: -1,
     opacity: 0.5,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+  }
 });
