@@ -4,7 +4,7 @@ import React from 'react';
 import { useState } from 'react'
 import { ThemedText } from "./ThemedText";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, StyleSheet, Text, useColorScheme, TextInput,ScrollView ,Alert,Pressable} from 'react-native';
+import { View, StyleSheet, Text, useColorScheme, TextInput,ScrollView ,Alert,Pressable,Image} from 'react-native';
 import { ThemedSafeAreaView } from './ThemedSafeAreaView';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Picker } from '@react-native-picker/picker';
@@ -15,39 +15,41 @@ import { Button } from 'tamagui';
 import {auth} from "@/config/firebaseconfig";
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'expo-router';
+import { useUserStore } from '@/store/useUser';
 const Propage = () => {
   //Set Value to UpdateUsername
   const theme = useColorScheme();
+  const {user} = useUserStore();
   const [get_visible, set_visible] = useState(true);
   const [get_bool, set_bool] = useState(false);
   const [get_edit, set_edit] = useState(false);
  
   //Username  & Temp user_name
-  const [user_name, set_user_name] = useState('JameMc');
+  const [user_name, set_user_name] = useState(user.username);
   const [temp_user_name, temp_set_user_name] = useState(user_name);
 
   //firstname & Temp first_name
-  const [first_name, set_first_name] = useState('Jame');
+  const [first_name, set_first_name] = useState(user.firstname);
   const [temp_first_name, temp_set_first_name] = useState(first_name);
 
   //lastname & temp last_name
-  const [last_name, set_last_name] = useState('Macdonnell');
+  const [last_name, set_last_name] = useState(user.lastname);
   const [temp_last_name, temp_set_last_name] = useState(last_name);
 
   //email & temp email
-  const [email, set_email] = useState('jamemc@gmail.com');
+  const [email, set_email] = useState(user.email);
   const [temp_email, temp_set_email] = useState(email);
 
   //password & temp pass
-  const [password, set_password] = useState('123456789');
+  const [password, set_password] = useState('!(#ABC');
   const [temp_password, temp_set_password] = useState(password);
 
   //mobile & temp mobile
-  const [mobile, set_mobile] = useState('0812345678');
+  const [mobile, set_mobile] = useState(user.tel);
   const [temp_mobile, temp_set_mobile] = useState(mobile);
 
   //date & temp date
-  const [date, set_date] = useState(new Date(2003, 2, 17));
+  const [date, set_date] = useState(new Date(user.dateofbirth));
   const [show_date, set_show_date] = useState(false);
   
   const [temp_date, temp_set_date] = useState(date);
@@ -59,7 +61,7 @@ const Propage = () => {
     { label: "Femail", value: "Femail" },
     { label: "Others", value: "Others" }
   ]); 
-  const [gender, set_gender] = useState("Male");
+  const [gender, set_gender] = useState(user.gender);
   const [temp_gender, temp_set_gender] = useState(gender);
 
 
@@ -182,15 +184,13 @@ const Propage = () => {
     
     <View style={[styles.Component_box_main, { backgroundColor: backGround_Color, borderWidth: Border_Width, borderBlockColor: Border_Color }]}>
       {/* Comment : รูปของ Kaithod*/}
-      <Button style={[styles.Component_Picture_profile, { backgroundColor: Profile_Background }]}>
-        <Text>Clicker</Text>
-      </Button>
+      <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.Component_Picture_profile} />
       <ThemedSafeAreaView color='transparnet'  >
 
         {/*Comment : Just Hi Traveler */}
         <View style={styles.Component_big_username}>
           <Text style={[styles.font_only_hi, { color: Font_Color }]}>Hi</Text>
-          <Text style={[styles.font_show_name, { color: Font_Color }]}>{user_name}</Text>
+          <Text style={[styles.font_show_name, { color: Font_Color }]}>{user.username}</Text>
           {get_visible && (<Button style={[styles.Component_edit_box, { backgroundColor: Border_Color }]}
             onPress={changed}
           >

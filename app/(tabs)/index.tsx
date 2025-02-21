@@ -18,29 +18,25 @@ import Carousel from '@/components/Carouselhome';
 import { auth } from "@/config/firebaseconfig";
 import { Button } from 'react-native'
 import { XGroup, XStack, YStack } from "tamagui";
-import { signOut } from "firebase/auth";
 import { useRouter } from "expo-router";
 import Homebox from '@/components/Homebox';
 import HotelList from '@/components/HotelList';
-
+import { useUserStore } from '@/store/useUser';
 
 
 const homepage: React.FC = () => {
   const router = useRouter();
-  // const handelSignOut = async () => {
-  //   await signOut(auth)
-  //   router.replace('/')
-  // }
-  // const user = auth.currentUser;
+  const {user} = useUserStore();
+  // console.log(user)
   return (
     <SafeAreaView className=' flex-1'>
       <ThemedView className=' flex-1'>
         <Bgelement />
         <View style={styles.headerWrapper}>
-          <ThemedText className=' top-5' style={styles.headerText}>Jame</ThemedText>
+          <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity onPress={() => router.push('./profile')}>
-              <Image className="absolute end-5 bottom-[18]" source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />
+              <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.avatar} />
             </TouchableOpacity>
           </TouchableNativeFeedback>
         </View>

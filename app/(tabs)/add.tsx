@@ -5,11 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
-  Platform,
-  Modal,
-  Button
+  Platform
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from 'expo-router';
 import { XStack, YStack, Button as TamaguiButton } from 'tamagui';
 import { ThemedText } from '@/components/ThemedText';
@@ -19,6 +16,7 @@ import ThemedTextInput from "@/components/ThemedTextInput";
 import { RadioButton } from '@/components/RadioButton';
 import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import Bgelement from '@/components/Bgelement';
+import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -27,26 +25,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western' | 'southern';
-
-// คอมโพเนนต์สำหรับแสดง DateTimePicker เป็น modal บน iOS
-const DatePickerModal = ({ visible, mode, value, onChange, onClose }:any) => {
-  return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <DateTimePicker
-            value={value}
-            mode={mode}
-            display="spinner" // ใช้ spinner สำหรับ iOS
-            onChange={onChange}
-            style={{ backgroundColor: 'white' }}
-          />
-          <Button title="Close" onPress={onClose} />
-        </View>
-      </View>
-    </Modal>
-  );
-};
 
 export default function CreateTrip() {
   const [tripName, setTripName] = useState('');
@@ -57,20 +35,17 @@ export default function CreateTrip() {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Public');
   const [selectedProvince, setSelectedProvince] = useState('');
-  const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
-  const [isProvinceOpen, setIsProvinceOpen] = useState(false);
-  
+
+  // ส่วน Animation สำหรับ dropdown (หากมีการใช้งาน)
   const regionHeight = useSharedValue(0);
   const provinceHeight = useSharedValue(0);
-  
   const regionChevronRotation = useSharedValue(0);
   const provinceChevronRotation = useSharedValue(0);
-  
-  const DROPDOWN_HEIGHT = 200; // ปรับความสูงได้ตามต้องการ
+  const DROPDOWN_HEIGHT = 200;
 
   const animatedRegionStyle = useAnimatedStyle(() => ({
     height: regionHeight.value,
@@ -91,34 +66,29 @@ export default function CreateTrip() {
   }));
 
   const toggleRegionDropdown = () => {
-    if (isRegionOpen) {
+    if (regionHeight.value > 0) {
       regionHeight.value = withTiming(0, { duration: 300 });
       regionChevronRotation.value = withSpring(0);
-      setIsRegionOpen(false);
     } else {
       regionHeight.value = withTiming(DROPDOWN_HEIGHT, { duration: 300 });
       regionChevronRotation.value = withSpring(180);
-      setIsProvinceOpen(false);
+      // ถ้าเปิด region ให้ปิด province
       provinceHeight.value = withTiming(0, { duration: 300 });
       provinceChevronRotation.value = withSpring(0);
-      setIsRegionOpen(true);
     }
   };
 
   const toggleProvinceDropdown = () => {
     if (!selectedRegion) return;
-    
-    if (isProvinceOpen) {
+    if (provinceHeight.value > 0) {
       provinceHeight.value = withTiming(0, { duration: 300 });
       provinceChevronRotation.value = withSpring(0);
-      setIsProvinceOpen(false);
     } else {
       provinceHeight.value = withTiming(DROPDOWN_HEIGHT, { duration: 300 });
       provinceChevronRotation.value = withSpring(180);
-      setIsRegionOpen(false);
+      // ถ้าเปิด province ให้ปิด region
       regionHeight.value = withTiming(0, { duration: 300 });
       regionChevronRotation.value = withSpring(0);
-      setIsProvinceOpen(true);
     }
   };
 
@@ -225,7 +195,7 @@ export default function CreateTrip() {
       { value: 'yala', label: 'Yala' }
     ]
   };
-  
+
   const getFilteredProvinces = () => {
     if (!selectedRegion) return [];
     return provinces[selectedRegion as RegionKey] || [];
@@ -247,7 +217,6 @@ export default function CreateTrip() {
     });
   };
 
-  // Date/time change handlers
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       setStartDate(selectedDate);
@@ -323,7 +292,6 @@ export default function CreateTrip() {
 
       {/* Date and Time Selection */}
       <XStack style={{ gap: 16, marginBottom: 16 }}>
-        {/* Start Date and Time */}
         <View style={{ flex: 1 }}>
           <ThemedText className="text-[#203B82] py-2">Start date</ThemedText>
           <Pressable onPress={() => setShowStartDatePicker(true)}>
@@ -341,7 +309,6 @@ export default function CreateTrip() {
           </Pressable>
         </View>
 
-        {/* End Date and Time */}
         <View style={{ flex: 1 }}>
           <ThemedText className="text-[#203B82] py-2">End date</ThemedText>
           <Pressable onPress={() => setShowEndDatePicker(true)}>
@@ -366,22 +333,15 @@ export default function CreateTrip() {
         <YStack style={{ gap: 16 }}>
           <Pressable onPress={() => setSelectedOption("Public")}>
             <YStack style={{ gap: 8 }}>
-              <RadioButton
-                label="Public"
-                selected={selectedOption === "Public"}
-              />
+              <RadioButton label="Public" selected={selectedOption === "Public"} />
               <ThemedText style={{ color: 'gray', fontSize: 14, marginLeft: 26 }}>
                 Everyone can see this trip
               </ThemedText>
             </YStack>
           </Pressable>
-
           <Pressable onPress={() => setSelectedOption("Private")}>
             <YStack style={{ gap: 8 }}>
-              <RadioButton
-                label="Private"
-                selected={selectedOption === "Private"}
-              />
+              <RadioButton label="Private" selected={selectedOption === "Private"} />
               <ThemedText style={{ color: 'gray', fontSize: 14, marginLeft: 26 }}>
                 Only you can see this trip
               </ThemedText>
@@ -391,18 +351,14 @@ export default function CreateTrip() {
       </View>
 
       {/* Action Buttons */}
-      <View style={{ 
-        marginTop: 'auto',  // ดันปุ่มให้ไปด้านล่าง
-        paddingBottom: 20,
-        zIndex: 1
-      }}>
+      <View style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
         <TamaguiButton
-          style={{ 
-            backgroundColor: '#3b82f6', 
+          style={{
+            backgroundColor: '#3b82f6',
             borderRadius: 8,
             height: 45,
             justifyContent: 'center',
-            marginBottom: 10
+            marginBottom: 10,
           }}
           onPress={handleCreatePlan}
         >
@@ -412,13 +368,15 @@ export default function CreateTrip() {
         </TamaguiButton>
 
         <TamaguiButton
-          style={{ 
-            backgroundColor: '#10b981', 
+          style={{
+            backgroundColor: '#10b981',
             borderRadius: 8,
             height: 45,
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
-          onPress={() => {/* Handle AI generation */}}
+          onPress={() => {
+            // Handle AI generation
+          }}
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Use AI Generate
@@ -432,98 +390,56 @@ export default function CreateTrip() {
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
-        
         {/* Header */}
         <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
           <Pressable onPress={() => router.back()}>
             <ArrowLeft size={24} />
           </Pressable>
         </XStack>
-        
         <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
           Create a Trip
         </ThemedText>
-        
         <FlatList
           data={[{ key: 'content' }]}
           renderItem={() => renderContent()}
-          keyExtractor={item => item.key}
-          scrollEnabled={true}
-          nestedScrollEnabled={true}
+          keyExtractor={(item) => item.key}
+          scrollEnabled
+          nestedScrollEnabled
         />
 
-        {/* Date/Time Pickers */}
-        {Platform.OS === 'ios' ? (
-          <>
-            <DatePickerModal
-              visible={showStartDatePicker}
-              mode="date"
-              value={startDate}
-              onChange={onChangeStartDate}
-              onClose={() => setShowStartDatePicker(false)}
-            />
-            <DatePickerModal
-              visible={showEndDatePicker}
-              mode="date"
-              value={endDate}
-              onChange={onChangeEndDate}
-              onClose={() => setShowEndDatePicker(false)}
-            />
-            <DatePickerModal
-              visible={showStartTimePicker}
-              mode="time"
-              value={startTime}
-              onChange={onChangeStartTime}
-              onClose={() => setShowStartTimePicker(false)}
-            />
-            <DatePickerModal
-              visible={showEndTimePicker}
-              mode="time"
-              value={endTime}
-              onChange={onChangeEndTime}
-              onClose={() => setShowEndTimePicker(false)}
-            />
-          </>
-        ) : (
-          <>
-            {showStartDatePicker && (
-              <DateTimePicker
-                value={startDate}
-                mode="date"
-                display="default"
-                onChange={onChangeStartDate}
-              />
-            )}
-            {showEndDatePicker && (
-              <DateTimePicker
-                value={endDate}
-                mode="date"
-                display="default"
-                onChange={onChangeEndDate}
-              />
-            )}
-            {showStartTimePicker && (
-              <DateTimePicker
-                value={startTime}
-                mode="time"
-                display="default"
-                onChange={onChangeStartTime}
-              />
-            )}
-            {showEndTimePicker && (
-              <DateTimePicker
-                value={endTime}
-                mode="time"
-                display="default"
-                onChange={onChangeEndTime}
-              />
-            )}
-          </>
-        )}
+        {/* ใช้งาน CustomDateTimePicker */}
+        <CustomDateTimePicker
+          visible={showStartDatePicker}
+          mode="date"
+          value={startDate}
+          onChange={onChangeStartDate}
+          onClose={() => setShowStartDatePicker(false)}
+        />
+        <CustomDateTimePicker
+          visible={showEndDatePicker}
+          mode="date"
+          value={endDate}
+          onChange={onChangeEndDate}
+          onClose={() => setShowEndDatePicker(false)}
+        />
+        <CustomDateTimePicker
+          visible={showStartTimePicker}
+          mode="time"
+          value={startTime}
+          onChange={onChangeStartTime}
+          onClose={() => setShowStartTimePicker(false)}
+        />
+        <CustomDateTimePicker
+          visible={showEndTimePicker}
+          mode="time"
+          value={endTime}
+          onChange={onChangeEndTime}
+          onClose={() => setShowEndTimePicker(false)}
+        />
       </ThemedView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -547,15 +463,4 @@ const styles = StyleSheet.create({
     zIndex: -1,
     opacity: 0.5,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-  }
 });
