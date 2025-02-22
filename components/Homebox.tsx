@@ -37,7 +37,7 @@ const Homebox: React.FC = ({places}:any) => {
         console.log("place.id")
         console.log(place.id);
         router.push({
-          pathname: "/homedetail",
+          pathname: "/(tabs)/index/homedetail",
           params: {
             id: place.id,
             name: place.name,

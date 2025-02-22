@@ -4,7 +4,7 @@ import { Text, Button, View, XGroup, XStack, YStack } from "tamagui";
 import { ArrowLeft, Bold } from "@tamagui/lucide-icons";
 import Expecard from '@/components/experiencecard';
 import { router, useLocalSearchParams, useRouter } from "expo-router";
-
+import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 const homedetail = () => {
     const router = useRouter();
     const param = useLocalSearchParams();

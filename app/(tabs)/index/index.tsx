@@ -22,7 +22,17 @@ import HotelList from '@/components/HotelList';
 import { useUserStore } from '@/store/useUser';
 
 
+interface Place {
+  id: string;
+  name: string;
+  location: string;
+  rating: number;
+  image: any;
+}
 
+interface HomeboxProps {
+  places: Place[];
+}
 
 const Homepage: React.FC = () => {
 
@@ -49,7 +59,7 @@ const hotels = [
         <View style={styles.headerWrapper}>
           <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
           <TouchableNativeFeedback>
-            <TouchableOpacity onPress={() => router.push('./profile')}>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
               <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.avatar} />
             </TouchableOpacity>
           </TouchableNativeFeedback>

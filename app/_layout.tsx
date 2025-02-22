@@ -157,8 +157,6 @@ const getUserData = async (email: any) => {
           <Stack.Screen name="resetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="+not-found" />
 
-          <Stack.Screen name="HomeRecommend" options={{headerShown : false}}/>
-          <Stack.Screen name="homedetail" options={{headerShown: false}} />
         </Stack>
       {/* </AuthProvider> */}
       <StatusBar style="auto" />
