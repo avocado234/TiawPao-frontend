@@ -25,7 +25,6 @@ import { useUserStore } from '@/store/useUser';
 
 
 const Homepage: React.FC = () => {
-   const { width, height } = Dimensions.get('screen');
 
 const places = [
     { id: "1", name: "Koh Larn", location: "Chonburi", rating: 4.7, image: require("@/assets/images/Kohlarn.png") },
@@ -88,6 +87,8 @@ const hotels = [
 };
 
 export default Homepage;
+
+const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   headerWrapper: {

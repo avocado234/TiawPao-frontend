@@ -203,7 +203,7 @@ export default function CreateTrip() {
 
   const handleCreatePlan = () => {
     router.push({
-      pathname: "/tripManually",
+      pathname: "/(tabs)/add/tripmanually",
       params: {
         tripName: tripName,
         region: selectedRegion,
@@ -220,7 +220,7 @@ export default function CreateTrip() {
 
   const handleCreatePlanAi = () => {
     router.push({
-      pathname: "/tripGenAi",
+      pathname: "/(tabs)/add/tripgenai",
       params: {
         tripName: tripName,
         region: selectedRegion,
