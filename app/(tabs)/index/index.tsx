@@ -22,10 +22,19 @@ import HotelList from '@/components/HotelList';
 import { useUserStore } from '@/store/useUser';
 
 
+interface Place {
+  id: string;
+  name: string;
+  location: string;
+  rating: number;
+  image: any;
+}
 
+interface HomeboxProps {
+  places: Place[];
+}
 
 const Homepage: React.FC = () => {
-   const { width, height } = Dimensions.get('screen');
 
 const places = [
     { id: "1", name: "Koh Larn", location: "Chonburi", rating: 4.7, image: require("@/assets/images/Kohlarn.png") },
@@ -50,7 +59,7 @@ const hotels = [
         <View style={styles.headerWrapper}>
           <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
           <TouchableNativeFeedback>
-            <TouchableOpacity onPress={() => router.push('./profile')}>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
               <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.avatar} />
             </TouchableOpacity>
           </TouchableNativeFeedback>
@@ -88,6 +97,8 @@ const hotels = [
 };
 
 export default Homepage;
+
+const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   headerWrapper: {

@@ -16,6 +16,7 @@ import ThemedTextInput from "@/components/ThemedTextInput";
 import { RadioButton } from '@/components/RadioButton';
 import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import Bgelement from '@/components/Bgelement';
+import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
 import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
 import Animated, {
   useSharedValue,
@@ -203,7 +204,7 @@ export default function CreateTrip() {
 
   const handleCreatePlan = () => {
     router.push({
-      pathname: "/tripManually",
+      pathname: "/(tabs)/add/tripmanually",
       params: {
         tripName: tripName,
         region: selectedRegion,
@@ -220,7 +221,7 @@ export default function CreateTrip() {
 
   const handleCreatePlanAi = () => {
     router.push({
-      pathname: "/tripGenAi",
+      pathname: "/(tabs)/add/tripgenai",
       params: {
         tripName: tripName,
         region: selectedRegion,
@@ -371,7 +372,7 @@ export default function CreateTrip() {
       </View>
 
       {/* Action Buttons */}
-      <View style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
+      <View className='mb-10' style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
         <TamaguiButton
           style={{
             backgroundColor: '#3b82f6',
@@ -412,11 +413,12 @@ export default function CreateTrip() {
         <Bgelement />
         {/* Header */}
         <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
-          <Pressable onPress={() => router.back()}>
+          {/* <Pressable onPress={() => router.back()}>
             <ArrowLeft size={24} />
-          </Pressable>
+          </Pressable> */}
+          <ThemedCustomBackButton style={{marginTop:20}}/>
         </XStack>
-        <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
+        <ThemedText className='mt-3' style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
           Create a Trip
         </ThemedText>
         <FlatList

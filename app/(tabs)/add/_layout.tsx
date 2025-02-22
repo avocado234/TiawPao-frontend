@@ -1,0 +1,18 @@
+
+import { Stack } from 'expo-router';
+
+
+
+export default function AddLayout() {
+  
+
+  return (
+
+    <Stack screenOptions={{ gestureEnabled: false }}>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="tripManually" options={{ headerShown: false }} />
+          <Stack.Screen name="genaiselected" options={{headerShown: false}} />
+          <Stack.Screen name="tripgenai" options={{headerShown: false}} />
+     </Stack>
+  );
+}
