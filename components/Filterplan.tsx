@@ -47,8 +47,7 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Filters</Text>
-
+      
       <Text style={styles.subTitle}>Sort By</Text>
       <View style={styles.buttonRow}>
         
@@ -67,6 +66,7 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
         <Pressable style={[styles.button, activeFilter === 'rating-desc' && styles.activeButton]} onPress={() => sortTrips('rating', 'desc')}>
           <Text style={styles.buttonText}>Rating</Text>
         </Pressable>
+        
       </View>
 
       <Text style={styles.subTitle}>Range Budget</Text>
@@ -75,29 +75,29 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
         <Slider
           style={styles.slider}
           minimumValue={0}
-          maximumValue={50000}
+          maximumValue={1000}
           step={1}
           value={budget}
           onValueChange={filterByBudget}
-          minimumTrackTintColor="#5680EC"
+          minimumTrackTintColor="#000"
           maximumTrackTintColor="#ddd"
-          thumbTintColor="#5680EC"
+          thumbTintColor="#000"
         />
         <Text style={styles.sliderLabel}>{budget} $</Text>
-      </View>
+        </View>
+       
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 15, backgroundColor: "#203B82", borderRadius: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', color: 'white', textAlign: 'center' },
-  subTitle: { fontSize: 16, fontWeight: 'bold', color: 'white', marginTop: 10 },
-  buttonRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
+  container: { padding: 20, backgroundColor: "#5680EC",},
+  subTitle: { fontSize: 20, fontWeight: 'bold', color: 'white', marginBottom: 10 },
+  buttonRow: { flexDirection: 'row', flexWrap: 'wrap' , },
   button: { backgroundColor: 'white', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, margin: 5, alignItems: 'center' },
-  activeButton: {backgroundColor: '#5680EC' },
+  activeButton: {backgroundColor: '#203B82' },
   buttonText: { fontSize: 14, color: '#000', fontWeight: 'bold' },
-  sliderContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 15 },
+  sliderContainer: { flexDirection: 'row', alignItems: 'center' },
   sliderLabel: { color: 'white', fontWeight: 'bold', width: 80, textAlign: 'center' },
   slider: { flex: 1 },
 });
