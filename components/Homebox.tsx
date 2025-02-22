@@ -10,47 +10,16 @@ interface Place {
     image: any;
 }
 
-const places: Place[] = [
-    {
-        id: "1",
-        name: "Koh Larn",
-        location: "Chonburi",
-        rating: 4.7,
-        image: require("@/assets/images/Kohlarn.png"),
-    },
-    {
-        id: "2",
-        name: "Old Town",
-        location: "Phuket",
-        rating: 4.9,
-        image: require("@/assets/images/Oldtown.png"),
-    },
-    {
-        id: "3",
-        name: "Doi Inthanon",
-        location: "Chiangmai",
-        rating: 4.2,
-        image: require("@/assets/images/Doiinthanon.png"),
-    },
-    {
-        id: "4",
-        name: "Wat Arun",
-        location: "Bangkok",
-        rating: 4.9,
-        image: require("@/assets/images/Watarun.png"),
-    },
-];
-
-interface PlaceCardProps {
-    place: Place;
+interface HomeboxProps {
+    places: Place[];
 }
 
-const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
+const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     return (
         <View style={styles.card}>
             <Image source={place.image} style={styles.image} />
-            <View className="p-2" >
-                <Text className=" text-[16px] font-bold">{place.name}</Text>
+            <View className="p-2">
+                <Text className="text-[16px] font-bold">{place.name}</Text>
                 <Text style={styles.location}>{place.location}</Text>
                 <View style={styles.ratingContainer}>
                     <MaterialIcons name="star" size={16} color="gold" />
@@ -61,13 +30,9 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place }) => {
     );
 };
 
-const Homebox: React.FC = () => {
+const Homebox: React.FC<HomeboxProps> = ({ places }) => {
     return (
-        <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContainer}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
             {places.map((place) => (
                 <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={() => console.log(place.name)}>
                     <PlaceCard place={place} />
@@ -87,7 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F8F9FA",
         borderRadius: 16,
         shadowRadius: 6,
-        overflow :"hidden",
+        overflow: "hidden",
         elevation: 4,
         width: 160,
         marginRight: 12,
@@ -95,7 +60,7 @@ const styles = StyleSheet.create({
     image: {
         width: "100%",
         height: 100,
-        borderRadius : 10,
+        borderRadius: 10,
     },
     location: {
         fontSize: 14,
