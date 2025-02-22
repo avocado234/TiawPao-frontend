@@ -22,6 +22,7 @@ const Carousel: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const isAutoScrolling = useRef(false);
     const router = useRouter();
+    const snapToInterval = screenWidth;
 
     const carouselData: CarouselItem[] = [
         { id: "01", image: require("@/assets/images/test.png") },
@@ -64,8 +65,8 @@ const Carousel: React.FC = () => {
     };
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
-        <TouchableOpacity onPress={() => router.push('/HomeRecommend')}>
-            <Image className=" bg-fixed" source={item.image} style={styles.image} />
+        <TouchableOpacity onPress={() => router.push( '/HomeRecommend')}>
+            <Image  source={item.image} style={styles.image} />
         </TouchableOpacity>
     );
 
@@ -81,8 +82,8 @@ const Carousel: React.FC = () => {
     );
 
     return (
-        <View>
-            <FlatList
+        <View >
+            <FlatList 
                 data={carouselData}
                 ref={flatListRef}
                 getItemLayout={getItemLayout}
@@ -93,8 +94,8 @@ const Carousel: React.FC = () => {
                 onScroll={handleScroll}
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={16}
-                snapToInterval={screenWidth} 
-                snapToAlignment="center"      
+                snapToInterval={snapToInterval}
+                snapToAlignment="start"
             />
             {renderDotIndicators()}
         </View>
@@ -105,9 +106,8 @@ export default Carousel;
 
 const styles = StyleSheet.create({
     image: {
-        width: Dimensions.get("window").width,
-        height: 210, 
-        resizeMode: "cover",
+        width: Dimensions.get("screen").width,
+        height: 220, 
     },
     dotContainer: {
         flexDirection: "row",

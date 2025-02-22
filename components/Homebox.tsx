@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 
 interface Place {
     id: string;
@@ -19,7 +19,7 @@ const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     return (
         <View style={styles.card}>
             <Image source={place.image} style={styles.image} />
-            <View className="p-2">
+            <View style={styles.content}>
                 <Text className="text-[16px] font-bold">{place.name}</Text>
                 <Text style={styles.location}>{place.location}</Text>
                 <View style={styles.ratingContainer}>
@@ -31,25 +31,24 @@ const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     );
 };
 
+const Homebox: React.FC<HomeboxProps> = ({ places }) => {
+    const router = useRouter();
 
-const Homebox: React.FC = ({places}:any) => {
-    const PresstoHomedetail = (place : Place) => {
-        console.log("place.id")
-        console.log(place.id);
+    const PresstoHomedetail = (place: Place) => {
         router.push({
-          pathname: "/(tabs)/index/homedetail",
-          params: {
-            id: place.id,
-            name: place.name,
-            location: place.location,
-            image: place.image,
-        },
+            pathname: "/homedetail",
+            params: {
+                id: place.id,
+                name: place.name,
+                location: place.location,
+                image: place.image,
+            },
         });
-        
-      };
+    };
+
     return (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
-            {places.map((place:any) => (
+            {places.map((place) => (
                 <TouchableOpacity key={place.id} activeOpacity={0.8} onPress={() => PresstoHomedetail(place)}>
                     <PlaceCard place={place} />
                 </TouchableOpacity>
@@ -72,11 +71,16 @@ const styles = StyleSheet.create({
         elevation: 4,
         width: 160,
         marginRight: 12,
+        left :10,
+       
     },
     image: {
         width: "100%",
         height: 100,
         borderRadius: 10,
+    },
+    content: {
+        padding: 10,
     },
     location: {
         fontSize: 14,

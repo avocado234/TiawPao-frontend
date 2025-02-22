@@ -16,7 +16,7 @@ interface HotelListProps {
 
 const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
     return (
-        <View className="flex-1 rounded-2xl bg-white shadow-lg flex-row mb-4">
+        <View className="flex-1 rounded-2xl bg-white shadow-lg flex-row mb-4 ">
             <Image source={hotel.image} className="w-28 h-full rounded-xl bg-fixed" />
             <View className="ml-3 flex-1 p-1">
                 <Text className="text-2xl font-bold text-gray-800" numberOfLines={1} ellipsizeMode="clip">{hotel.name}</Text>
