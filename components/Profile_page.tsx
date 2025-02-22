@@ -1,476 +1,438 @@
 //Padding means inside box
 //margin means outside box
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react'
 import { ThemedText } from "./ThemedText";
 import { FontAwesome } from "@expo/vector-icons";
-import { View, StyleSheet, Text, useColorScheme, TextInput,ScrollView ,Alert,Pressable,Image} from 'react-native';
+import { View, StyleSheet, Text, useColorScheme, TextInput, ScrollView, Alert, Pressable, Image, Platform } from 'react-native';
 import { ThemedSafeAreaView } from './ThemedSafeAreaView';
+import Bgelement from '@/components/Bgelement';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Picker } from '@react-native-picker/picker';
 import DropDownPicker from "react-native-dropdown-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
+
 // import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { XStack, YStack, Select, Card } from "tamagui";
 import { Button } from 'tamagui';
-import {auth} from "@/config/firebaseconfig";
+import { auth } from "@/config/firebaseconfig";
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '@/store/useUser';
+import { ThemedView } from './ThemedView';
+import { transform } from '@babel/core';
+import ThemedTextInput from './ThemedTextInput';
+import api from '@/utils/axiosInstance';
 const Propage = () => {
-  //Set Value to UpdateUsername
+  const { user, setUserData, resetUserData } = useUserStore();
+  const [username, setUsername] = useState<String>(user.username);
+  const [firstname, setFirstname] = useState<String>(user.firstname);
+  const [lastname, setLastName] = useState<String>(user.lastname);
+  const [tel, setTel] = useState<String>(user.tel);
+  const [gender, setGender] = useState<String>(user.gender);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [date_of_birth, setDate_of_Birth] = useState<String>(user.lastname);
+  const showDatePicker = () => setDatePickerVisibility(true);
+  const hideDatePicker = () => setDatePickerVisibility(false);
+  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [dateOfBirth, setDateOfBirth] = useState(new Date(user.dateofbirth));
+  const [dateString, setDateString] = useState<String>('')
+  // const theme = useColorScheme();
+  // const [isDark, setIsDark] = useState(theme === 'light' ? false : true);
   const theme = useColorScheme();
-  const {user} = useUserStore();
-  const [get_visible, set_visible] = useState(true);
-  const [get_bool, set_bool] = useState(false);
-  const [get_edit, set_edit] = useState(false);
- 
-  //Username  & Temp user_name
-  const [user_name, set_user_name] = useState(user.username);
-  const [temp_user_name, temp_set_user_name] = useState(user_name);
+  const isDark = theme === 'dark';
 
-  //firstname & Temp first_name
-  const [first_name, set_first_name] = useState(user.firstname);
-  const [temp_first_name, temp_set_first_name] = useState(first_name);
+  useEffect(() => {
+    const year = dateOfBirth.getFullYear();
+    const month = String(dateOfBirth.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(dateOfBirth.getDate()).padStart(2, '0');
+    const tmp = `${year}-${month}-${day}`;
+    setDateString(tmp)
+  }, [dateOfBirth])
 
-  //lastname & temp last_name
-  const [last_name, set_last_name] = useState(user.lastname);
-  const [temp_last_name, temp_set_last_name] = useState(last_name);
+  const handleConfirm = (selectedDate: any) => {
+    // If user dismisses the picker (Android), selectedDate can be undefined.
+    if (!selectedDate) {
+      hideDatePicker();
+      return;
+    }
 
-  //email & temp email
-  const [email, set_email] = useState(user.email);
-  const [temp_email, temp_set_email] = useState(email);
-
-  //password & temp pass
-  const [password, set_password] = useState('!(#ABC');
-  const [temp_password, temp_set_password] = useState(password);
-
-  //mobile & temp mobile
-  const [mobile, set_mobile] = useState(user.tel);
-  const [temp_mobile, temp_set_mobile] = useState(mobile);
-
-  //date & temp date
-  const [date, set_date] = useState(new Date(user.dateofbirth));
-  const [show_date, set_show_date] = useState(false);
-  
-  const [temp_date, temp_set_date] = useState(date);
-
-  //gender & temp gender
-  const [gener_list, set_gender_list] = useState(
-  [
-    { label: "Male", value: "Male" },
-    { label: "Femail", value: "Femail" },
-    { label: "Others", value: "Others" }
-  ]); 
-  const [gender, set_gender] = useState(user.gender);
-  const [temp_gender, temp_set_gender] = useState(gender);
-
-
-  const Approved = () => {
-    console.log("flow this");
-    set_user_name(temp_user_name);
-    set_first_name(temp_first_name);
-    set_last_name(temp_last_name);
-    set_gender(temp_gender);
-    set_date(temp_date);
-    set_mobile(temp_mobile);
-    set_email(temp_email);
-    set_password(temp_password);
-
-    set_bool(true);
-    set_visible(true);
-    set_edit(false);
-
-  }
-  const Noapproved = () => {
-    temp_set_user_name(user_name);
-    temp_set_first_name(first_name);
-    temp_set_last_name(last_name);
-    temp_set_gender(gender);
-    temp_set_date(date);
-    temp_set_mobile(mobile);
-    temp_set_email(email);
-    temp_set_password(password);
-    set_edit(false);
-    set_bool(false);
-    set_visible(true);
-  }
-
-  const get_date = (date:Date) => {
-    return date.toLocaleDateString('en-EN'); 
+    const today = new Date();
+    if (selectedDate > today) {
+      Alert.alert("Error", "Date of Birth cannot be in the future!");
+      hideDatePicker();
+      return;
+    }
+    // console.log(selectedDate);
+    setDate_of_Birth(selectedDate.toISOString().split('T')[0]);
+    // console.log(date_of_birth);
+    hideDatePicker();
   };
-  const router = useRouter();
-  const handelSingOut = async() => {
+
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    if (event.type === 'set' && selectedDate) {
+      setDateOfBirth(selectedDate);
+    }
+    if (Platform.OS === 'android') {
+      setDatePickerVisibility(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (
+      username !== user.username ||
+      firstname !== user.firstname ||
+      lastname !== user.lastname ||
+      tel !== user.tel ||
+      gender !== user.gender ||
+      dateString !== user.dateofbirth
+    ) {
       try {
-        await signOut(auth).then(() => {
-          router.replace('/signin')
-        });
-        
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          throw new Error('User not logged in');
+        }
+
+        // ดึง ID token จาก Firebase
+        const idToken = await currentUser.getIdToken();
+        console.log(idToken)
+        console.log(user.email)
+        const updateUser: any = await api.put(
+          `/user/update/${user.email}`,
+          {
+            username,
+            tel,
+            firstname,
+            lastname,
+            dateofbirth: dateString,
+            gender
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`
+            }
+          }
+        );
+
+
+        if (updateUser.status === 201) {
+          // Fetch the updated user data
+          const userData: any = await api.get(`/user/getuser/${user.email}`, {
+            headers: {
+              Authorization: `Bearer ${idToken}`
+            }
+          });
+
+          const dataUser = userData.data;
+          console.log(dataUser);
+          setUserData({
+            username: dataUser.username,
+            email: dataUser.email,
+            firstname: dataUser.firstname,
+            lastname: dataUser.lastname,
+            dateofbirth: dataUser.date_of_birth,
+            tel: dataUser.tel,
+            gender: dataUser.gender,
+            img: dataUser.image
+          });
+
+          Alert.alert("User updated successfully!");
+        } else {
+          Alert.alert("Update failed", "Please try again.");
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Update Error:", error);
+        Alert.alert("Error", "Something went wrong during the update.");
       }
-  };
-
-  const date_confirm = (selectedDate :Date) => { 
-    temp_set_date(selectedDate); 
-    
-    set_show_date(false); 
-  };
-  const date_cancle = () => {
-    temp_set_date(date); 
-    set_show_date(false); 
-  };
-
-
-  const showDatePicker = () => {
-    if(get_edit)
-    {
-      set_show_date(true); 
     }
+    setIsEdit(false);
   };
 
-  const disition_select_gender =()=>
-  {
-    if(get_edit)
-    {
-      select_gender();
-    }
+  const handleCancel = ()=>  {
+    setUsername(user.username);
+    setFirstname(user.firstname);
+    setLastName(user.lastname);
+    setTel(user.tel);
+    setGender(user.gender);
+    setIsEdit(false);
   };
 
-  const select_gender = () => {
-    Alert.alert(
-      "Gender", 
-      "Please select Gender", 
-      [
-        { text: "Male", onPress: () =>    temp_set_gender('Male') },
-        { text: "Female", onPress: () =>  temp_set_gender('Female') },
-        { text: "Others", onPress: () =>  temp_set_gender('Others') },
-        { text: "Cancle", onPress: () => console.log("No select") },
-
-      ],
-      { cancelable: true }
-    );
-  };
-
-
-  const changed = () => {
-    set_visible(false);
-    set_edit(true);
-  }
-
-  //Value to Color Change when Change in theme
-  let backGround_Color = '#F2F2F2';
-  let Profile_Background = '#F2F2F2';
-  let Font_Color = '#203B82';
-  let Border_Color = 'transparent';
-  let Border_Width = 0;
-  //Config Color when change theme
-  const placeholder_Color = theme === 'dark' ? '#red' : '#white';
-  if (theme === 'dark') {
-    Font_Color = '#F2F2F2';
-    backGround_Color = '#203B82';
-    Profile_Background = '#F2F2F2';
-    Border_Color = 'white';
-    Border_Width = 0;
-  }
-  else {
-    Font_Color = '#203B82';
-    backGround_Color = 'white';
-    Profile_Background = '#203B82';
-    Border_Color = '#203B82';
-    Border_Width = 0;
-  }
 
   return (
-    
-    <View style={[styles.Component_box_main, { backgroundColor: backGround_Color, borderWidth: Border_Width, borderBlockColor: Border_Color }]}>
-      {/* Comment : รูปของ Kaithod*/}
-      <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.Component_Picture_profile} />
-      <ThemedSafeAreaView color='transparnet'  >
-
-        {/*Comment : Just Hi Traveler */}
-        <View style={styles.Component_big_username}>
-          <Text style={[styles.font_only_hi, { color: Font_Color }]}>Hi</Text>
-          <Text style={[styles.font_show_name, { color: Font_Color }]}>{user.username}</Text>
-          {get_visible && (<Button style={[styles.Component_edit_box, { backgroundColor: Border_Color }]}
-            onPress={changed}
-          >
-            <FontAwesome name="edit" size={25} color={backGround_Color} style={{ width: 25, height: 25 }} />
-          </Button>)}
-        </View>
-
-        {/*Comment : Gang button kub */}
-        <View style={styles.Component_box_all_button}>
-          <YStack alignItems="flex-start" width="100%" padding="10" paddingTop="-50">
-
-            <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>Username</Text>
-            <TextInput style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color }]}
-              value={temp_user_name}
-              onChangeText={temp_set_user_name}
-              editable={get_edit}
-              selectionColor={placeholder_Color}
-            ></TextInput>
-
-            <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>FirstName</Text>
-            <TextInput style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color }]}
-              value={temp_first_name}
-              onChangeText={temp_set_first_name}
-              editable={get_edit}
-              selectionColor={placeholder_Color}
-            ></TextInput>
-
-            <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>LastName</Text>
-            <TextInput style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color }]}
-              value={temp_last_name}
-              onChangeText={temp_set_last_name}
-              editable={get_edit}
-              selectionColor={placeholder_Color}
-            ></TextInput>
-            {/*Comment : Normaly ystack is Sort in Y position so, I Use View and View to Decorate Gender and Date of Birth*/}
-
-            <View style={styles.Component_twin_inputbox}>
-
-              <View style={styles.Compareator_Gender}>
-                <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>Gender</Text>
-                <Button style={[styles.Component_user_textinput,{backgroundColor:backGround_Color,borderColor:Border_Color}]}
-                  onPress={disition_select_gender}>
-                  <Text style={[styles.font_Date_gender_inside, { color: Border_Color ,paddingLeft:10}]}>{temp_gender}</Text>
-                </Button> 
-
-  
-        
-              </View>
-
-              <View style={styles.Compareator_Date}>
-                <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>Date of Birth</Text>
-                <Button style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color ,justifyContent: 'center', alignItems: 'center'}]}
-                onPress={showDatePicker}
-                >
-                  {/* <DateTimePickerModal
-                   isVisible={show_date}
-                    mode="date"
-                    date={temp_date}
-                    onConfirm={date_confirm}
-                    onCancel={date_cancle} // Hide picker when canceled
-                  /> */}
-                    <Text style={[styles.font_Date_gender_inside, { color: Border_Color }]}>{get_date(temp_date)}</Text>
-                    <XStack style={{marginRight:-30,marginTop:-2}}>
-                    <Entypo name="calendar" size={24} color={theme === 'dark' ? "#fff" : "#203B82" } />
-                    </XStack>
-
-                </Button>
-
-
-              </View>
-
+    <View style={styles.screen}>
+      <ThemedView style={styles.plane} className='flex'>
+        <ThemedView style={[
+          {
+            backgroundColor: isDark ? "#203B82" : 'white'
+          },
+          styles.setting_plane,
+        ]}>
+          <ThemedView style={styles.detial_plane}>
+            <ThemedText style={styles.headerText}>{username}</ThemedText>
+            <ThemedText style={styles.subheaderText}>{user.email}</ThemedText>
+            {!isEdit &&
+              <Pressable
+                onPress={() => { setIsEdit(true) }}
+                style={[
+                  // styles.edit_button,
+                  isDark ? styles.edit_button_dark : styles.edit_button_light,
+                ]}
+              >
+                <Text style={[{ color: isDark ? '#203B82' : 'white' }]} >Edit Profile</Text>
+              </Pressable>
+            }
+            <View className="w-[90%] pb-2">
+              <ThemedText style={styles.input_header_text}>Username</ThemedText>
+              <ThemedTextInput
+                style={[styles.input_data, { color: isDark ? '#203B82' : 'black', }]}
+                value={username}
+                onChangeText={setUsername}
+                autoComplete="username"
+                editable={isEdit}
+              />
             </View>
-            {/*Comment : Back to Normally YStack lol */}
-            <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>Mobile Number</Text>
-            <TextInput style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color }]}
-              value={temp_mobile}
-              onChangeText={temp_set_mobile}
-              editable={get_edit}
-              selectionColor={placeholder_Color}
-            ></TextInput>
+            <View className="w-[90%] pb-2">
+              <ThemedText style={styles.input_header_text}>Firstname</ThemedText>
+              <ThemedTextInput
+                style={[styles.input_data, { color: isDark ? '#203B82' : 'black', }]}
+                value={firstname}
+                onChangeText={setFirstname}
+                autoComplete="firstname"
+                editable={isEdit}
+              />
+            </View>
+            <View className="w-[90%] pb-2">
+              <ThemedText style={styles.input_header_text}>Lastname</ThemedText>
+              <ThemedTextInput
+                style={[styles.input_data, { color: isDark ? '#203B82' : 'black', }]}
+                value={lastname}
+                onChangeText={setLastName}
+                autoComplete="lastname"
+                editable={isEdit}
+              />
+            </View>
+            <View className="w-[90%] pb-2">
+              <ThemedText style={styles.input_header_text}>Moblie Number</ThemedText>
+              <ThemedTextInput
+                style={[styles.input_data, { color: isDark ? '#203B82' : 'black', }]}
+                value={tel}
+                onChangeText={setTel}
+                autoComplete="tel"
+                editable={isEdit}
+              />
+            </View>
+            <View className="w-[90%] pb-4 flex flex-row justify-between">
+              <View className='w-[48%]'>
+                <ThemedText style={styles.input_header_text}>Gender</ThemedText>
+                <ThemedTextInput
+                  style={[styles.input_data, { color: isDark ? '#203B82' : 'black', }]}
+                  value={gender}
+                  onChangeText={setGender}
+                  className='text-center'
+                  autoComplete="sex"
+                  editable={isEdit}
+                />
+              </View>
+              <View className='w-[48%]'>
+                <ThemedText style={styles.input_header_text}>Date of Birth</ThemedText>
+                {isEdit &&
+                  <ThemedText
+                    onPress={() => { setDatePickerVisibility(true) }}
+                    style={[
+                      styles.input_data_date,
+                      {
+                        borderColor: isDark ? '#5680EC' : 'black',
+                        color: isDark ? '#203B82' : 'black',
+                      }
+                    ]}
+                  >{dateOfBirth.toLocaleDateString()}</ThemedText>
+                }
+                {!isEdit &&
+                  <ThemedText
+                    style={[
+                      styles.input_data_date,
+                      {
+                        borderColor: isDark ? '#5680EC' : 'black',
+                        color: isDark ? '#203B82' : 'black',
+                      }
+                    ]}
+                  >{dateOfBirth.toLocaleDateString()}</ThemedText>
+                }
 
-            <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>Email</Text>
-            <TextInput style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color }]}
-              value={temp_email}
-              onChangeText={temp_set_email}
-              editable={get_edit}
-              selectionColor={placeholder_Color}
-            ></TextInput>
-
-            <Text style={[styles.font_upper_textinput, { color: Font_Color }]}>Password</Text>
-            <TextInput style={[styles.Component_user_textinput, { borderColor: Border_Color, backgroundColor: backGround_Color, color: Font_Color }]}
-              value={temp_password}
-              onChangeText={temp_set_password}
-              editable={get_edit}
-              selectionColor={placeholder_Color}
-            ></TextInput>
-              
-          </YStack>
-        </View>
-        <XStack style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'space-between', width: '100%' }}>
-          {!get_visible && (<Button style={[styles.Component_yesorno, { backgroundColor: Border_Color, color: backGround_Color }]}
-            onPress={Approved}
-          ><Text style={[styles.font_yesorno, { color: backGround_Color }]}>Yes</Text></Button>)}
-          {!get_visible && (<Button style={[styles.Component_yesorno, { backgroundColor: Border_Color, color: backGround_Color }]}
-            onPress={Noapproved}
-          ><Text style={[styles.font_yesorno, { color: backGround_Color }]}>No</Text></Button>)}
-        </XStack>
-        <YStack>
-          {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
-          {!get_visible && (<Button style={styles.conponent_button_transparent}></Button>)}
-        </YStack>
-        
-      </ThemedSafeAreaView>
-      <Pressable
-            className='bg-red-500 w-full h-[50px] mt-5 flex justify-center items-center rounded-3xl'
-            onPress={handelSingOut}
-        >
-            <Text className='text-xl text-white'>Logout</Text>
-      </Pressable>
+              </View>
+            </View>
+            {!isEdit &&
+              <Pressable style={styles.logout_button}
+                onPress={() => { auth.signOut() }}
+              >
+                <Text style={[{ color: isDark ? 'white' : 'white' }]} >Logout</Text>
+              </Pressable>
+            }
+            {isEdit &&
+              <ThemedView className='w-[90%] flex flex-row justify-between' style={{ backgroundColor: 'transparent' }}>
+                <Pressable style={styles.save_button}
+                  onPress={handleUpdate}
+                >
+                  <Text style={[{ color: isDark ? 'white' : 'white' }]} >Save</Text>
+                </Pressable>
+                <Pressable style={styles.cancel_button}
+                  onPress={ handleCancel }
+                >
+                  <Text style={[{ color: isDark ? 'white' : 'white' }]} >Cancel</Text>
+                </Pressable>
+              </ThemedView>
+            }
+          </ThemedView>
+        </ThemedView>
+        <Image className="absolute" source={{ uri: user.img }} style={styles.avatar} />
+      </ThemedView>
+      <CustomDateTimePicker
+        visible={isDatePickerVisible}
+        mode="date"
+        value={dateOfBirth}
+        onChange={onChangeDate}
+        onClose={() => setDatePickerVisibility(false)}
+      />
     </View>
-  );
+  )
 };
 
+export default Propage;
 const styles = StyleSheet.create({
-  Component_box_all_button: {
-    zIndex: 4,
+  screen: {
     width: '100%',
-    height: 500,
-    alignSelf: 'flex-start',
-    textAlign: 'left',
-    backgroundColor: 'transparent'
-  },
-  Component_box_main: {
-    width: '88%',
-    height: 650,
-    borderRadius: 20,
-    opacity: 1,
-    zIndex: 1,
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: '-50%' }, { translateY: '15%' }],
-    flex: 1,
-    justifyContent: 'center',
-    //alignItems: 'center',
-  },
-  Component_big_username: {
-    flexDirection: 'row',
+    height: '100%',
+    paddingHorizontal: 30,
+    paddingVertical: 60,
+    // backgroundColor: "red",
     backgroundColor: 'transparent',
-    position: 'relative',
-    justifyContent: 'center',
-    //alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    top: 0,
-    zIndex: 5,
+
+  },
+  plane: {
     width: '100%',
-    height: 80,
+    height: '100%',
+    flex: 2,
+    backgroundColor: 'transparent',
+    // backgroundColor: "yellow",
+
   },
-  Component_Picture_profile: {
-    width: 125,
-    height: 125,
-    borderRadius: 100,
-    //backgroundColor: '#203B82',
-    position: 'absolute',
-    top: -40,
-    left: -20,
-    zIndex: 3,
-  },
-  Component_twin_inputbox: {
-    flexDirection: 'row',
+  setting_plane: {
     width: '100%',
-    height: 70,
-    backgroundColor: 'transparent',
-    justifyContent: "space-between"
+    height: '98%',
+    // backgroundColor: "white",
+    marginTop: '5%',
+    borderRadius: 30,
   },
-  conponent_button_transparent: {
+  detial_plane: {
+    marginTop: '20%',
+    width: '100%',
+    height: '90%',
     backgroundColor: 'transparent',
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: 30,
   },
-  Component_edit_box: {
+  headerText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  subheaderText: {
+    fontSize: 14,
+    fontWeight: 'medium',
+    textAlign: 'center',
+    marginBottom: 6,
+
+  },
+  input_header_text: {
+    fontSize: 18,
+    paddingBottom: 5,
+  },
+  input_data: {
+    fontSize: 16,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    backgroundColor: 'white',
+    borderRadius: 30,
+  },
+  input_data_date: {
+    textAlign: 'center',
+    fontSize: 16,
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 30,
+    backgroundColor: 'white',
+  },
+  edit_button_light: {
+    width: 140,
+    height: 36,
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
+    borderRadius: 30,
+    backgroundColor: '#203B82',
+    marginBottom: 2,
+  },
+  edit_button_dark: {
+    width: 140,
+    height: 36,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#FFFFFF',
+    marginBottom: 2,
+  },
+  logout_button: {
+    width: '90%',
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    borderRadius: 30,
+    marginBottom: 5,
+  },
+  save_button: {
+    width: '48%',
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2AC365',
+    borderRadius: 30,
+    marginBottom: 5,
+  },
+  cancel_button: {
+    width: '48%',
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+    borderRadius: 30,
+    marginBottom: 5,
+  },
+  filterContainer: {
+    overflow: 'hidden',
+  },
+  avatar: {
+    width: 100,
+    height: 100,
     borderRadius: 50,
-    right: 10,
-    top: -3,
-    width: 50,
-    height: 30,
-    backgroundColor: 'white',
+    position: 'absolute',
+    left: '50%',
+    top: '5%',
+    transform: [{ translateX: -50 }, { translateY: -50 }],
   },
-  Component_user_textinput: {
-    paddingVertical: 5,
-    shadowColor: 'transparent',
-    width: '100%',
-    height: 40,
-    backgroundColor: 'white',
-    borderRadius: 30,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderLeftWidth: 2,
-    paddingLeft: 15,
-    paddingRight: 48,
-    paddingTop: 8,
-    marginBottom: 5,
-    marginTop: 5,
+  scrollContentContainer: {
+    padding: 10,
+    paddingBottom: 120,
   },
-  Component_Gender: {
-    paddingVertical: 5,
-    shadowColor: 'transparent',
-    width: '100%',
-    height: 40,
-    backgroundColor: 'white',
-    borderRadius: 30,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderLeftWidth: 2,
-    paddingLeft: 15,
-    paddingRight: 48,
-    paddingTop: 8,
-    marginBottom: 5,
-    marginTop: 5,
-  },
-  Component_gender_picker: {
-    width: '100%',
-    height: 40,
-    backgroundColor: 'white',
-    borderColor: '#203B82',
-    borderRadius: 30,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderLeftWidth: 2,
-    paddingLeft: 15,
-    paddingRight: 48,
-    paddingTop: 8,
-    marginBottom: 10,
-  },
-  Component_yesorno: {
-    borderRadius: 30,
-    width: 70,
-    height: 40,
-  },
-  font_only_hi: {
-    fontSize: 24,
-    left: 30,
-    paddingTop: 10,
-    //color: '#203B82',
-  },
-  font_show_name: {
-    paddingTop: 20,
-    //paddingLeft:-50,
-    fontSize: 40,
-    left: 30,
-    //color: 'black',
-    zIndex: 3,
-  },
-  font_yesorno: {
-    fontSize: 20,
-  },
-  font_upper_textinput: {
-    fontSize: 15,
-    paddingLeft: 10,
-    textAlign: 'left',
-  },
-  font_Date_gender_inside: {
-    flex: 1,
-    textAlign: 'left',
-    marginLeft:-10,
-    alignItems: 'center',
-    // paddingLeft: ,
-  },
-  Compareator_Gender: {
-    //backgroundColor:'black',
-    flex: 1,
-    marginRight: 10,
-  },
-  Compareator_Date: {
-    // backgroundColor:'red',
-    flex: 1,
-    marginLeft: 10,
-  }
 });
 
-export default Propage;
