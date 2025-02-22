@@ -137,6 +137,7 @@ export default function RootLayout() {
           <Stack.Screen name="resetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="tripManually" options={{ headerShown: false }} />
+          <Stack.Screen name="HomeRecommend" options={{headerShown : false}}/>
         </Stack>
       {/* </AuthProvider> */}
       <StatusBar style="auto" />
