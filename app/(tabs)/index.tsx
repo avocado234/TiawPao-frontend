@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,15 +6,13 @@ import {
   Image,
   TouchableNativeFeedback,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import { ScrollView } from 'tamagui';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from '@/components/Bgelement';
-import { router } from 'expo-router';
 import Carousel from '@/components/Carouselhome';
-
-
 import { auth } from "@/config/firebaseconfig";
 import { Button } from 'react-native'
 import { XGroup, XStack, YStack } from "tamagui";
@@ -24,13 +22,30 @@ import HotelList from '@/components/HotelList';
 import { useUserStore } from '@/store/useUser';
 
 
-const homepage: React.FC = () => {
+
+
+const Homepage: React.FC = () => {
+   const { width, height } = Dimensions.get('screen');
+
+const places = [
+    { id: "1", name: "Koh Larn", location: "Chonburi", rating: 4.7, image: require("@/assets/images/Kohlarn.png") },
+    { id: "2", name: "Old Town", location: "Phuket", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
+    { id: "3", name: "Doi Inthanon", location: "Chiangmai", rating: 4.2, image: require("@/assets/images/Doiinthanon.png") },
+    { id: "4", name: "Wat Arun", location: "Bangkok", rating: 4.9, image: require("@/assets/images/Watarun.png") },
+];
+const hotels = [
+    { id: "1", name: "Banyan Tree Bangkok", description: "#2 Best Value of 3,000 places to stay in Thailand", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
+    { id: "2", name: "Hotel Clover Patong Phuket", description: "#4 Best Value of 3,000 places to stay in Thailand", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
+    { id: "3", name: "Centara Reserve Samui", description: "#11 Best Value of 409 Thailand Luxury Hotels", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
+    
+];
   const router = useRouter();
+
   const {user} = useUserStore();
   // console.log(user)
   return (
-    <SafeAreaView className=' flex-1'>
-      <ThemedView className=' flex-1'>
+    <View className='flex-1'>
+      <ThemedView className='flex-1'>
         <Bgelement />
         <View style={styles.headerWrapper}>
           <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
@@ -41,60 +56,64 @@ const homepage: React.FC = () => {
           </TouchableNativeFeedback>
         </View>
         <ScrollView
-          className=' flex-1'
+          className='flex-1'
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false}
         >
-          <View className='top-9'>
+          <View >
             <Carousel />
           </View>
-          <View className="top-12">
-            <ThemedText className="text-2xl font-bold ">Journey together</ThemedText>
+          <View >
+            <ThemedText className="text-2xl font-bold">Journey together</ThemedText>
           </View>
-          <View className=' top-14' >
-            <Homebox />
+          <View >
+            <Homebox places={places} />
           </View>
-          <View className="top-14">
-            <ThemedText className="text-2xl font-bold ">Food & Drink</ThemedText>
+          <View >
+            <ThemedText className="text-2xl font-bold">Food & Drink</ThemedText>
           </View>
-          <View className=' top-14' >
-            <Homebox />
+          <View >
+            <Homebox places={places} />
           </View>
-          <View className="top-14">
+          <View >
             <ThemedText className="text-2xl font-bold">Hotels</ThemedText>
           </View>
-          <View className="top-14 ">
-            <HotelList />
+          <View >
+            <HotelList hotels={hotels} />
           </View>
         </ScrollView>
       </ThemedView>
-    </SafeAreaView>
+    </View>
   );
 };
-export default homepage;
+
+export default Homepage;
+
 const styles = StyleSheet.create({
   headerWrapper: {
-    marginTop: 30,
-    paddingHorizontal: 20,
+    marginTop: height * 0.04, 
+    paddingHorizontal: width * 0.05,
+    
   },
   headerText: {
-    fontSize: 36,
+    fontSize: width * 0.09, 
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 30,
-  },
-  filterContainer: {
-    overflow: 'hidden',
+    marginBottom: height * 0.03,
+    top : width * 0.02
   },
   avatar: {
-    width: 54,
-    height: 54,
-    borderRadius: 50,
+    width: width * 0.14,
+    height: width * 0.14,
+    borderRadius: width * 0.07,
+    position :"absolute",
+    end : width *0.01,
+    bottom : width * 0.05,
+
+    
   },
   scrollContentContainer: {
-    padding: 10,
-    paddingBottom: 120,
+    padding: width * 0.03,
+    paddingBottom: height * 0.05,
   },
 });
-
-

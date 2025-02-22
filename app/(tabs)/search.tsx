@@ -18,9 +18,10 @@ import Animated, {
 import Bgelement from '@/components/Bgelement';
 import Filterplan from '@/components/Filterplan';
 import TripCard from '@/components/TripCard';
-
+import { useRouter } from "expo-router";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get('window');
-const FILTER_PANEL_HEIGHT = height * 0.28;
+const FILTER_PANEL_HEIGHT = height * 0.241;
 
 const tripData = [
   { id: 1, user: "Jame Macdonell", nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", rating: "4.8", location: "Chonburi", description: "This plan is very good plan in Pattaya" },
@@ -30,6 +31,7 @@ const tripData = [
 ];
 
 const Search: React.FC = () => {
+  const router = useRouter();
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [filteredTrips, setFilteredTrips] = useState(tripData);
   const filterHeight = useSharedValue(0);
@@ -48,7 +50,7 @@ const Search: React.FC = () => {
         <View style={styles.headerWrapper}>
           <ThemedText style={styles.headerText}>Public Plan</ThemedText>
           <TouchableOpacity onPress={toggleFilter}>
-            <AntDesign name="filter" size={width * 0.08} color="white" />
+            <MaterialIcons style={{ opacity:0.75 }} name={filterOpen  ? 'filter-list-off' : 'filter-list'} size={36} color= "#fff" />
           </TouchableOpacity>
         </View>
         <Animated.View style={[styles.filterContainer, animatedFilterStyle]}>
@@ -56,7 +58,7 @@ const Search: React.FC = () => {
         </Animated.View>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           {filteredTrips.map((trip) => (
-            <TouchableOpacity key={trip.id} activeOpacity={0.8} style={{ alignItems: "center"}}>
+            <TouchableOpacity key={trip.id} activeOpacity={0.8} style={{ alignItems: "center"}} >
               <TripCard trip={trip}  />
             </TouchableOpacity>
           ))}
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
   headerWrapper: {
     marginTop: height * 0.05,
     paddingHorizontal: width * 0.05,
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.01,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
