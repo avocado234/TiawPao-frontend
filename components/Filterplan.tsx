@@ -51,21 +51,47 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
       <Text style={styles.subTitle}>Sort By</Text>
       <View style={styles.buttonRow}>
         
-        <Pressable style={[styles.button, activeFilter === 'budget-asc' && styles.activeButton]} onPress={() => sortTrips('budget', 'asc')}>
-          <Text style={styles.buttonText}>Budget (Low to High)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'budget-desc' && styles.activeButton]} onPress={() => sortTrips('budget', 'desc')}>
-          <Text style={styles.buttonText}>Budget (High to Low)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'name-asc' && styles.activeButton]} onPress={() => sortTrips('name', 'asc')}>
-          <Text style={styles.buttonText}>Name (A-Z)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'name-desc' && styles.activeButton]} onPress={() => sortTrips('name', 'desc')}>
-          <Text style={styles.buttonText}>Name (Z-A)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'rating-desc' && styles.activeButton]} onPress={() => sortTrips('rating', 'desc')}>
-          <Text style={styles.buttonText}>Rating</Text>
-        </Pressable>
+      <Pressable 
+  style={[styles.button, activeFilter === "budget-asc" && styles.activeButton]} 
+  onPress={() => sortTrips("budget", "asc")}
+>
+  <Text style={[styles.buttonText, activeFilter === "budget-asc" && styles.activeButtonText]}>
+    Budget (Low to High)
+  </Text>
+</Pressable>
+<Pressable 
+  style={[styles.button, activeFilter === "budget-desc" && styles.activeButton]} 
+  onPress={() => sortTrips("budget", "desc")}
+>
+  <Text style={[styles.buttonText, activeFilter === "budget-desc" && styles.activeButtonText]}>
+    Budget (High to Low)
+  </Text>
+</Pressable>
+<Pressable 
+  style={[styles.button, activeFilter === "name-asc" && styles.activeButton]} 
+  onPress={() => sortTrips("name", "asc")}
+>
+  <Text style={[styles.buttonText, activeFilter === "name-asc" && styles.activeButtonText]}>
+    Name (A-Z)
+  </Text>
+</Pressable>
+<Pressable 
+  style={[styles.button, activeFilter === "name-desc" && styles.activeButton]} 
+  onPress={() => sortTrips("name", "desc")}
+>
+  <Text style={[styles.buttonText, activeFilter === "name-desc" && styles.activeButtonText]}>
+    Name (Z-A)
+  </Text>
+</Pressable>
+<Pressable 
+  style={[styles.button, activeFilter === "rating-desc" && styles.activeButton]} 
+  onPress={() => sortTrips("rating", "desc")}
+>
+  <Text style={[styles.buttonText, activeFilter === "rating-desc" && styles.activeButtonText]}>
+    Rating
+  </Text>
+</Pressable>
+
         
       </View>
 
@@ -91,15 +117,24 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#5680EC",},
-  subTitle: { fontSize: 20, fontWeight: 'bold', color: 'white', marginBottom: 10 },
-  buttonRow: { flexDirection: 'row', flexWrap: 'wrap' , },
-  button: { backgroundColor: 'white', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, margin: 5, alignItems: 'center' },
-  activeButton: {backgroundColor: '#203B82' },
-  buttonText: { fontSize: 14, color: '#000', fontWeight: 'bold' },
-  sliderContainer: { flexDirection: 'row', alignItems: 'center' },
-  sliderLabel: { color: 'white', fontWeight: 'bold', width: 80, textAlign: 'center' },
+  container: { padding: 20, backgroundColor: "#5680EC" },
+  subTitle: { fontSize: 20, fontWeight: "bold", color: "white", marginBottom: 10 },
+  buttonRow: { flexDirection: "row", flexWrap: "wrap" },
+  button: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    margin: 5,
+    alignItems: "center",
+  },
+  activeButton: { backgroundColor: "#203B82" },
+  buttonText: { fontSize: 14, color: "#000", fontWeight: "bold" },
+  activeButtonText: { color: "white" }, 
+  sliderContainer: { flexDirection: "row", alignItems: "center" },
+  sliderLabel: { color: "white", fontWeight: "bold", width: 70, textAlign: "center" },
   slider: { flex: 1 },
 });
+
 
 export default Filterplan;
