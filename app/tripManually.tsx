@@ -5,7 +5,10 @@ import Bgelement from "@/components/Bgelement";
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
+
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
 
 
 export default function TripManually() {
@@ -48,7 +51,10 @@ export default function TripManually() {
           <Icon name="arrow-back-outline" size={24} color="#203B82" />
         </TouchableOpacity>
 
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView 
+        contentContainerStyle={styles.contentContainer} 
+        showsVerticalScrollIndicator={false}
+        >
           <ImageBackground 
             source={require("@/assets/images/Chonburi.png")}
             style={styles.tripCard}
@@ -56,15 +62,24 @@ export default function TripManually() {
           >
             
             <View style={styles.tripContent}>
-              <Text style={styles.tripName}>{tripName}</Text>
-              <Text style={styles.tripDate}>
-                {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - 
-                {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </Text>
-              <Text style={styles.province}>{province}</Text>
+              <Text 
+              style={styles.tripName}>{tripName}</Text>
+
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="calendar-clear" size={19} color="#FFFFFF" />
+                
+                <Text style={styles.tripDate}>
+                  {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - 
+                  {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </Text>
+              </View>
+
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Feather name="map-pin" size={20} color="#FFFFFF" />
+                <Text style={styles.province}>{province}</Text>
+              </View>
 
               <TouchableOpacity style={styles.editButton}>
-                
                 <Text style={styles.editButtonText}>Edit</Text>
                 <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
               </TouchableOpacity>
@@ -72,14 +87,17 @@ export default function TripManually() {
 
             <View style={styles.iconContainer}>
               <TouchableOpacity style={styles.iconButton}>
-                <Icon name="book-outline" size={24} color="#203B82" />
+
+              <Feather name="map" size={20} color="#FFFFFF" />
                 <Text style={styles.iconTextInline}>View Location</Text>
               </TouchableOpacity>
+
               <TouchableOpacity style={styles.iconButton}>
-                <Icon name="person-add-outline" size={24} color="#203B82" />
+                
+              <FontAwesome6 name="user-plus" size={19} color="#FFFFFF"  />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton}>
-                <Icon name="settings-outline" size={24} color="#203B82" />
+                <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
             
@@ -103,7 +121,7 @@ export default function TripManually() {
                     <Text style={styles.dropdownText}>Build your day by adding some location</Text>
                   </View>
                   <TouchableOpacity style={styles.addButton} onPress={toggleModal}>
-                    <Icon name="add-outline" size={16} color="#fff" />
+                    <Icon name="add-outline" size={16} color="#FFFFFF" />
                     <Text style={styles.addButtonText}>Add</Text>
                   </TouchableOpacity>
                 </View>
@@ -173,19 +191,21 @@ const styles = StyleSheet.create({
   tripName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#203B82',
+    color: '#FFFFFF',
   },
   tripDate: {
     fontSize: 16,
-    color: '#f0f0f0',
+    color: '#FFFFFF',
     marginVertical: 4,
+    marginLeft: 4,
   },
   province: {
     fontSize: 16,
-    color: '#f0f0f0',
+    color: '#FFFFFF',
+    marginLeft: 4
   },
   dayContainer: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
     padding: 16,
     marginBottom: 8,
@@ -237,7 +257,7 @@ const styles = StyleSheet.create({
   },
   iconTextInline: {
     fontSize: 12,
-    color: '#203B82',
+    color: '#FFFFFF',
     marginLeft: 4,
   },
   editButton: {
@@ -257,6 +277,7 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     marginRight: 4,
+    marginLeft: 4,
   },
   editButtonText: {
     fontSize: 14,
@@ -277,7 +298,7 @@ const styles = StyleSheet.create({
   },
   dropdownContent: {
     padding: 10,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: 'rgba(224, 224, 224, )',
     borderRadius: 8,
     marginTop: 8,
   },
