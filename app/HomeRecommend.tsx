@@ -107,28 +107,7 @@ export default function HomeRecommend() {
         </View>
       </ScrollView>
 
-      {/* 🔹 Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => router.push("/")} style={styles.navItem}>
-          <Ionicons name="home" size={24} color="#000" />
-          <Text style={styles.navText}>Home</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push("/search")} style={styles.navItem}>
-          <Ionicons name="search" size={24} color="#000" />
-          <Text style={styles.navText}>Search</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push("/plan")} style={styles.navItem}>
-          <Ionicons name="bookmark" size={24} color="#000" />
-          <Text style={styles.navText}>Plan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push("/profile")} style={styles.navItem}>
-          <Ionicons name="person" size={24} color="#000" />
-          <Text style={styles.navText}>Profile</Text>
-        </TouchableOpacity>
-      </View>
+      
     </SafeAreaView>
   );
 }
