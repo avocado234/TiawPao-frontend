@@ -26,7 +26,7 @@ const TripCard: React.FC<TripCardProps> = ({ trip }) => {
           <Text style={styles.userName}>{trip.user}</Text>
         </View>
         <Text style={styles.price}>{trip.price}</Text>
-        <Text style={styles.tripTitle}>{trip.nametrip}</Text>
+        <Text numberOfLines={1} ellipsizeMode="clip" style={styles.tripTitle}>{trip.nametrip}</Text>
         <View style={styles.tripInfo}><FontAwesome name="calendar" size={18} color="#fff" /><Text style={styles.dateText}> {trip.date}</Text></View>
         <View style={styles.tripInfo}><FontAwesome name="map-marker" size={18} color="#fff" /><Text style={styles.dateText}> {trip.location}</Text></View>
       </View>
@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginBottom: 15,
     paddingBottom: 5,
-   
   },
   header: {
     backgroundColor: "#203B82",
