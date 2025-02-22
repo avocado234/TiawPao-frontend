@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { View, Pressable, StyleSheet, SafeAreaView, FlatList, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {
+  View,
+  Pressable,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Platform
+} from 'react-native';
 import { router } from 'expo-router';
-import { XStack, YStack, Button } from 'tamagui';
+import { XStack, YStack, Button as TamaguiButton } from 'tamagui';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ArrowLeft, Calendar, Clock } from "@tamagui/lucide-icons";
@@ -10,6 +16,7 @@ import ThemedTextInput from "@/components/ThemedTextInput";
 import { RadioButton } from '@/components/RadioButton';
 import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import Bgelement from '@/components/Bgelement';
+import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -28,20 +35,17 @@ export default function CreateTrip() {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Public');
   const [selectedProvince, setSelectedProvince] = useState('');
-  const [isRegionOpen, setIsRegionOpen] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
-  const [isProvinceOpen, setIsProvinceOpen] = useState(false);
-  
+
+  // ส่วน Animation สำหรับ dropdown (หากมีการใช้งาน)
   const regionHeight = useSharedValue(0);
   const provinceHeight = useSharedValue(0);
-  
   const regionChevronRotation = useSharedValue(0);
   const provinceChevronRotation = useSharedValue(0);
-  
-  const DROPDOWN_HEIGHT = 200; // Adjust height as needed
+  const DROPDOWN_HEIGHT = 200;
 
   const animatedRegionStyle = useAnimatedStyle(() => ({
     height: regionHeight.value,
@@ -62,34 +66,29 @@ export default function CreateTrip() {
   }));
 
   const toggleRegionDropdown = () => {
-    if (isRegionOpen) {
+    if (regionHeight.value > 0) {
       regionHeight.value = withTiming(0, { duration: 300 });
       regionChevronRotation.value = withSpring(0);
-      setIsRegionOpen(false);
     } else {
       regionHeight.value = withTiming(DROPDOWN_HEIGHT, { duration: 300 });
       regionChevronRotation.value = withSpring(180);
-      setIsProvinceOpen(false);
+      // ถ้าเปิด region ให้ปิด province
       provinceHeight.value = withTiming(0, { duration: 300 });
       provinceChevronRotation.value = withSpring(0);
-      setIsRegionOpen(true);
     }
   };
 
   const toggleProvinceDropdown = () => {
     if (!selectedRegion) return;
-    
-    if (isProvinceOpen) {
+    if (provinceHeight.value > 0) {
       provinceHeight.value = withTiming(0, { duration: 300 });
       provinceChevronRotation.value = withSpring(0);
-      setIsProvinceOpen(false);
     } else {
       provinceHeight.value = withTiming(DROPDOWN_HEIGHT, { duration: 300 });
       provinceChevronRotation.value = withSpring(180);
-      setIsRegionOpen(false);
+      // ถ้าเปิด province ให้ปิด region
       regionHeight.value = withTiming(0, { duration: 300 });
       regionChevronRotation.value = withSpring(0);
-      setIsProvinceOpen(true);
     }
   };
 
@@ -196,7 +195,7 @@ export default function CreateTrip() {
       { value: 'yala', label: 'Yala' }
     ]
   };
-  
+
   const getFilteredProvinces = () => {
     if (!selectedRegion) return [];
     return provinces[selectedRegion as RegionKey] || [];
@@ -218,32 +217,59 @@ export default function CreateTrip() {
     });
   };
 
+
+  const handleCreatePlanAi = () => {
+    router.push({
+      pathname: "/tripGenAi",
+      params: {
+        tripName: tripName,
+        region: selectedRegion,
+        province: selectedProvince,
+        startDate: startDate.toISOString(),
+        startTime: startTime.toISOString(),
+        endDate: endDate.toISOString(),
+        endTime: endTime.toISOString(),
+        visibility: selectedOption
+      }
+    });
+  };
+
+
   // Date/time change handlers
+
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
-    setShowStartDatePicker(Platform.OS === 'ios'); // On Android, dismiss after selection
     if (event.type === 'set' && selectedDate) {
       setStartDate(selectedDate);
+    }
+    if (Platform.OS === 'android') {
+      setShowStartDatePicker(false);
     }
   };
 
   const onChangeEndDate = (event: any, selectedDate?: Date) => {
-    setShowEndDatePicker(Platform.OS === 'ios');
     if (event.type === 'set' && selectedDate) {
       setEndDate(selectedDate);
+    }
+    if (Platform.OS === 'android') {
+      setShowEndDatePicker(false);
     }
   };
 
   const onChangeStartTime = (event: any, selectedTime?: Date) => {
-    setShowStartTimePicker(Platform.OS === 'ios');
     if (event.type === 'set' && selectedTime) {
       setStartTime(selectedTime);
+    }
+    if (Platform.OS === 'android') {
+      setShowStartTimePicker(false);
     }
   };
 
   const onChangeEndTime = (event: any, selectedTime?: Date) => {
-    setShowEndTimePicker(Platform.OS === 'ios');
     if (event.type === 'set' && selectedTime) {
       setEndTime(selectedTime);
+    }
+    if (Platform.OS === 'android') {
+      setShowEndTimePicker(false);
     }
   };
 
@@ -286,7 +312,6 @@ export default function CreateTrip() {
 
       {/* Date and Time Selection */}
       <XStack style={{ gap: 16, marginBottom: 16 }}>
-        {/* Start Date and Time */}
         <View style={{ flex: 1 }}>
           <ThemedText className="text-[#203B82] py-2">Start date</ThemedText>
           <Pressable onPress={() => setShowStartDatePicker(true)}>
@@ -304,7 +329,6 @@ export default function CreateTrip() {
           </Pressable>
         </View>
 
-        {/* End Date and Time */}
         <View style={{ flex: 1 }}>
           <ThemedText className="text-[#203B82] py-2">End date</ThemedText>
           <Pressable onPress={() => setShowEndDatePicker(true)}>
@@ -329,22 +353,15 @@ export default function CreateTrip() {
         <YStack style={{ gap: 16 }}>
           <Pressable onPress={() => setSelectedOption("Public")}>
             <YStack style={{ gap: 8 }}>
-              <RadioButton
-                label="Public"
-                selected={selectedOption === "Public"}
-              />
+              <RadioButton label="Public" selected={selectedOption === "Public"} />
               <ThemedText style={{ color: 'gray', fontSize: 14, marginLeft: 26 }}>
                 Everyone can see this trip
               </ThemedText>
             </YStack>
           </Pressable>
-
           <Pressable onPress={() => setSelectedOption("Private")}>
             <YStack style={{ gap: 8 }}>
-              <RadioButton
-                label="Private"
-                selected={selectedOption === "Private"}
-              />
+              <RadioButton label="Private" selected={selectedOption === "Private"} />
               <ThemedText style={{ color: 'gray', fontSize: 14, marginLeft: 26 }}>
                 Only you can see this trip
               </ThemedText>
@@ -354,39 +371,37 @@ export default function CreateTrip() {
       </View>
 
       {/* Action Buttons */}
-      <View style={{ 
-        marginTop: 'auto',  // Push buttons to bottom
-        paddingBottom: 20,
-        zIndex: 1
-      }}>
-        <Button
-          style={{ 
-            backgroundColor: '#3b82f6', 
+      <View style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
+        <TamaguiButton
+          style={{
+            backgroundColor: '#3b82f6',
             borderRadius: 8,
             height: 45,
             justifyContent: 'center',
-            marginBottom: 10
+            marginBottom: 10,
           }}
           onPress={handleCreatePlan}
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Create Plan Manually
           </ThemedText>
-        </Button>
+        </TamaguiButton>
 
-        <Button
-          style={{ 
-            backgroundColor: '#10b981', 
+        <TamaguiButton
+          style={{
+            backgroundColor: '#10b981',
             borderRadius: 8,
             height: 45,
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
-          onPress={() => {/* Handle AI generation */}}
+
+          onPress={handleCreatePlanAi}
+
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Use AI Generate
           </ThemedText>
-        </Button>
+        </TamaguiButton>
       </View>
     </YStack>
   );
@@ -395,63 +410,56 @@ export default function CreateTrip() {
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
-        
         {/* Header */}
         <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
           <Pressable onPress={() => router.back()}>
             <ArrowLeft size={24} />
           </Pressable>
         </XStack>
-        
         <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
           Create a Trip
         </ThemedText>
-        
         <FlatList
           data={[{ key: 'content' }]}
           renderItem={() => renderContent()}
-          keyExtractor={item => item.key}
-          scrollEnabled={true}
-          nestedScrollEnabled={true}
+          keyExtractor={(item) => item.key}
+          scrollEnabled
+          nestedScrollEnabled
         />
 
-        {/* Date/Time Pickers */}
-        {showStartDatePicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeStartDate}
-          />
-        )}
-        {showEndDatePicker && (
-          <DateTimePicker
-            value={endDate}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeEndDate}
-          />
-        )}
-        {showStartTimePicker && (
-          <DateTimePicker
-            value={startTime}
-            mode="time"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeStartTime}
-          />
-        )}
-        {showEndTimePicker && (
-          <DateTimePicker
-            value={endTime}
-            mode="time"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChangeEndTime}
-          />
-        )}
+        {/* ใช้งาน CustomDateTimePicker */}
+        <CustomDateTimePicker
+          visible={showStartDatePicker}
+          mode="date"
+          value={startDate}
+          onChange={onChangeStartDate}
+          onClose={() => setShowStartDatePicker(false)}
+        />
+        <CustomDateTimePicker
+          visible={showEndDatePicker}
+          mode="date"
+          value={endDate}
+          onChange={onChangeEndDate}
+          onClose={() => setShowEndDatePicker(false)}
+        />
+        <CustomDateTimePicker
+          visible={showStartTimePicker}
+          mode="time"
+          value={startTime}
+          onChange={onChangeStartTime}
+          onClose={() => setShowStartTimePicker(false)}
+        />
+        <CustomDateTimePicker
+          visible={showEndTimePicker}
+          mode="time"
+          value={endTime}
+          onChange={onChangeEndTime}
+          onClose={() => setShowEndTimePicker(false)}
+        />
       </ThemedView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

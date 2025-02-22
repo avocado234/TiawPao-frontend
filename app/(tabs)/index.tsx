@@ -13,11 +13,19 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from '@/components/Bgelement';
 import Carousel from '@/components/Carouselhome';
+import { auth } from "@/config/firebaseconfig";
+import { Button } from 'react-native'
+import { XGroup, XStack, YStack } from "tamagui";
 import { useRouter } from "expo-router";
 import Homebox from '@/components/Homebox';
 import HotelList from '@/components/HotelList';
+import { useUserStore } from '@/store/useUser';
 
-const { width, height } = Dimensions.get('screen');
+
+
+
+const Homepage: React.FC = () => {
+   const { width, height } = Dimensions.get('screen');
 
 const places = [
     { id: "1", name: "Koh Larn", location: "Chonburi", rating: 4.7, image: require("@/assets/images/Kohlarn.png") },
@@ -25,25 +33,25 @@ const places = [
     { id: "3", name: "Doi Inthanon", location: "Chiangmai", rating: 4.2, image: require("@/assets/images/Doiinthanon.png") },
     { id: "4", name: "Wat Arun", location: "Bangkok", rating: 4.9, image: require("@/assets/images/Watarun.png") },
 ];
-
 const hotels = [
     { id: "1", name: "Banyan Tree Bangkok", description: "#2 Best Value of 3,000 places to stay in Thailand", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
     { id: "2", name: "Hotel Clover Patong Phuket", description: "#4 Best Value of 3,000 places to stay in Thailand", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
     { id: "3", name: "Centara Reserve Samui", description: "#11 Best Value of 409 Thailand Luxury Hotels", rating: 4.9, image: require("@/assets/images/Oldtown.png") },
     
 ];
-
-const Homepage: React.FC = () => {
   const router = useRouter();
+
+  const {user} = useUserStore();
+  // console.log(user)
   return (
     <View className='flex-1'>
       <ThemedView className='flex-1'>
         <Bgelement />
-        <View  style={styles.headerWrapper}>
-          <ThemedText  style={styles.headerText}>Jame</ThemedText>
+        <View style={styles.headerWrapper}>
+          <ThemedText className=' top-5' style={styles.headerText}>{user.username}</ThemedText>
           <TouchableNativeFeedback>
             <TouchableOpacity onPress={() => router.push('./profile')}>
-              <Image className=" " source={{ uri: "https://randomuser.me/api/portraits/women/44.jpg" }} style={styles.avatar} />
+              <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.avatar} />
             </TouchableOpacity>
           </TouchableNativeFeedback>
         </View>
