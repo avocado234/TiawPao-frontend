@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { ThemedView } from './ThemedView';
 
 interface Trip {
   id: number;
@@ -46,7 +47,7 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ThemedView  style={styles.container}>
       
       <Text style={styles.subTitle}>Sort By</Text>
       <View style={styles.buttonRow}>
@@ -95,13 +96,13 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
         
       </View>
 
-      <Text style={styles.subTitle}>Range Budget</Text>
+      <Text className=' top-2' style={styles.subTitle}>Range Budget</Text>
       <View style={styles.sliderContainer}>
         <Text style={styles.sliderLabel}>0 $</Text>
         <Slider
           style={styles.slider}
           minimumValue={0}
-          maximumValue={1000}
+          maximumValue={9000}
           step={1}
           value={budget}
           onValueChange={filterByBudget}
@@ -112,13 +113,13 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
         <Text style={styles.sliderLabel}>{budget} $</Text>
         </View>
        
-    </View>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#5680EC" },
-  subTitle: { fontSize: 20, fontWeight: "bold", color: "white", marginBottom: 10 },
+  container: { padding: 20, backgroundColor: "#5680EC", paddingBottom : 35 },
+  subTitle: { fontSize: 20, fontWeight: "bold", color: "white", marginBottom: 15 },
   buttonRow: { flexDirection: "row", flexWrap: "wrap" },
   button: {
     backgroundColor: "white",
@@ -131,8 +132,8 @@ const styles = StyleSheet.create({
   activeButton: { backgroundColor: "#203B82" },
   buttonText: { fontSize: 14, color: "#000", fontWeight: "bold" },
   activeButtonText: { color: "white" }, 
-  sliderContainer: { flexDirection: "row", alignItems: "center" },
-  sliderLabel: { color: "white", fontWeight: "bold", width: 70, textAlign: "center" },
+  sliderContainer: { flexDirection: "row", alignItems: "center",top:10 },
+  sliderLabel: { fontSize: 16, color: "white", fontWeight: "bold", width: 70, textAlign: "center" },
   slider: { flex: 1 },
 });
 
