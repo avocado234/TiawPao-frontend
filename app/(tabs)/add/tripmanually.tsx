@@ -86,7 +86,7 @@ export default function TripManually() {
             </View>
 
             <View style={styles.iconContainer}>
-              <TouchableOpacity style={styles.iconButton}>
+              <TouchableOpacity onPress={() => {router.push("/(tabs)/add/maptrip")}}style={styles.iconButton}>
 
               <Feather name="map" size={20} color="#FFFFFF" />
                 <Text style={styles.iconTextInline}>View Location</Text>
