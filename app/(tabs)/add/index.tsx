@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Pressable,
@@ -18,6 +18,7 @@ import ThemedDropDownPicker from '@/components/ThemedDropDownPicker';
 import Bgelement from '@/components/Bgelement';
 import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
 import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
+import DropdownComponent from '@/components/DropDownComponent';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -28,14 +29,14 @@ import Animated, {
 type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western' | 'southern';
 
 export default function CreateTrip() {
+  const [selectedValueRegion, setSelectedValueRegion] = useState(null);
+  const [selectedValueProvince, setSelectedValueProvince] = useState(null);
   const [tripName, setTripName] = useState('');
-  const [selectedRegion, setSelectedRegion] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [selectedOption, setSelectedOption] = useState('Public');
-  const [selectedProvince, setSelectedProvince] = useState('');
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
@@ -80,7 +81,7 @@ export default function CreateTrip() {
   };
 
   const toggleProvinceDropdown = () => {
-    if (!selectedRegion) return;
+    if (!selectedValueRegion) return;
     if (provinceHeight.value > 0) {
       provinceHeight.value = withTiming(0, { duration: 300 });
       provinceChevronRotation.value = withSpring(0);
@@ -198,17 +199,23 @@ export default function CreateTrip() {
   };
 
   const getFilteredProvinces = () => {
-    if (!selectedRegion) return [];
-    return provinces[selectedRegion as RegionKey] || [];
+    if (!selectedValueRegion) return [];
+    return provinces[selectedValueRegion as RegionKey] || [];
   };
+  const handleDropdownChangeRegion= (value: any) => {
+    setSelectedValueRegion(value);
+  }
+  const handleDropdownChangeProvince= (value: any) => {
+    setSelectedValueProvince(value);
+  }
 
   const handleCreatePlan = () => {
     router.push({
       pathname: "/(tabs)/add/tripmanually",
       params: {
         tripName: tripName,
-        region: selectedRegion,
-        province: selectedProvince,
+        region: selectedValueRegion,
+        province: selectedValueProvince,
         startDate: startDate.toISOString(),
         startTime: startTime.toISOString(),
         endDate: endDate.toISOString(),
@@ -217,15 +224,14 @@ export default function CreateTrip() {
       }
     });
   };
-
 
   const handleCreatePlanAi = () => {
     router.push({
       pathname: "/(tabs)/add/tripgenai",
       params: {
         tripName: tripName,
-        region: selectedRegion,
-        province: selectedProvince,
+        region: selectedValueRegion,
+        province: selectedValueProvince,
         startDate: startDate.toISOString(),
         startTime: startTime.toISOString(),
         endDate: endDate.toISOString(),
@@ -235,9 +241,7 @@ export default function CreateTrip() {
     });
   };
 
-
   // Date/time change handlers
-
   const onChangeStartDate = (event: any, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       setStartDate(selectedDate);
@@ -290,24 +294,20 @@ export default function CreateTrip() {
       {/* Region */}
       <View style={{ marginBottom: 16, zIndex: 3 }}>
         <ThemedText className="text-[#203B82] py-2">Region</ThemedText>
-        <ThemedDropDownPicker
-          items={regions}
-          value={selectedRegion}
-          setValue={(val: any) => {
-            setSelectedRegion(val);
-            setSelectedProvince('');
-          }}
+        <DropdownComponent 
+          onValueChange={handleDropdownChangeRegion} 
+          data={regions} 
+          label="Region"
         />
       </View>
 
       {/* Province */}
       <View style={{ marginBottom: 16, zIndex: 2 }}>
         <ThemedText className="text-[#203B82] py-2">Province</ThemedText>
-        <ThemedDropDownPicker
-          items={getFilteredProvinces()}
-          value={selectedProvince}
-          setValue={setSelectedProvince}
-          disabled={!selectedRegion}
+        <DropdownComponent 
+          onValueChange={handleDropdownChangeProvince} 
+          data={getFilteredProvinces()} 
+          label="Province"
         />
       </View>
 
@@ -372,7 +372,7 @@ export default function CreateTrip() {
       </View>
 
       {/* Action Buttons */}
-      <View className='mb-10' style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
+      <View style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
         <TamaguiButton
           style={{
             backgroundColor: '#3b82f6',
@@ -395,9 +395,7 @@ export default function CreateTrip() {
             height: 45,
             justifyContent: 'center',
           }}
-
           onPress={handleCreatePlanAi}
-
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Use AI Generate
@@ -413,12 +411,9 @@ export default function CreateTrip() {
         <Bgelement />
         {/* Header */}
         <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
-          {/* <Pressable onPress={() => router.back()}>
-            <ArrowLeft size={24} />
-          </Pressable> */}
-          <ThemedCustomBackButton style={{marginTop:20}}/>
+          <ThemedCustomBackButton style={{ marginTop: 20 }}/>
         </XStack>
-        <ThemedText className='mt-3' style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
+        <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
           Create a Trip
         </ThemedText>
         <FlatList
@@ -429,7 +424,7 @@ export default function CreateTrip() {
           nestedScrollEnabled
         />
 
-        {/* ใช้งาน CustomDateTimePicker */}
+        {/* Custom DateTimePickers */}
         <CustomDateTimePicker
           visible={showStartDatePicker}
           mode="date"

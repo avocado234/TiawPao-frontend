@@ -10,7 +10,7 @@ export default function AddLayout() {
 
     <Stack screenOptions={{ gestureEnabled: false }}>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="tripManually" options={{ headerShown: false }} />
+          <Stack.Screen name="tripmanually" options={{ headerShown: false }} />
           <Stack.Screen name="genaiselected" options={{headerShown: false}} />
           <Stack.Screen name="tripgenai" options={{headerShown: false}} />
      </Stack>
