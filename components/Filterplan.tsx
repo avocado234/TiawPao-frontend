@@ -29,10 +29,10 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
 
     if (type === 'rating') {
       sortedTrips.sort((a, b) => order === 'desc' ? parseFloat(b.rating) - parseFloat(a.rating) : parseFloat(a.rating) - parseFloat(b.rating));
-    } 
+    }
     else if (type === 'budget') {
       sortedTrips.sort((a, b) => order === 'desc' ? parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', '')) : parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', '')));
-    } 
+    }
     else if (type === 'name') {
       sortedTrips.sort((a, b) => order === 'asc' ? a.nametrip.localeCompare(b.nametrip) : b.nametrip.localeCompare(a.nametrip));
     }
@@ -47,78 +47,76 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   };
 
   return (
-    <ThemedView  style={styles.container}>
-      
-      <Text style={styles.subTitle}>Sort By</Text>
-      <View style={styles.buttonRow}>
-        
-      <Pressable 
-  style={[styles.button, activeFilter === "budget-asc" && styles.activeButton]} 
-  onPress={() => sortTrips("budget", "asc")}
->
-  <Text style={[styles.buttonText, activeFilter === "budget-asc" && styles.activeButtonText]}>
-    Budget (Low to High)
-  </Text>
-</Pressable>
-<Pressable 
-  style={[styles.button, activeFilter === "budget-desc" && styles.activeButton]} 
-  onPress={() => sortTrips("budget", "desc")}
->
-  <Text style={[styles.buttonText, activeFilter === "budget-desc" && styles.activeButtonText]}>
-    Budget (High to Low)
-  </Text>
-</Pressable>
-<Pressable 
-  style={[styles.button, activeFilter === "name-asc" && styles.activeButton]} 
-  onPress={() => sortTrips("name", "asc")}
->
-  <Text style={[styles.buttonText, activeFilter === "name-asc" && styles.activeButtonText]}>
-    Name (A-Z)
-  </Text>
-</Pressable>
-<Pressable 
-  style={[styles.button, activeFilter === "name-desc" && styles.activeButton]} 
-  onPress={() => sortTrips("name", "desc")}
->
-  <Text style={[styles.buttonText, activeFilter === "name-desc" && styles.activeButtonText]}>
-    Name (Z-A)
-  </Text>
-</Pressable>
-<Pressable 
-  style={[styles.button, activeFilter === "rating-desc" && styles.activeButton]} 
-  onPress={() => sortTrips("rating", "desc")}
->
-  <Text style={[styles.buttonText, activeFilter === "rating-desc" && styles.activeButtonText]}>
-    Rating
-  </Text>
-</Pressable>
-
-        
-      </View>
-
-      <Text className=' top-2' style={styles.subTitle}>Range Budget</Text>
-      <View style={styles.sliderContainer}>
-        <Text style={styles.sliderLabel}>0 $</Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={0}
-          maximumValue={9000}
-          step={1}
-          value={budget}
-          onValueChange={filterByBudget}
-          minimumTrackTintColor="#000"
-          maximumTrackTintColor="#ddd"
-          thumbTintColor="#000"
-        />
-        <Text style={styles.sliderLabel}>{budget} $</Text>
+    <ThemedView style={styles.container}>
+      <ThemedView style={styles.innerContainer}>
+        <Text style={styles.subTitle}>Sort By</Text>
+        <View style={styles.buttonRow}>
+          <Pressable
+            style={[styles.button, activeFilter === "budget-asc" && styles.activeButton]}
+            onPress={() => sortTrips("budget", "asc")}
+          >
+            <Text style={[styles.buttonText, activeFilter === "budget-asc" && styles.activeButtonText]}>
+              Budget (Low to High)
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, activeFilter === "budget-desc" && styles.activeButton]}
+            onPress={() => sortTrips("budget", "desc")}
+          >
+            <Text style={[styles.buttonText, activeFilter === "budget-desc" && styles.activeButtonText]}>
+              Budget (High to Low)
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, activeFilter === "name-asc" && styles.activeButton]}
+            onPress={() => sortTrips("name", "asc")}
+          >
+            <Text style={[styles.buttonText, activeFilter === "name-asc" && styles.activeButtonText]}>
+              Name (A-Z)
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, activeFilter === "name-desc" && styles.activeButton]}
+            onPress={() => sortTrips("name", "desc")}
+          >
+            <Text style={[styles.buttonText, activeFilter === "name-desc" && styles.activeButtonText]}>
+              Name (Z-A)
+            </Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, activeFilter === "rating-desc" && styles.activeButton]}
+            onPress={() => sortTrips("rating", "desc")}
+          >
+            <Text style={[styles.buttonText, activeFilter === "rating-desc" && styles.activeButtonText]}>
+              Rating
+            </Text>
+          </Pressable>
         </View>
-       
+
+        <Text className='top-2' style={styles.subTitle}>Range Budget</Text>
+        <View style={styles.sliderContainer}>
+          <Text style={styles.sliderLabel}>0 $</Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={0}
+            maximumValue={9000}
+            step={1}
+            value={budget}
+            onValueChange={filterByBudget}
+            minimumTrackTintColor="#fff"
+            maximumTrackTintColor="#ddd"
+            thumbTintColor="#fff"
+          />
+          <Text style={styles.sliderLabel}>{budget} $</Text>
+        </View>
+      </ThemedView>
     </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: "#5680EC", paddingBottom : 35 },
+  container: { padding: 8, backgroundColor: "#5680EC", paddingBottom: 35, borderRadius: 0 },
+  innerContainer: {  backgroundColor: "rgba(32, 59, 130, 0.3)",  padding: 12, borderRadius: 10, },
   subTitle: { fontSize: 20, fontWeight: "bold", color: "white", marginBottom: 15 },
   buttonRow: { flexDirection: "row", flexWrap: "wrap" },
   button: {
@@ -130,12 +128,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   activeButton: { backgroundColor: "#203B82" },
-  buttonText: { fontSize: 14, color: "#000", fontWeight: "bold" },
-  activeButtonText: { color: "white" }, 
-  sliderContainer: { flexDirection: "row", alignItems: "center",top:10 },
+  buttonText: { fontSize: 14, color: "black", fontWeight: "bold" },
+  activeButtonText: { color: "white" },
+  sliderContainer: { flexDirection: "row", alignItems: "center", top: 5 },
   sliderLabel: { fontSize: 16, color: "white", fontWeight: "bold", width: 70, textAlign: "center" },
   slider: { flex: 1 },
 });
-
 
 export default Filterplan;

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   headerWrapper: {
     marginTop: height * 0.05,
     paddingHorizontal: width * 0.05,
-    marginBottom: height * 0.01,
+    marginBottom: height * 0.005,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
