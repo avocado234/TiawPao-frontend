@@ -372,7 +372,7 @@ export default function CreateTrip() {
       </View>
 
       {/* Action Buttons */}
-      <View style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
+      <View className ='mb-16'style={{ marginTop: 'auto', paddingBottom: 20, zIndex: 1 }}>
         <TamaguiButton
           style={{
             backgroundColor: '#3b82f6',
