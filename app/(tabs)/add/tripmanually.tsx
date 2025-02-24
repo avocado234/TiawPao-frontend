@@ -331,7 +331,8 @@ const styles = StyleSheet.create({
   },
   modalContent: { 
     backgroundColor: 'white',
-    padding:50,
+    padding:20,
+    height:'50%',
     borderRadius: 10,
     alignItems: 'center',
   },
@@ -359,6 +360,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+   
   },
   cancelButton: {
     padding: 10,
