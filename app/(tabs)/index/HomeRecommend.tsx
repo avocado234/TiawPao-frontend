@@ -7,221 +7,227 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  Platform,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+
+// 🔹 กำหนดประเภทข้อมูลของ contentData
+interface Place {
+  name: string;
+  image: any;
+  detail: string;
+}
+
+interface TripData {
+  title: string;
+  subtitle: string; // เพิ่ม subtitle เหมือน Homedetail.tsx
+  mainImage: any;
+  description: string;
+  places: Place[];
+}
+
+// 🔹 ข้อมูลของแต่ละทริป
+const contentData: Record<string, TripData> = {
+    "1": {
+      title: "Rayong-Chanthaburi Road Trip",
+      subtitle: "Thailand",
+      mainImage: require("@/assets/images/rayong/rayong1.png"), // ✅ ต้องมีภาพใน assets
+      description: "Embark on a scenic road trip through Rayong and Chanthaburi, two beautiful provinces offering stunning beaches, lush forests, and rich cultural heritage.",
+  
+      places: [
+        {
+          name: "Laem Charoen Beach",
+          image: require("@/assets/images/rayong/rayong2.png"),
+          detail: "A peaceful beach near Rayong City, perfect for relaxing and enjoying fresh seafood from the local restaurants."
+        },
+        {
+          name: "Wat Pa Pradu",
+          image: require("@/assets/images/rayong/rayong3.png"),
+          detail: "A historic temple famous for its large reclining Buddha image, unique because it is turned on its left side instead of the usual right."
+        },
+        {
+          name: "Chao Lao Beach",
+          image: require("@/assets/images/rayong/rayong4.png"),
+          detail: "One of the most beautiful beaches in Chanthaburi, offering soft white sand and clear blue waters, ideal for swimming and snorkeling."
+        },
+        {
+          name: "Oasis Sea World",
+          image: require("@/assets/images/rayong/rayong5.png"),
+          detail: "A marine attraction where visitors can watch dolphin shows and even swim with these intelligent creatures."
+        },
+        {
+          name: "Cathedral of the Immaculate Conception",
+          image: require("@/assets/images/rayong/rayong6.png"),
+          detail: "The largest Catholic church in Thailand, featuring stunning Gothic architecture and located in Chanthaburi’s Old Town."
+        }
+      ]
+    },
+  
+  "2": {
+    title: "Korat 2 Days 1 Night",
+    subtitle: "Nakhon Ratchasima",
+    mainImage: require("@/assets/images/korat/korat1.png"),
+    description: "Nakhon Ratchasima, commonly known as Korat, serves as the gateway to Thailand's northeastern region.",
+    places: [
+      {
+        name: "Petrified Wood Museum",
+        image: require("@/assets/images/korat/korat2.png"),
+        detail: "Located in Suranaree Subdistrict, this museum showcases fossilized woods dating back 800,000 to 320 million years."
+      },
+      {
+        name: "Thao Suranaree Monument",
+        image: require("@/assets/images/korat/korat3.png"),
+        detail: "Erected in 1934, this monument honors the bravery of Thao Suranaree (Lady Mo), who defended Korat from invaders in 1826."
+      },
+      {
+        name: "Phimai Historical Park",
+        image: require("@/assets/images/korat/korat5.png"),
+        detail: "Home to one of the largest Khmer temples in Thailand, offering a glimpse into the region's ancient past."
+      },
+    ]
+  },
+  "3": {
+    title: "Trang-Satun Low Carbon 3 Days 2 Nights",
+    subtitle: "Southern Thailand",
+    mainImage: require("@/assets/images/trang/trang1.png"), // ✅ ต้องมีภาพใน assets
+    description: "Embark on a low-carbon adventure through Trang and Satun, two stunning provinces with breathtaking natural attractions, rich cultural heritage, and delicious southern Thai cuisine.",
+    
+    places: [
+      {
+        name: "Pak Meng Beach",
+        image: require("@/assets/images/trang/trang2.png"),
+        detail: "A scenic beach with a long stretch of golden sand, facing the Andaman Sea. It's a perfect spot to relax and enjoy the sunset."
+      },
+      {
+        name: "Emerald Cave (Morakot Cave)",
+        image: require("@/assets/images/trang/trang3.png"),
+        detail: "A hidden lagoon accessible only by swimming through a dark cave tunnel. The water inside is emerald green, making it a magical experience."
+      },
+      {
+        name: "Koh Lao Liang",
+        image: require("@/assets/images/trang/trang4.png"),
+        detail: "A paradise island famous for its towering limestone cliffs, crystal-clear waters, and excellent snorkeling and rock climbing spots."
+      },
+      {
+        name: "Thale Ban National Park",
+        image: require("@/assets/images/trang/trang5.png"),
+        detail: "A biodiversity hotspot in Satun, home to lush rainforests, diverse wildlife, and beautiful freshwater lakes surrounded by limestone mountains."
+      },
+      {
+        name: "Satun UNESCO Global Geopark",
+        image: require("@/assets/images/trang/trang6.png"),
+        detail: "Recognized by UNESCO, this geopark showcases stunning karst landscapes, ancient fossils, and caves that date back millions of years."
+      }
+    ]
+  }
+
+};
 
 export default function HomeRecommend() {
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  console.log("✅ Received params:", params);  // Debug ตรวจสอบค่าที่ได้รับจาก router
+
+  const tripId = params.id ? String(params.id) : "1";
+  console.log("🚀 Resolved tripId:", tripId);  // Debug ตรวจสอบค่าหลังจากแปลงเป็น string
+
+  const content = contentData[tripId] || contentData["1"];
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* 🔹 Header พร้อม Title */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={28} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Rayong First Time?</Text>
-      </View>
-
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent} 
-        showsVerticalScrollIndicator={false}
-      >
-        {/* 🔹 รูปภาพหลัก (ปรับขนาดใหม่) */}
-        <Image
-          source={{ uri: "https://api.tourismthailand.org/upload/live/article_desktop_cover_image/1124-32787.png" }} 
-          style={styles.mainImage}
-          resizeMode="cover"
-        />
-
-        {/* 🔹 ปุ่ม Save */}
-        <View style={styles.saveContainer}>
-          <TouchableOpacity style={styles.saveButton}>
-            <Ionicons name="heart-outline" size={20} color="red" />
-            <Text style={styles.saveText}>Save</Text>
+      {/* ✅ SafeAreaView ครอบ Header เพื่อให้พื้นหลังสีฟ้าเต็มถึงขอบจอ */}
+      <SafeAreaView style={styles.safeHeader}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={28} color="black" />
           </TouchableOpacity>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerTitle}>{content.title}</Text>
+            <Text style={styles.headerSubtitle}>{content.subtitle}</Text>
+          </View>
         </View>
+      </SafeAreaView>
 
-        {/* 🔹 เนื้อหา */}
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* 🔹 รูปภาพหลัก */}
+        <Image source={content.mainImage} style={styles.mainImage} resizeMode="cover" />
+
+        {/* 🔹 คำอธิบายหลัก */}
         <View style={styles.content}>
-          <Text style={styles.text}>
-            Need a quick and easy pick-me-up road <Text style={styles.link}>Trip?</Text> Check out this fantastic 2D1N itinerary.
-            Head to <Text style={styles.link}>Rayong</Text> and <Text style={styles.link}>Chanthaburi</Text> for a weekend getaway.
-          </Text>
+          <Text style={styles.text}>{content.description}</Text>
 
-          {/* 🔹 Day 1 */}
-          <Text style={styles.dayTitle}>Day 1 - <Text style={styles.bold}>Rayong</Text></Text>
-
-          <Text style={styles.text}>
-            <Text style={styles.link}>Flora Exhibition Hall</Text>, Miracle of Natural, <Text style={styles.link}>Rayong</Text> (Mon - Sat, 09.30 - 16.30)
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32791.png" }}
-            style={styles.subImage}
-          />
-
-          <Text style={styles.text}>
-            King Taksin the Great Knowledge Park (Daily, closed Mondays: 09.30-16.00)
-          </Text>
-
-          <Text style={styles.link}>Yom Chinda Road</Text>
-          <Text style={styles.text}>
-            Stroll along Yom Chinda Road, where charming old buildings and a vintage atmosphere await.
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32796.png" }}
-            style={styles.subImage}
-          />
-
-          {/* 🔹 Day 2 */}
-          <Text style={styles.dayTitle}>Day 2 - <Text style={styles.bold}>Chanthaburi</Text></Text>
-
-          <Text style={styles.link}>Chanthaboon Waterfront Community</Text>
-          <Text style={styles.text}>
-            Stroll through Chanthaboon Waterfront Community, where you can experience charming old houses and a laid-back riverside lifestyle.
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32793.png" }}
-            style={styles.subImage}
-          />
-
-          <Text style={styles.link}>Nong Bua Walking Street</Text>
-          <Text style={styles.text}>
-            Discover unique sweets in the Nong Bua Walking Street. Taste special treats made from unique recipes.
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32792.jpeg" }}
-            style={styles.subImage}
-          />
-
-          {/* 🔹 Responsible Tourism Tips */}
-          <Text style={styles.dayTitle}>Responsible Tourism Tips:</Text>
-          <Text style={styles.text}>
-            Eco-friendly road <Text style={styles.link}>Trips?</Text> Try switching to electric vehicles, an innovation that's kind to the environment.
-          </Text>
+          {/* 🔹 แสดงสถานที่แต่ละแห่ง (ถ้ามี) */}
+          {content.places.length > 0 && content.places.map((place, index) => (
+            <View key={index}>
+              <Image source={place.image} style={styles.image} />
+              <Text style={styles.subtitle}>{place.name}</Text>
+              <Text style={styles.text}>{place.detail}</Text>
+            </View>
+          ))}
         </View>
       </ScrollView>
-
-      
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
-  
-  header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 110, // 🔹 ปรับให้สูงขึ้น
-    backgroundColor: "#4A90E2",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    zIndex: 10,
-  },
 
-  backButton: {
-    marginRight: 10,
-  },
-
-  headerTitle: {
-    fontSize: 24, // 🔹 ขยายขนาดตัวอักษร
-    fontWeight: "bold",
-    color: "yellow",
-  },
-
-  scrollContent: {
-    paddingBottom: 80, 
-  },
-
-  mainImage: {
-    width: "100%",
-    height: 300, // 🔹 ปรับขนาดใหม่
-    resizeMode: "cover",
+  // ✅ SafeAreaView ที่ทำให้ Header สีฟ้าเต็มถึงขอบจอ
+  safeHeader: {
+    backgroundColor: "#5680EC",
     
   },
+ 
+  header: {
+    backgroundColor: "#5680EC",
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 30, // ✅ ป้องกันทับ Notch บน iPhone
+  },
+  backButton: { marginRight: 10 },
+  headerTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  headerTitle: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#fbdf61",
+  },
+  headerSubtitle: {
+    fontSize: 20,
+    color: "white",
+  },
 
-  subImage: {
+  /* 🔹 เนื้อหาและรูป */
+  scrollContent: { paddingBottom: 80 },
+  mainImage: {
     width: "100%",
-    height: 200,
-    marginVertical: 10,
-    borderRadius: 10,
+    height: 250,
+    resizeMode: "cover",
   },
-
-  content: {
-    padding: 20,
-  },
-
+  content: { padding: 20 },
   text: {
     fontSize: 16,
     color: "#444",
     marginBottom: 10,
   },
-
-  link: {
-    color: "#3A7DFF",
+  subtitle: {
+    fontSize: 18,
     fontWeight: "bold",
+    color: "#555",
+    marginTop: 10,
+    marginBottom: 5,
   },
-
-  dayTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginTop: 15,
-  },
-
-  bold: { 
-    fontWeight: "bold",
-  },
-
-  saveContainer: { 
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginHorizontal: 20,
-    marginTop: -20,
-  },
-
-  saveButton: { 
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 20,
-  },
-
-  saveText: { 
-    marginLeft: 5,
-    color: "red",
-    fontWeight: "bold",
-  },
-
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-    paddingVertical: 10,
-  },
-
-  navItem: {
-    alignItems: "center",
-  },
-
-  navText: {
-    fontSize: 12,
-    color: "#000",
-    marginTop: 2,
+  image: {
+    width: "100%",
+    height: 200,
+    marginVertical: 10,
+    borderRadius: 10,
   },
 });

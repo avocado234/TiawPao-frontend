@@ -24,12 +24,10 @@ const Carousel: React.FC = () => {
     const router = useRouter();
     const snapToInterval = screenWidth;
 
-    const carouselData: CarouselItem[] = [
-        { id: "01", image: require("@/assets/images/test.png") },
-        { id: "02", image: require("@/assets/images/test2.png") },
-        { id: "03", image: require("@/assets/images/test3.png") },
-        { id: "04", image: require("@/assets/images/test3.png") },
-        { id: "05", image: require("@/assets/images/test3.png") },
+    const carouselData = [
+        { id: "1", image: require("@/assets/images/test.png"), title: "Trip 1", description: "This is Trip 1" },
+        { id: "2", image: require("@/assets/images/test2.png"), title: "Trip 2", description: "This is Trip 2" },
+        { id: "3", image: require("@/assets/images/test3.png"), title: "Trip 3", description: "This is Trip 3" },
     ];
 
     useEffect(() => {
@@ -65,8 +63,16 @@ const Carousel: React.FC = () => {
     };
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
-        <TouchableOpacity onPress={() => router.push( '/HomeRecommend')}>
-            <Image  source={item.image} style={styles.image} />
+        <TouchableOpacity 
+            onPress={() => {
+                console.log("🖱️ Clicked item:", item);  // Debug ตรวจสอบค่าที่ส่งไป
+                router.push({
+                    pathname: "../HomeRecommend",
+                    params: { id: item.id }
+                });
+            }}
+        >
+            <Image source={item.image} style={styles.image} />
         </TouchableOpacity>
     );
 
@@ -82,7 +88,7 @@ const Carousel: React.FC = () => {
     );
 
     return (
-        <View >
+        <View>
             <FlatList 
                 data={carouselData}
                 ref={flatListRef}
