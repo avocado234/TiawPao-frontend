@@ -44,8 +44,8 @@ export default function RootLayout() {
       
       if (usercur && !isOnHome) {
         // ถ้าล็อกอินแล้ว แต่ตอนนี้ยังอยู่หน้า login => ไปหน้า Home (tabs)
-        router.replace('/(tabs)/add/maptrip'); 
-        // router.replace('/(tabs)'); 
+        // router.replace('/(tabs)/add/maptrip'); 
+        router.replace('/(tabs)'); 
 
       } else if (!usercur && isOnHome) {
         // ถ้ายังไม่ล็อกอิน แต่ตอนนี้อยู่ใน (tabs) => กลับไปหน้า login

@@ -19,6 +19,7 @@ import Bgelement from '@/components/Bgelement';
 import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
 import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
 import DropdownComponent from '@/components/DropDownComponent';
+import FilterDropDown from '@/components/FilterDropDown';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -105,98 +106,99 @@ export default function CreateTrip() {
 
   const provinces = {
     central: [
-      { value: 'ang_thong', label: 'Ang Thong' },
-      { value: 'ayutthaya', label: 'Ayutthaya' },
-      { value: 'bangkok', label: 'Bangkok' },
-      { value: 'chainat', label: 'Chainat' },
-      { value: 'lopburi', label: 'Lopburi' },
-      { value: 'nakhon_nayok', label: 'Nakhon Nayok' },
-      { value: 'nakhon_pathom', label: 'Nakhon Pathom' },
-      { value: 'nonthaburi', label: 'Nonthaburi' },
-      { value: 'pathum_thani', label: 'Pathum Thani' },
-      { value: 'phra_nakhon_si_ayutthaya', label: 'Phra Nakhon Si Ayutthaya' },
-      { value: 'samut_prakan', label: 'Samut Prakan' },
-      { value: 'samut_sakhon', label: 'Samut Sakhon' },
-      { value: 'samut_songkhram', label: 'Samut Songkhram' },
-      { value: 'saraburi', label: 'Saraburi' },
-      { value: 'sing_buri', label: 'Sing Buri' },
-      { value: 'suphan_buri', label: 'Suphan Buri' }
+      { id: 218, value: "ang_thong", label: "Ang Thong" },
+      { id: 229, value: "ayutthaya", label: "Ayutthaya" },
+      { id: 219, value: "bangkok", label: "Bangkok" },
+      { id: 221, value: "chainat", label: "Chainat" },
+      { id: 223, value: "lopburi", label: "Lop Buri" },
+      { id: 224, value: "nakhon_nayok", label: "Nakhon Nayok" },
+      { id: 225, value: "nakhon_pathom", label: "Nakhon Pathom" },
+      { id: 226, value: "nonthaburi", label: "Nonthaburi" },
+      { id: 227, value: "pathum_thani", label: "Pathum Thani" },
+      { id: 229, value: "phra_nakhon_si_ayutthaya", label: "Phra Nakhon Si Ayutthaya" },
+      { id: 234, value: "samut_prakan", label: "Samut Prakan" },
+      { id: 235, value: "samut_sakhon", label: "Samut Sakhon" },
+      { id: 236, value: "samut_songkhram", label: "Samut Songkhram" },
+      { id: 237, value: "saraburi", label: "Saraburi" },
+      { id: 238, value: "sing_buri", label: "Sing Buri" },
+      { id: 239, value: "suphan_buri", label: "Suphan Buri" }
     ],
     northern: [
-      { value: 'chiang_mai', label: 'Chiang Mai' },
-      { value: 'chiang_rai', label: 'Chiang Rai' },
-      { value: 'kamphaeng_phet', label: 'Kamphaeng Phet' },
-      { value: 'lampang', label: 'Lampang' },
-      { value: 'lamphun', label: 'Lamphun' },
-      { value: 'mae_hong_son', label: 'Mae Hong Son' },
-      { value: 'nakhon_sawan', label: 'Nakhon Sawan' },
-      { value: 'nan', label: 'Nan' },
-      { value: 'phayao', label: 'Phayao' },
-      { value: 'phetchabun', label: 'Phetchabun' },
-      { value: 'phichit', label: 'Phichit' },
-      { value: 'phitsanulok', label: 'Phitsanulok' },
-      { value: 'phrae', label: 'Phrae' },
-      { value: 'sukhothai', label: 'Sukhothai' },
-      { value: 'tak', label: 'Tak' },
-      { value: 'uttaradit', label: 'Uttaradit' },
-      { value: 'uthai_thani', label: 'Uthai Thani' }
+      { id: 101, value: "chiang_mai", label: "Chiang Mai" },
+      { id: 102, value: "chiang_rai", label: "Chiang Rai" },
+      { id: 103, value: "kamphaeng_phet", label: "Kamphaeng Phet" },
+      { id: 104, value: "lampang", label: "Lampang" },
+      { id: 105, value: "lamphun", label: "Lamphun" },
+      { id: 106, value: "mae_hong_son", label: "Mae Hong Son" },
+      { id: 107, value: "nakhon_sawan", label: "Nakhon Sawan" },
+      { id: 108, value: "nan", label: "Nan" },
+      { id: 109, value: "phayao", label: "Phayao" },
+      { id: 110, value: "phetchabun", label: "Phetchabun" },
+      { id: 111, value: "phichit", label: "Phichit" },
+      { id: 112, value: "phitsanulok", label: "Phitsanulok" },
+      { id: 113, value: "phrae", label: "Phrae" },
+      { id: 114, value: "sukhothai", label: "Sukhothai" },
+      { id: 115, value: "tak", label: "Tak" },
+      { id: 117, value: "uttaradit", label: "Uttaradit" },
+      { id: 116, value: "uthai_thani", label: "Uthai Thani" }
     ],
     northeastern: [
-      { value: 'amnat_charoen', label: 'Amnat Charoen' },
-      { value: 'bueng_kan', label: 'Bueng Kan' },
-      { value: 'buri_ram', label: 'Buri Ram' },
-      { value: 'chaiyaphum', label: 'Chaiyaphum' },
-      { value: 'kalasin', label: 'Kalasin' },
-      { value: 'khon_kaen', label: 'Khon Kaen' },
-      { value: 'loei', label: 'Loei' },
-      { value: 'maha_sarakham', label: 'Maha Sarakham' },
-      { value: 'mukdahan', label: 'Mukdahan' },
-      { value: 'nakhon_phanom', label: 'Nakhon Phanom' },
-      { value: 'nakhon_ratchasima', label: 'Nakhon Ratchasima' },
-      { value: 'nong_bua_lam_phu', label: 'Nong Bua Lam Phu' },
-      { value: 'nong_khai', label: 'Nong Khai' },
-      { value: 'roi_et', label: 'Roi Et' },
-      { value: 'sakon_nakhon', label: 'Sakon Nakhon' },
-      { value: 'sisaket', label: 'Sisaket' },
-      { value: 'surin', label: 'Surin' },
-      { value: 'ubon_ratchathani', label: 'Ubon Ratchathani' },
-      { value: 'udon_thani', label: 'Udon Thani' },
-      { value: 'yasothon', label: 'Yasothon' }
+      { id: 571, value: "amnat_charoen", label: "Amnat Charoen" },
+      { id: 590, value: "bueng_kan", label: "Bueng Kan" },
+      { id: 572, value: "buri_ram", label: "Buri Ram" },
+      { id: 573, value: "chaiyaphum", label: "Chaiyaphum" },
+      { id: 574, value: "kalasin", label: "Kalasin" },
+      { id: 575, value: "khon_kaen", label: "Khon Kaen" },
+      { id: 576, value: "loei", label: "Loei" },
+      { id: 577, value: "maha_sarakham", label: "Maha Sarakham" },
+      { id: 578, value: "mukdahan", label: "Mukdahan" },
+      { id: 579, value: "nakhon_phanom", label: "Nakhon Phanom" },
+      { id: 580, value: "nakhon_ratchasima", label: "Nakhon Ratchasima" },
+      { id: 581, value: "nong_bua_lam_phu", label: "Nong Bua Lam Phu" },
+      { id: 582, value: "nong_khai", label: "Nong Khai" },
+      { id: 583, value: "roi_et", label: "Roi Et" },
+      { id: 584, value: "sakon_nakhon", label: "Sakon Nakhon" },
+      { id: 585, value: "sisaket", label: "Sisaket" },
+      { id: 586, value: "surin", label: "Surin" },
+      { id: 587, value: "ubon_ratchathani", label: "Ubon Ratchathani" },
+      { id: 588, value: "udon_thani", label: "Udon Thani" },
+      { id: 589, value: "yasothon", label: "Yasothon" }
     ],
     eastern: [
-      { value: 'chachoengsao', label: 'Chachoengsao' },
-      { value: 'chanthaburi', label: 'Chanthaburi' },
-      { value: 'chonburi', label: 'Chonburi' },
-      { value: 'prachin_buri', label: 'Prachin Buri' },
-      { value: 'rayong', label: 'Rayong' },
-      { value: 'sa_kaeo', label: 'Sa Kaeo' },
-      { value: 'trat', label: 'Trat' }
+      { id: 220, value: "chachoengsao", label: "Chachoengsao" },
+      { id: 463, value: "chanthaburi", label: "Chanthaburi" },
+      { id: 464, value: "chonburi", label: "Chonburi" },
+      { id: 230, value: "prachin_buri", label: "Prachin Buri" },
+      { id: 465, value: "rayong", label: "Rayong" },
+      { id: 233, value: "sa_kaeo", label: "Sa Kaeo" },
+      { id: 466, value: "trat", label: "Trat" }
     ],
     western: [
-      { value: 'kanchanaburi', label: 'Kanchanaburi' },
-      { value: 'phetchaburi', label: 'Phetchaburi' },
-      { value: 'prachuap_khiri_khan', label: 'Prachuap Khiri Khan' },
-      { value: 'ratchaburi', label: 'Ratchaburi' },
-      { value: 'samut_songkhram', label: 'Samut Songkhram' },
-      { value: 'suphan_buri', label: 'Suphan Buri' }
+      { id: 222, value: "kanchanaburi", label: "Kanchanaburi" },
+      { id: 228, value: "phetchaburi", label: "Phetchaburi" },
+      { id: 231, value: "prachuap_khiri_khan", label: "Prachuap Khiri Khan" },
+      { id: 232, value: "ratchaburi", label: "Ratchaburi" },
+      { id: 236, value: "samut_songkhram", label: "Samut Songkhram" },
+      { id: 239, value: "suphan_buri", label: "Suphan Buri" }
     ],
     southern: [
-      { value: 'chumphon', label: 'Chumphon' },
-      { value: 'krabi', label: 'Krabi' },
-      { value: 'nakhon_si_thammarat', label: 'Nakhon Si Thammarat' },
-      { value: 'narathiwat', label: 'Narathiwat' },
-      { value: 'pattani', label: 'Pattani' },
-      { value: 'phang_nga', label: 'Phang Nga' },
-      { value: 'phatthalung', label: 'Phatthalung' },
-      { value: 'phuket', label: 'Phuket' },
-      { value: 'ranong', label: 'Ranong' },
-      { value: 'satun', label: 'Satun' },
-      { value: 'songkhla', label: 'Songkhla' },
-      { value: 'surat_thani', label: 'Surat Thani' },
-      { value: 'trang', label: 'Trang' },
-      { value: 'yala', label: 'Yala' }
+      { id: 343, value: "chumphon", label: "Chumphon" },
+      { id: 344, value: "krabi", label: "Krabi" },
+      { id: 345, value: "nakhon_si_thammarat", label: "Nakhon Si Thammarat" },
+      { id: 346, value: "narathiwat", label: "Narathiwat" },
+      { id: 347, value: "pattani", label: "Pattani" },
+      { id: 348, value: "phang_nga", label: "Phang Nga" },
+      { id: 349, value: "phatthalung", label: "Phatthalung" },
+      { id: 350, value: "phuket", label: "Phuket" },
+      { id: 351, value: "ranong", label: "Ranong" },
+      { id: 352, value: "satun", label: "Satun" },
+      { id: 353, value: "songkhla", label: "Songkhla" },
+      { id: 354, value: "surat_thani", label: "Surat Thani" },
+      { id: 355, value: "trang", label: "Trang" },
+      { id: 356, value: "yala", label: "Yala" }
     ]
   };
+  
 
   const getFilteredProvinces = () => {
     if (!selectedValueRegion) return [];
@@ -210,6 +212,8 @@ export default function CreateTrip() {
   }
 
   const handleCreatePlan = () => {
+    // console.log(startTime.toISOString());
+    console.log(selectedValueProvince)
     router.push({
       pathname: "/(tabs)/add/tripmanually",
       params: {
@@ -304,11 +308,16 @@ export default function CreateTrip() {
       {/* Province */}
       <View style={{ marginBottom: 16, zIndex: 2 }}>
         <ThemedText className="text-[#203B82] py-2">Province</ThemedText>
-        <DropdownComponent 
+        <FilterDropDown
+        onValueChange={handleDropdownChangeProvince} 
+        data={getFilteredProvinces()} 
+        label="Province"
+        />
+        {/* <DropdownComponent 
           onValueChange={handleDropdownChangeProvince} 
           data={getFilteredProvinces()} 
           label="Province"
-        />
+        /> */}
       </View>
 
       {/* Date and Time Selection */}

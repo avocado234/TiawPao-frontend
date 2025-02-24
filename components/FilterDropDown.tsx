@@ -92,10 +92,10 @@ const DropdownComponent = ({ onValueChange ,data,label}:any) => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setValue(item.value);
+          setValue(item);
           setIsFocus(false);
           // ส่งค่า selected item กลับไปที่ parent
-          onValueChange && onValueChange(item.value);
+          onValueChange && onValueChange(item);
         }}
         renderItem={renderItem}  // ใช้ renderItem ที่ปรับสไตล์สำหรับ selected item
       />
