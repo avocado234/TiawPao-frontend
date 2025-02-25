@@ -36,7 +36,6 @@ const randomize =() =>
     return backGroundPic
 };
 const Return_Button = () => {
-  const theme = useColorScheme();
   const BacktoAdd = () => {
     router.push({
       pathname: "/add",
@@ -44,7 +43,6 @@ const Return_Button = () => {
   };
   return (
     <Pressable 
-    
     onPress={BacktoAdd} >
       <MaterialIcons name="arrow-back" size={30} color={"#203B82"} />
     </Pressable>
