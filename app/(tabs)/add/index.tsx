@@ -208,7 +208,8 @@ export default function CreateTrip() {
     setSelectedValueRegion(value);
   }
   const handleDropdownChangeProvince= (value: any) => {
-    setSelectedValueProvince(value);
+    // console.log("From Handel : " + value.label)
+    setSelectedValueProvince(value.label);
   }
 
   const handleCreatePlan = () => {

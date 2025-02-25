@@ -9,10 +9,11 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { useColorScheme } from 'react-native';
-import api from '@/utils/axiosInstance';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/config/firebaseconfig';
+import api from '@/utils/axiosInstance';
+import uuid from 'react-native-uuid';
 
 // type OTPVerificationProps = {
 //     isRegister: boolean; // Flag to determine if this is for registration or password reset
@@ -85,6 +86,7 @@ export default function OTPVerification(): JSX.Element {
                     return
                 }
                 const registerResponse = await api.post('/user/register', {
+                    userid: uuid.v4(),
                     image:'https://firebasestorage.googleapis.com/v0/b/cybergeek-storage-image.appspot.com/o/blank-profile-picture-973460_1280.png?alt=media&token=8e0b08a9-2543-402a-bf86-2b500557f9eb',
                     username,
                     email,
