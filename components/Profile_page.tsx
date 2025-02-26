@@ -32,11 +32,12 @@ const Propage = () => {
   const [tel, setTel] = useState<String>(user.tel);
   const [gender, setGender] = useState<String>(user.gender);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [date_of_birth, setDate_of_Birth] = useState<String>(user.lastname);
+  const [date_of_birth, setDate_of_Birth] = useState<String>("");
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
-  const [isEdit, setIsEdit] = useState<boolean>(true);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [dateOfBirth, setDateOfBirth] = useState(new Date(user.date_of_birth));
+
   const [dateString, setDateString] = useState<String>('')
   // const theme = useColorScheme();
   // const [isDark, setIsDark] = useState(theme === 'light' ? false : true);
@@ -48,6 +49,7 @@ const Propage = () => {
     const month = String(dateOfBirth.getMonth() + 1).padStart(2, '0'); // Months are 0-based
     const day = String(dateOfBirth.getDate()).padStart(2, '0');
     const tmp = `${year}-${month}-${day}`;
+    setDate_of_Birth(tmp);
     setDateString(tmp)
   }, [dateOfBirth])
 
@@ -65,7 +67,7 @@ const Propage = () => {
       return;
     }
     // console.log(selectedDate);
-    setDate_of_Birth(selectedDate.toISOString().split('T')[0]);
+    // setDate_of_Birth(selectedDate.toISOString().split('T')[0]);
     // console.log(date_of_birth);
     hideDatePicker();
   };
@@ -98,6 +100,7 @@ const Propage = () => {
         const idToken = await currentUser.getIdToken();
         console.log(idToken)
         console.log(user.email)
+        console.log(dateString);
         const updateUser: any = await api.put(
           `/user/update/${user.email}`,
           {
@@ -105,7 +108,7 @@ const Propage = () => {
             tel,
             firstname,
             lastname,
-            dateofbirth: dateString,
+            date_of_birth,
             gender
           },
           {
