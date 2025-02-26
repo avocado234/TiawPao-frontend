@@ -41,7 +41,7 @@ const Homepage: React.FC = () => {
         <View style={styles.headerWrapper}>
           <ThemedText className="top-5" style={styles.headerText}>{user.username}</ThemedText>
           <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
-            <Image className="absolute end-5 bottom-[18]" source={{ uri: user.img }} style={styles.avatar} />
+            <Image className="absolute end-5 bottom-[18]" source={{ uri: user.image }} style={styles.avatar} />
           </TouchableOpacity>
         </View>
 

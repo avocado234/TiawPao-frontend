@@ -115,7 +115,6 @@ export default function CreateTrip() {
       { id: 225, value: "nakhon_pathom", label: "Nakhon Pathom" },
       { id: 226, value: "nonthaburi", label: "Nonthaburi" },
       { id: 227, value: "pathum_thani", label: "Pathum Thani" },
-      { id: 229, value: "phra_nakhon_si_ayutthaya", label: "Phra Nakhon Si Ayutthaya" },
       { id: 234, value: "samut_prakan", label: "Samut Prakan" },
       { id: 235, value: "samut_sakhon", label: "Samut Sakhon" },
       { id: 236, value: "samut_songkhram", label: "Samut Songkhram" },
@@ -213,8 +212,7 @@ export default function CreateTrip() {
   }
 
   const handleCreatePlan = () => {
-    // console.log(startTime.toISOString());
-    console.log(selectedValueProvince)
+    
     router.push({
       pathname: "/(tabs)/add/tripmanually",
       params: {
