@@ -5,7 +5,8 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { router } from 'expo-router';
 import { XStack, YStack, Button as TamaguiButton } from 'tamagui';
@@ -212,7 +213,16 @@ export default function CreateTrip() {
   }
 
   const handleCreatePlan = () => {
-    
+
+    const missingFields = getMissingFields();
+    if (missingFields.length > 0) {
+      Alert.alert(
+        "Incomplete Form",
+        `Please fill fields: ${missingFields.join(', ')}`,
+        [{ text: "OK" }]
+      );
+      return;
+    }
     router.push({
       pathname: "/(tabs)/add/tripmanually",
       params: {
@@ -229,6 +239,15 @@ export default function CreateTrip() {
   };
 
   const handleCreatePlanAi = () => {
+    const missingFields = getMissingFields();
+    if (missingFields.length > 0) {
+      Alert.alert(
+        "Incomplete Form",
+        `Please fill in the following fields: ${missingFields.join(', ')}`,
+        [{ text: "OK" }]
+      );
+      return;
+    }
     router.push({
       pathname: "/(tabs)/add/tripgenai",
       params: {
@@ -242,6 +261,18 @@ export default function CreateTrip() {
         visibility: selectedOption
       }
     });
+  };
+
+  const getMissingFields = () => {
+    const missing = [];
+    if (tripName.trim() === '') missing.push('Trip Name');
+    if (!selectedValueRegion) missing.push('Region');
+    if (!selectedValueProvince) missing.push('Province');
+    if (!startDate) missing.push('Start Date');
+    if (!endDate) missing.push('End Date');
+    if (!startTime) missing.push('Start Time');
+    if (!endTime) missing.push('End Time');
+    return missing;
   };
 
   // Date/time change handlers
@@ -281,6 +312,22 @@ export default function CreateTrip() {
     }
   };
 
+  const navigateToIndex = () => {
+    router.push('/index'); // เปลี่ยน '/index' เป็นเส้นทางที่ถูกต้องของหน้า index ของคุณ
+  };
+
+  const isFormValid = () => {
+    return (
+      tripName.trim() !== '' &&
+      selectedValueRegion !== null &&
+      selectedValueProvince !== null &&
+      startDate !== null &&
+      endDate !== null &&
+      startTime !== null &&
+      endTime !== null
+    );
+  };
+
   const renderContent = () => (
     <YStack style={{ padding: 16, flex: 1, gap: 16 }}>
       {/* Trip Name */}
@@ -288,7 +335,7 @@ export default function CreateTrip() {
         <ThemedText className="text-[#203B82] py-2">Trip name</ThemedText>
         <ThemedTextInput
           className="border border-[#203B82] h-[45px] rounded-lg px-4 py-2"
-          placeholder="e.g., Vacation in Thailand"
+          placeholder="e.g., Vacation in Thailand" 
           value={tripName}
           onChangeText={setTripName}
         />
@@ -419,7 +466,7 @@ export default function CreateTrip() {
         <Bgelement />
         {/* Header */}
         <XStack style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: 'center' }}>
-          <ThemedCustomBackButton style={{ marginTop: 20 }}/>
+          <ThemedCustomBackButton style={{ marginTop: 20 }} onPress={navigateToIndex} />
         </XStack>
         <ThemedText style={{ fontSize: 25, fontWeight: '600', marginLeft: 12, marginBottom: 16 }}>
           Create a Trip
