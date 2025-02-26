@@ -20,8 +20,10 @@ export default function TabLayout() {
         height:72,
         elevation:0,
         backgroundColor:"white",
-        borderTopLeftRadius: 30, 
-        borderTopRightRadius: 30, 
+        // borderTopLeftRadius: 30, 
+        // borderTopRightRadius: 30, 
+        borderTopColor: "ิิิblack", 
+        borderTopWidth: 0.5,       
         alignItems:"center",
         justifyContent:"center",
       }

@@ -36,7 +36,8 @@ const Propage = () => {
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [dateOfBirth, setDateOfBirth] = useState(new Date(user.dateofbirth));
+  const [dateOfBirth, setDateOfBirth] = useState(new Date(user.date_of_birth));
+
   const [dateString, setDateString] = useState<String>('')
   // const theme = useColorScheme();
   // const [isDark, setIsDark] = useState(theme === 'light' ? false : true);
@@ -87,7 +88,7 @@ const Propage = () => {
       lastname !== user.lastname ||
       tel !== user.tel ||
       gender !== user.gender ||
-      dateString !== user.dateofbirth
+      dateString !== user.date_of_birth
     ) {
       try {
         const currentUser = auth.currentUser;
@@ -133,10 +134,10 @@ const Propage = () => {
             email: dataUser.email,
             firstname: dataUser.firstname,
             lastname: dataUser.lastname,
-            dateofbirth: dataUser.date_of_birth,
+            date_of_birth: dataUser.date_of_birth,
             tel: dataUser.tel,
             gender: dataUser.gender,
-            img: dataUser.image
+            image: dataUser.image
           });
 
           Alert.alert("User updated successfully!");
@@ -287,7 +288,7 @@ const Propage = () => {
             }
           </ThemedView>
         </ThemedView>
-        <Image className="absolute" source={{ uri: user.img }} style={styles.avatar} />
+        <Image className="absolute" source={{ uri: user.image }} style={styles.avatar} />
       </ThemedView>
       <CustomDateTimePicker
         visible={isDatePickerVisible}

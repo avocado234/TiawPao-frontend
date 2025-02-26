@@ -1,14 +1,16 @@
 import { create } from "zustand";
 
 interface User {
+  userid: string;
+  image: string;
   username: string;
   email: string;
+  tel: string;
   firstname: string;
   lastname: string;
-  dateofbirth: string;
-  tel: string;
+  date_of_birth: string;
   gender: string;
-  img:string
+  userplan_id: string[];
 }
 
 interface UserStoreState {
@@ -19,28 +21,32 @@ interface UserStoreState {
 
 export const useUserStore = create<UserStoreState>((set) => ({
   user: {
+    userid: "",
+    image: "",
     username: "",
     email: "",
+    tel: "",
     firstname: "",
     lastname: "",
-    dateofbirth: "",
-    tel: "",
+    date_of_birth: "",
     gender: "",
-    img:""
+    userplan_id: [],
   },
   setUserData: (data) =>
     set((state) => ({ user: { ...state.user, ...data } })),
   resetUserData: () =>
     set({
       user: {
+        userid: "",
+        image: "",
         username: "",
         email: "",
+        tel: "",
         firstname: "",
         lastname: "",
-        dateofbirth: "",
-        tel: "",
+        date_of_birth: "",
         gender: "",
-        img:""
+        userplan_id: [],
       },
     }),
 }));
