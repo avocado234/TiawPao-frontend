@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: "#F8F9FA",
-        borderRadius: 16,
+        borderRadius: 10,
         shadowRadius: 6,
         overflow: "hidden",
         elevation: 4,
@@ -76,8 +76,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "100%",
-        height: 100,
-        borderRadius: 10,
+        height: 80,
     },
     content: {
         padding: 10,
