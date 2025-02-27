@@ -69,7 +69,7 @@ const Homepage: React.FC = () => {
 
 export default Homepage;
 
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   headerWrapper: {

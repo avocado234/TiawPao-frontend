@@ -106,8 +106,9 @@ export default Carousel;
 
 const styles = StyleSheet.create({
     image: {
-        width: Dimensions.get("screen").width,
-        height: 220, 
+        width: Dimensions.get("window").width,
+        height: 220,
+       
     },
     dotContainer: {
         flexDirection: "row",

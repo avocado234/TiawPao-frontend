@@ -5,6 +5,8 @@ import { ArrowLeft, Bold } from "@tamagui/lucide-icons";
 import Expecard from '@/components/experiencecard';
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
+import { ThemedText } from '@/components/ThemedText';
+import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
 const homedetail = () => {
     const router = useRouter();
     const param = useLocalSearchParams();
@@ -22,19 +24,13 @@ const homedetail = () => {
     if (id === "4") {
         pic = require(`@/assets/images/wat-arun.jpg`);
     }
-    const PresstoHome = () => {
-        router.push({
-            pathname: "/(tabs)",
-        });
-    };
+    
     return (
         <View style={styles.themedView}>
             <XStack style={styles.test}>
-                <Pressable>
-                    <ArrowLeft size={24} onPress={PresstoHome} />
-                </Pressable>
+                <ThemeCustomBackButton />
             </XStack>
-            <YStack style={styles.topbackground}>
+            <YStack className='bg-fixed' style={styles.topbackground}>
                 <Text style={styles.texttopic}>{name}</Text>
                 <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
@@ -43,7 +39,7 @@ const homedetail = () => {
                     style={styles.imagemain}
                     resizeMode='cover' />
                 <YStack>
-                    <Text style={styles.text}>        Koh Larn (Coral Island) is a perfect day trip from Pattaya, just 40 minutes by ferry or speedboat from Bali Hai Pier. Its clear beaches and warm waters are ideal for parasailing, jet skiing, banana boat rides, and snorkeling. For stunning views, visit the Big Buddha Viewpoint. You can explore the island by renting an affordable scooter or joining a group tour, which usually includes transportation.</Text>
+                    <ThemedText style={styles.text}>        Koh Larn (Coral Island) is a perfect day trip from Pattaya, just 40 minutes by ferry or speedboat from Bali Hai Pier. Its clear beaches and warm waters are ideal for parasailing, jet skiing, banana boat rides, and snorkeling. For stunning views, visit the Big Buddha Viewpoint. You can explore the island by renting an affordable scooter or joining a group tour, which usually includes transportation.</ThemedText>
                     <Text style={styles.texttopic3}> The way to Experience Koh Larn </Text>
                     <Text style={styles.texttopic4}> Activities </Text>
                     <View className=''>
@@ -71,6 +67,7 @@ const styles = StyleSheet.create({
     },
     themedView: {
         flex: 1,
+        paddingBottom: 50
     },
     test: {
         color: 'white',
@@ -104,6 +101,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginHorizontal: 30,
         marginVertical: 12,
+        
     },
     texttopic3: {
         fontSize: 16,

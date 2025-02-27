@@ -21,7 +21,7 @@ import TripCard from '@/components/TripCard';
 import { useRouter } from "expo-router";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get('window');
-const FILTER_PANEL_HEIGHT = height * 0.241;
+const FILTER_PANEL_HEIGHT = height * 0.27;
 
 const tripData = [
   { id: 1, user: "Jame Macdonell", nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", rating: "4.8", location: "Chonburi", description: "This plan is very good plan in Pattaya" },
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   headerWrapper: {
     marginTop: height * 0.05,
     paddingHorizontal: width * 0.05,
-    marginBottom: height * 0.01,
+    marginBottom: height * 0.005,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

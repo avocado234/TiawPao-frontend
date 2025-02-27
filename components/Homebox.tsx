@@ -20,7 +20,7 @@ const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
         <View style={styles.card}>
             <Image source={place.image} style={styles.image} />
             <View style={styles.content}>
-                <Text className="text-[16px] font-bold">{place.name}</Text>
+                <Text className="text-[16px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
                 <Text style={styles.location}>{place.location}</Text>
                 <View style={styles.ratingContainer}>
                     <MaterialIcons name="star" size={16} color="gold" />
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: "#F8F9FA",
-        borderRadius: 16,
+        borderRadius: 10,
         shadowRadius: 6,
         overflow: "hidden",
         elevation: 4,
@@ -76,8 +76,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "100%",
-        height: 100,
-        borderRadius: 10,
+        height: 80,
     },
     content: {
         padding: 10,
