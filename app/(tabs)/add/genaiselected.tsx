@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
-import { View, Text, SafeAreaView, Pressable, useColorScheme, Image, Alert } from 'react-native';
-import { ArrowLeft, ArrowRightToLine } from "@tamagui/lucide-icons";
-import { Button, XStack, YStack } from 'tamagui';
+import { View, Text, SafeAreaView, Pressable, useColorScheme, Image, Alert ,Button} from 'react-native';
+import { ArrowLeft, ArrowRightToLine,PlusCircle,Plus,Minus } from "@tamagui/lucide-icons";
+import {  XStack, YStack } from 'tamagui';
 import { ImageBackground } from 'expo-image';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from "@/components/Bgelement";
@@ -14,6 +14,26 @@ import { widths } from '@tamagui/config/types/media';
 
 export default function Main() {
   const theme = useColorScheme();
+  const [adults, setAdults] = useState(0);
+  const [kids, setKids] = useState(0);
+
+  const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
+  const [triptype, setTriptype] = useState("Solo")
+
+  const [Mustsee, setmustsee] = useState(false);
+  const [Nature, setNature] = useState(false);
+  const [Eco, setEco] = useState(false);
+  const [ArtAndthea, setArtAndthea] = useState(false);
+  const [Beach, setBeach] = useState(false);
+  const [Adventure, setAdventure] = useState(false);
+  const [Camping, setCamping] = useState(false);
+  const [Urban, setUrban] = useState(false);
+  const [Rural, setRural] = useState(false);
+  const [Luxury, setLuxury] = useState(false);
+  const [LocalCul, setLocalCul] = useState(false);
+  const [Foodie, setFoodie] = useState(false);
+  const [Shopping, setShopping] = useState(false);
+  
   const Return_Button = () => {
     const theme = useColorScheme();
     const BacktoAdd = () => {
@@ -28,8 +48,6 @@ export default function Main() {
     );
   };
   const TypeTripRender = () => {
-    const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
-    const [triptype, setTriptype] = useState("Solo")
     const handleToggle = (state: boolean, tripType: string) => {
       if (state) {
         setSelectedTrip(tripType);
@@ -89,72 +107,60 @@ export default function Main() {
     );
   };
   const SelectedVibs = () => {
-    const [Mustsee, setmustsee] = useState(false);
-    const [Nature, setNature] = useState(false);
-    const [Eco, setEco] = useState(false);
-    const [ArtAndthea, setArtAndthea] = useState(false);
-    const [Beach, setBeach] = useState(false);
-    const [Adventure, setAdventure] = useState(false);
-    const [Camping, setCamping] = useState(false);
-    const [Urban, setUrban] = useState(false);
-    const [Rural, setRural] = useState(false);
-    const [Luxury, setLuxury] = useState(false);
-    const [LocalCul, setLocalCul] = useState(false);
-    const [Foodie, setFoodie] = useState(false);
-    const [Shopping, setShopping] = useState(false);
+
     const handleToggle = (state: boolean, tripType: string) => {
-        console.log("state is ",state);
+       // console.log("state is ",state);
         if (tripType === "must") {
           setmustsee(state);
-          console.log("Logic must = ",Mustsee);
+          //console.log("Logic must = ",Mustsee);
         }
         else if (tripType === "nature") {
           setNature(state);
-          console.log("Logic Nature = ",Nature);
+          //console.log("Logic Nature = ",Nature);
         }
         else if (tripType === "eco") {
           setEco(state);
-          console.log("Logic Eco = ",Eco);
+         // console.log("Logic Eco = ",Eco);
         }
         else if (tripType === "art") {
           setArtAndthea(state);
-          console.log("Logic ArtAndthea = ",ArtAndthea);
+          //console.log("Logic ArtAndthea = ",ArtAndthea);
         }
         else if (tripType === "beach") {
           setBeach(state);
-          console.log("Logic Beach = ",Beach);
+         // console.log("Logic Beach = ",Beach);
         }
         else if (tripType === "adventure") {
           setAdventure(state);
-          console.log("Logic Adventure = ",Adventure);
+          //console.log("Logic Adventure = ",Adventure);
         }
         else if (tripType === "camping") {
           setCamping(state);
-          console.log("Logic Camping = ",Camping);
+          //console.log("Logic Camping = ",Camping);
         }
         else if (tripType === "urban") {
           setUrban(state);
-          console.log("Logic Urban = ",Urban);
+          //console.log("Logic Urban = ",Urban);
         }
         else if (tripType === "rural") {
           setRural(state);
-          console.log("Logic Rural = ",Rural);
+          //console.log("Logic Rural = ",Rural);
         }
         else if (tripType === "luxury") {
           setLuxury(state);
-          console.log("Logic Luxury = ",Luxury);
+          //console.log("Logic Luxury = ",Luxury);
         }
         else if (tripType === "local") {
           setLocalCul(state);
-          console.log("Logic local = ",LocalCul);
+          //console.log("Logic local = ",LocalCul);
         }
         else if (tripType === "foodie") {
           setFoodie(state);
-          console.log("Logic Foodie = ",Foodie);
+          //console.log("Logic Foodie = ",Foodie);
         }
         else if (tripType === "shopping") {
           setShopping(state);
-          console.log("Logic Shopping = ",Shopping);
+          //console.log("Logic Shopping = ",Shopping);
         }
     };
     return (
@@ -215,6 +221,42 @@ export default function Main() {
 
       </YStack>);
   }
+  const AgeRender =()=>{
+    const update_value = (key: string, where: string) => {
+      if (key === "adults") {
+        setAdults(prev => Math.max(0, prev + (where === "plus" ? 1 : -1)));
+      } else if (key === "kid") {
+        setKids(prev => Math.max(0, prev + (where === "plus" ? 1 : -1)));
+      }
+    };    
+    return (
+      <YStack>
+        <XStack style={styles.XStackTraveler}>
+          <YStack>
+            <Text style={styles.TextTraveler}>Adults</Text>
+            <Text style={styles.TextSubTravler}>Age up to 16</Text>
+          </YStack>
+          <XStack style={styles.xStackUpandDown}>
+          <Pressable style={styles.ButtonTwin}><Minus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("adults","no")} /></Pressable>
+          <Text style={styles.TextNumber}> {adults} </Text>
+          <Pressable style={styles.ButtonTwin}><Plus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("adults","plus")}/></Pressable>
+          </XStack>
+        </XStack>
+
+        <XStack style={styles.XStackTraveler}>
+          <YStack>
+            <Text style={styles.TextTraveler}>Children</Text>
+            <Text style={styles.TextSubTravler}>Age 3-17</Text>
+          </YStack>
+          <XStack style={styles.xStackUpandDown}>
+          <Pressable style={styles.ButtonTwin}><Minus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("kid","no")} /></Pressable>
+          <Text style={styles.TextNumber}> {kids} </Text>
+          <Pressable style={styles.ButtonTwin}><Plus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("kid","plus")}/></Pressable>
+          </XStack>
+        </XStack>
+      </YStack>
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={styles.ThemeView}>
@@ -231,6 +273,8 @@ export default function Main() {
             {TypeTripRender()}
             <Text style={styles.TextSubScript}>What your travel vibes?</Text>
             {SelectedVibs()}
+            <Text style={styles.TextSubScript}>Number of traveler</Text>
+            {AgeRender()}
           </YStack>
         </YStack>
       </ThemedView>
@@ -260,7 +304,7 @@ const styles = {
     widths: '100%',
     heights: '100',
     backgroundColor: 'tranparent',
-    marginVertical: 20,
+    marginVertical: 10,
     marginHorizontal: 20,
     alignItems: 'center',
   },
@@ -285,6 +329,20 @@ const styles = {
     marginLeft: 10,
     marginBottom: 10,
   },
+  XStackTraveler:
+  {
+    widths: '100%',
+   // backgroundColor : 'red',
+    marginLeft: 10,
+    marginBottom: 10,
+    justifyContent:"space-between" ,
+    alignItems:"center"
+  },
+  xStackUpandDown:
+  {
+    alignItems:"center",
+    
+  },
   YstackVibs:
   {
     //backgroundColor : 'green',
@@ -293,13 +351,34 @@ const styles = {
   {
     fontSize: 32,
   },
+  ButtonTwin:
+  {
+    borderRadius: 50,
+    width: 40, 
+    height: 40, 
+    bcakgroundColor:'black'
+  },
+  TextNumber:
+  {
+    fontSize: 17,
+    minWidth: 30,  
+  },
   TextSubScript:
   {
-    fontSize: 20,
+    fontSize: 23,
     marginLeft: 10,
     marginTop: 10,
-    marginBottom: 30,
-
+    marginBottom: 10,
   },
+  TextTraveler:{
+    fontSize: 20,
+    marginLeft: 10,
+  },
+  TextSubTravler:
+  {
+    fontSize: 15,
+    marginLeft: 10,
+    marginTop: -5,
+  }
 
 }
