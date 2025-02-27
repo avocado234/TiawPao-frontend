@@ -36,7 +36,7 @@ const Homepage: React.FC = () => {
 
   return (
     <View className="flex-1 w-full !h-full">
-      <ThemedView className="flex-1 w-full !h-full">
+      <ThemedView className="flex-1 w-full !h-full mt-5">
         <Bgelement />
         <View style={styles.headerWrapper}>
           <ThemedText className="top-5" style={styles.headerText}>{user.username}</ThemedText>
@@ -45,7 +45,7 @@ const Homepage: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View className=''>
+        <View >
         <ScrollView
           className="flex-1 w-full"
           contentContainerStyle={styles.scrollContentContainer}

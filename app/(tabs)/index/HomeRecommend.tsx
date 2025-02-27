@@ -28,12 +28,12 @@ export default function HomeRecommend() {
         contentContainerStyle={styles.scrollContent} 
         showsVerticalScrollIndicator={false}
       >
-        {/* 🔹 รูปภาพหลัก (ปรับขนาดใหม่) */}
+        <View>
         <Image
           source={{ uri: "https://api.tourismthailand.org/upload/live/article_desktop_cover_image/1124-32787.png" }} 
           style={styles.mainImage}
-          resizeMode="cover"
         />
+        </View>
 
         {/* 🔹 ปุ่ม Save */}
         <View style={styles.saveContainer}>
@@ -116,17 +116,15 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "white" },
   
   header: {
-    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: 110, // 🔹 ปรับให้สูงขึ้น
-    backgroundColor: "#4A90E2",
+    height: 110, 
+    backgroundColor: "#203B82",
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingTop: 50,
-    zIndex: 10,
   },
 
   backButton: {
@@ -145,9 +143,8 @@ const styles = StyleSheet.create({
 
   mainImage: {
     width: "100%",
-    height: 300, // 🔹 ปรับขนาดใหม่
-    resizeMode: "cover",
-    
+    height: 150,
+   
   },
 
   subImage: {
