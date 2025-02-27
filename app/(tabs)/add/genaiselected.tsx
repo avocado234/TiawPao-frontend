@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
-import { View, Text, SafeAreaView, Pressable, useColorScheme, Image, Alert ,Button} from 'react-native';
+import { View, Text, SafeAreaView, Pressable, useColorScheme, Image, Alert} from 'react-native';
 import { ArrowLeft, ArrowRightToLine,PlusCircle,Plus,Minus } from "@tamagui/lucide-icons";
-import {  XStack, YStack } from 'tamagui';
+import {  XStack, YStack,Button } from 'tamagui';
 import { ImageBackground } from 'expo-image';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from "@/components/Bgelement";
+import { ThemedText } from '@/components/ThemedText';
 import SelectedCompo from "@/components/selectedbutton";
 import { widths } from '@tamagui/config/types/media';
 
@@ -33,13 +34,48 @@ export default function Main() {
   const [LocalCul, setLocalCul] = useState(false);
   const [Foodie, setFoodie] = useState(false);
   const [Shopping, setShopping] = useState(false);
-  
+  const param = useLocalSearchParams();
+  let { tripName, region, province, startDate, startTime, endDate, endTime, visibility } = param;
+  const vibeslock =()=>
+  {
+    //console.log(Mustsee||Nature||Eco||ArtAndthea||Beach||Adventure||Camping||Urban||Rural||Luxury||LocalCul||Foodie||Shopping);
+    return Mustsee||Nature||Eco||ArtAndthea||Beach||Adventure||Camping||Urban||Rural||Luxury||LocalCul||Foodie||Shopping;
+  }
+  const Submit_Button =()=>
+  {
+    //console.log(selectedTrip);
+    if( selectedTrip === null ||!vibeslock())
+    {     
+        Alert.alert("Warning", "Please select your travel vibes!");
+    }
+    else
+    {
+      if(adults === 0 && kids === 0 )
+        {
+          Alert.alert("Warning", "Please select your people!");
+        }
+        else
+        {
+          console.log("AI Gen Approved!!");
+        }
+    }
+  }
   const Return_Button = () => {
     const theme = useColorScheme();
     const BacktoAdd = () => {
       router.push({
-        pathname: "/add/tripgenai",
-      });
+            pathname: "/(tabs)/add/tripgenai",
+            params: {
+              tripName: tripName,
+              region: region,
+              province: province,
+              startDate: startDate,
+              startTime: startTime,
+              endDate: endDate,
+              endTime: endTime,
+              visibility: visibility
+            }
+          });
     };
     return (
       <Pressable onPress={BacktoAdd} >
@@ -233,24 +269,24 @@ export default function Main() {
       <YStack>
         <XStack style={styles.XStackTraveler}>
           <YStack>
-            <Text style={styles.TextTraveler}>Adults</Text>
-            <Text style={styles.TextSubTravler}>Age up to 16</Text>
+            <ThemedText style={styles.TextTraveler}>Adults</ThemedText>
+            <ThemedText style={styles.TextSubTravler}>Age up to 16</ThemedText>
           </YStack>
           <XStack style={styles.xStackUpandDown}>
           <Pressable style={styles.ButtonTwin}><Minus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("adults","no")} /></Pressable>
-          <Text style={styles.TextNumber}> {adults} </Text>
+          <ThemedText style={styles.TextNumber}> {adults} </ThemedText>
           <Pressable style={styles.ButtonTwin}><Plus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("adults","plus")}/></Pressable>
           </XStack>
         </XStack>
 
         <XStack style={styles.XStackTraveler}>
           <YStack>
-            <Text style={styles.TextTraveler}>Children</Text>
-            <Text style={styles.TextSubTravler}>Age 3-17</Text>
+            <ThemedText style={styles.TextTraveler}>Children</ThemedText>
+            <ThemedText style={styles.TextSubTravler}>Age 3-17</ThemedText>
           </YStack>
           <XStack style={styles.xStackUpandDown}>
           <Pressable style={styles.ButtonTwin}><Minus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("kid","no")} /></Pressable>
-          <Text style={styles.TextNumber}> {kids} </Text>
+          <ThemedText style={styles.TextNumber}> {kids} </ThemedText>
           <Pressable style={styles.ButtonTwin}><Plus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("kid","plus")}/></Pressable>
           </XStack>
         </XStack>
@@ -266,15 +302,18 @@ export default function Main() {
         </XStack>
         <YStack style={styles.YStackAllComponent}>
           <YStack style={styles.YStackNameTrip}>
-            <Text style={[styles.TextHeader, { fontWeight: "bold" }]}>Test Trip</Text>
+            <ThemedText style={[styles.TextHeader, { fontWeight: "bold" }]}>{tripName}</ThemedText>
           </YStack>
           <YStack style={styles.YStackRenderContent}>
-            <Text style={styles.TextSubScript}>What kind of trip are you planning?</Text>
+            <ThemedText style={styles.TextSubScript}>What kind of trip are you planning?</ThemedText>
             {TypeTripRender()}
-            <Text style={styles.TextSubScript}>What your travel vibes?</Text>
+            <ThemedText style={styles.TextSubScript}>What your travel vibes?</ThemedText>
             {SelectedVibs()}
-            <Text style={styles.TextSubScript}>Number of traveler</Text>
+            <ThemedText style={styles.TextSubScript}>Number of traveler</ThemedText>
             {AgeRender()}
+            <Button style={{backgroundColor:'#10b981'}}
+            onPress={Submit_Button}
+            ><Text style={{ color: 'white', textAlign: 'center' }} >Submit</Text></Button>
           </YStack>
         </YStack>
       </ThemedView>
@@ -379,6 +418,7 @@ const styles = {
     fontSize: 15,
     marginLeft: 10,
     marginTop: -5,
+    color:"#909090"
   }
 
 }
