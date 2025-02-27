@@ -21,6 +21,11 @@ import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
 import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
 import DropdownComponent from '@/components/DropDownComponent';
 import FilterDropDown from '@/components/FilterDropDown';
+import api from '@/utils/axiosInstance';
+import { useUserStore } from '@/store/useUser';
+import {auth} from '@/config/firebaseconfig'
+import uuid from 'react-native-uuid';
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -33,6 +38,7 @@ type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western'
 export default function CreateTrip() {
   const [selectedValueRegion, setSelectedValueRegion] = useState(null);
   const [selectedValueProvince, setSelectedValueProvince] = useState(null);
+  const [selectedValueProvinceID, setSelectedValueProvinceID] = useState(null);
   const [tripName, setTripName] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -199,7 +205,7 @@ export default function CreateTrip() {
     ]
   };
   
-
+  
   const getFilteredProvinces = () => {
     if (!selectedValueRegion) return [];
     return provinces[selectedValueRegion as RegionKey] || [];
@@ -208,12 +214,19 @@ export default function CreateTrip() {
     setSelectedValueRegion(value);
   }
   const handleDropdownChangeProvince= (value: any) => {
-    // console.log("From Handel : " + value.label)
+    // console.log("From Handel : " + value.id)
     setSelectedValueProvince(value.label);
+    setSelectedValueProvinceID(value.id);
   }
+  const { user } = useUserStore();
 
-  const handleCreatePlan = () => {
+  const handleCreatePlan = async() => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error('User not logged in');
+    }
 
+    const idToken = await currentUser.getIdToken();
     const missingFields = getMissingFields();
     if (missingFields.length > 0) {
       Alert.alert(
@@ -223,19 +236,58 @@ export default function CreateTrip() {
       );
       return;
     }
-    router.push({
-      pathname: "/(tabs)/add/tripmanually",
-      params: {
-        tripName: tripName,
-        region: selectedValueRegion,
-        province: selectedValueProvince,
-        startDate: startDate.toISOString(),
-        startTime: startTime.toISOString(),
-        endDate: endDate.toISOString(),
-        endTime: endTime.toISOString(),
-        visibility: selectedOption
+   try{
+    console.log("TEST")
+    const planID = uuid.v4();
+    const dataJson = {
+      "plan_id":  planID,
+      "author_email": user.email,
+      "trip_name": tripName,
+      "region_label": selectedValueRegion,
+      "province_label": selectedValueProvince,
+      "province_id": String(selectedValueProvinceID),
+      "start_date": startDate.toISOString(),
+      "start_time": startTime.toISOString(),
+      "end_date": endDate.toISOString(),
+      "end_time": endTime.toISOString(),
+      "trip_location": [],
+      "visibility": selectedOption === 'Public'
+    }
+    const response = await api.post(`/user/createplan`, dataJson,{
+      headers: {
+        Authorization: `Bearer ${idToken}`
       }
     });
+    const formData = new FormData();
+    formData.append("userplan_id", planID);
+
+    await api.put(`/user/updateuserplan/${user.email}`,formData,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${idToken}`
+      }
+    });
+    // console.log(response)
+  // .then( ()=>{
+  //   router.push({
+  //     pathname: "/(tabs)/add/tripmanually",
+  //     params: {
+  //       tripName: tripName,
+  //       region: selectedValueRegion,
+  //       province: selectedValueProvince,
+  //       startDate: startDate.toISOString(),
+  //       startTime: startTime.toISOString(),
+  //       endDate: endDate.toISOString(),
+  //       endTime: endTime.toISOString(),
+  //       visibility: selectedOption
+  //     }
+  //   });
+  // })
+  
+   }catch(err){
+     console.log(err)
+   }
+    
   };
 
   const handleCreatePlanAi = () => {
@@ -327,7 +379,6 @@ export default function CreateTrip() {
       endTime !== null
     );
   };
-
   const renderContent = () => (
     <YStack style={{ padding: 16, flex: 1, gap: 16 }}>
       {/* Trip Name */}

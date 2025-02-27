@@ -3,6 +3,7 @@ import { create } from "zustand";
 interface SignupState {
   userid: string;
   image: string;
+  password:string
   username: string;
   email: string;
   tel: string;
@@ -18,6 +19,7 @@ interface SignupState {
 export const useSignupStore = create<SignupState>((set) => ({
   userid: "",
   image: "",
+  password:"",
   username: "",
   email: "",
   tel: "",
@@ -31,6 +33,7 @@ export const useSignupStore = create<SignupState>((set) => ({
     set({
       userid: "",
       image: "",
+      password:"",
       username: "",
       email: "",
       tel: "",
