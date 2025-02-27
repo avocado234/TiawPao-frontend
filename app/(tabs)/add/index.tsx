@@ -285,7 +285,6 @@ export default function CreateTrip() {
   // })
   
    }catch(err){
-    console.log("CATCH!")
      console.log(err)
    }
     
