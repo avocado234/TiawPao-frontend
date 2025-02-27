@@ -25,7 +25,7 @@ const CustomButton: React.FC<ButtonProps> = ({marginright,marginleft,logo,title,
     TextColor = "white";
     BorderColor = "#203B82";
   } else {
-    TextColor = isSelected ? "white" : "#203B82";
+    TextColor = isSelected  ? "white" : "#203B82";
     BorderColor = "#203B82";
   }
 
@@ -43,14 +43,41 @@ const CustomButton: React.FC<ButtonProps> = ({marginright,marginleft,logo,title,
     if (logo === "House") return <House size={20} color={TextColor} style={{ marginTop: -3 }} />;
     if (logo === "User") return <User size={20} color={TextColor} style={{ marginTop: -3 }} />;
   };
-
+  let RealBackgroundColor;
+  if(active)
+  {
+    RealBackgroundColor = "#203B82"
+  }
+  else
+  {
+    if(disabled)
+    {
+      if(logo === "no")
+      {
+        RealBackgroundColor = "grey";
+        TextColor = "#203B82"
+       
+      }
+      else
+      {
+        RealBackgroundColor = "transparent"
+        TextColor = "#203B82"
+      }
+      
+    }
+    else
+    {
+      TextColor = "#203B82"
+      RealBackgroundColor = "#FFFFFF"
+    }
+  }
   return (
     <Pressable
       style={[
         styles.button,
         {
           width,
-          backgroundColor: active ? "#203B82" : "transparent",
+          backgroundColor: RealBackgroundColor,
           borderColor: BorderColor,
           marginLeft: marginleft,
           marginRight: marginright,
@@ -69,14 +96,14 @@ const CustomButton: React.FC<ButtonProps> = ({marginright,marginleft,logo,title,
 
 const styles = StyleSheet.create({
   button: {
-    height: 35,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 25,
   },
   text: {
-    fontSize: 14,
+    fontSize: 15,
   },
   XstackCompo: {
     justifyContent: "center",
