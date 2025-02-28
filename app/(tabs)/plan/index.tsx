@@ -14,14 +14,14 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Bgelement from '@/components/Bgelement';
 
 const initialTrips = [
-  { id: 1, nametrip: "Chonburi trip", price: "500$", date: "24 Jan - 26 Jan", location: "Pattaya, Chonburi" },
-  { id: 2, nametrip: "Chiang Mai Tour", price: "600$", date: "13 June - 19 June", location: "Chiang Mai" },
-  { id: 3, nametrip: "Go Khon Kaen", price: "700$", date: "13 June - 19 June", location: "Khon Kaen" },
-  { id: 4, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
-  { id: 5, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
-  { id: 6, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
-  { id: 7, nametrip: "Rayong First Time", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
-  { id: 8, nametrip: "Rayong First Time 12", price: "700$", date: "24 Jan - 25 Jan", location: "Rayong" },
+  { id: 1, nametrip: "Chonburi trip", price: "500 ฿", date: "24 Jan - 26 Jan", location: "Pattaya, Chonburi" },
+  { id: 2, nametrip: "Chiang Mai Tour", price: "600 ฿", date: "13 June - 19 June", location: "Chiang Mai" },
+  { id: 3, nametrip: "Go Khon Kaen", price: "700 ฿", date: "13 June - 19 June", location: "Khon Kaen" },
+  { id: 4, nametrip: "Rayong First Time", price: "700 ฿", date: "24 Jan - 25 Jan", location: "Rayong" },
+  { id: 5, nametrip: "Rayong First Time", price: "700 ฿", date: "24 Jan - 25 Jan", location: "Rayong" },
+  { id: 6, nametrip: "Rayong First Time", price: "700 ฿", date: "24 Jan - 25 Jan", location: "Rayong" },
+  { id: 7, nametrip: "Rayong First Time", price: "700 ฿", date: "24 Jan - 25 Jan", location: "Rayong" },
+  { id: 8, nametrip: "Rayong First Time 12", price: "700 ฿", date: "24 Jan - 25 Jan", location: "Rayong" },
 ];
 
 const { width, height } = Dimensions.get('screen');
@@ -35,7 +35,7 @@ const Plan: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className=' mt-5' style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
         <View style={styles.headerWrapper}>
@@ -49,7 +49,8 @@ const Plan: React.FC = () => {
         {/* Edit Button */}
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => setIsEditMode(!isEditMode)}
+          onPress={() =>  setIsEditMode(!isEditMode)}
+          
         >
           <MaterialCommunityIcons 
             name={isEditMode ? 'file-check-outline' : 'pencil'} 

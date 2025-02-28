@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 interface Trip {
     id: number;
@@ -15,7 +16,7 @@ const MyPlanBox = ({ trips, isEditMode, onDelete }: { trips: Trip[], isEditMode:
         <View style={styles.container}>
             {trips.map((trip) => (
                 <View key={trip.id} style={[styles.cardWrapper, isEditMode ? styles.cardWrapperEdit : {}]}>
-                    <TouchableOpacity activeOpacity={0.8} style={[styles.card, isEditMode ? styles.cardEdit : {}]}>
+                    <TouchableOpacity  onPress={() => router.push('/(tabs)/add/tripmanually')} activeOpacity={0.8} style={[styles.card, isEditMode ? styles.cardEdit : {}]}>
                         <View className=" left-3">
                             <Text style={styles.tripTitle} numberOfLines={1} ellipsizeMode="clip" >{trip.nametrip}</Text>
                             <View style={styles.tripInfo}>

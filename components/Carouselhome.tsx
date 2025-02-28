@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     image: {
         width: Dimensions.get("window").width,
         height: 220,
+        paddingRight:10
        
     },
     dotContainer: {

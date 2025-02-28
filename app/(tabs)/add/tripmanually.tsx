@@ -130,7 +130,7 @@ export default function TripManually() {
           ))}
           <View style={styles.budgetContainer}>
             <Text style={styles.budgetText}>Average budget</Text>
-            <Text style={styles.budgetAmount}>0$</Text>
+            <Text style={styles.budgetAmount}>0 ฿</Text>
           </View>
         </ScrollView>
       </ThemedView>
