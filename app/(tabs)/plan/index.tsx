@@ -35,9 +35,15 @@ interface PlanData {
   visibility: boolean;
 }
 
+// Interface ที่ MyPlanBox ใช้ โดยข้อมูลจะถูกห่อหุ้มใน property "plan_data"
+interface Trip {
+  plan_data: PlanData;
+}
+
 const Plan: React.FC = () => {
+  // เปลี่ยน state type จาก PlanData[] เป็น Trip[]
+  const [planDataArray, setPlanDataArray] = useState<Trip[]>([]);
   const { user } = useUserStore();
-  const [planDataArray, setPlanDataArray] = useState<PlanData[]>([]);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -58,12 +64,17 @@ const Plan: React.FC = () => {
               Authorization: `Bearer ${idToken}`
             }
           });
+          // response.data ควรมีรูปแบบ { plan_data: { ... } }
           return response.data;
         })
       );
-      setPlanDataArray(planDataResponses);
+      // map ให้ตรงกับ interface Trip (object ที่มี property plan_data)
+      const trips: Trip[] = planDataResponses.map((data: any) => ({
+        plan_data: data.plan_data
+      }));
+      setPlanDataArray(trips);
     } catch (err) {
-      console.error("เกิดข้อผิดพลาดในการโหลด PlanData:", err);
+      console.error("Error to Fetch PlanData:", err);
     } finally {
       setLoading(false);
     }
@@ -84,7 +95,7 @@ const Plan: React.FC = () => {
   }
 
   return (
-    <SafeAreaView className='mt-5' style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
         <View style={styles.headerWrapper}>
@@ -93,10 +104,9 @@ const Plan: React.FC = () => {
         <ScrollView 
           showsVerticalScrollIndicator={false} 
           contentContainerStyle={styles.scrollContainer}>
-          {/* ส่งข้อมูล planDataArray ไปยัง MyPlanBox */}
+          {/* ส่งข้อมูล trips (Trip[]) ไปยัง MyPlanBox */}
           <MyPlanBox trips={planDataArray} isEditMode={isEditMode} onDelete={() => { console.log("DELETE") }} />
         </ScrollView>
-        {/* ปุ่ม Edit */}
         <TouchableOpacity
           style={styles.editButton}
           onPress={() => setIsEditMode(!isEditMode)}
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#203B82' // สีพื้นหลังสำหรับหน้าล็อด
+    backgroundColor: '#203B82'
   },
   headerWrapper: {
     marginTop: height * 0.05, 
