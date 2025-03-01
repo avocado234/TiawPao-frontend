@@ -8,7 +8,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const router = useRouter();
   const theme = useColorScheme();
-  Longdo.apiKey = 'd5359b98f595a04e169cf69c4aa1d37b';
+  Longdo.apiKey = 'API-KEY-HERE';
   let map: any;
 
   return (
