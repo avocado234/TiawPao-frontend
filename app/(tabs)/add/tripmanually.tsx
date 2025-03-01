@@ -1,26 +1,84 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image, ImageBackground, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  SafeAreaView, 
+  ImageBackground, 
+  TouchableOpacity, 
+  TextInput,
+  ActivityIndicator
+} from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from "@/components/Bgelement";
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
-
+import { auth } from '@/config/firebaseconfig';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
+import api from '@/utils/axiosInstance';
 
+// กำหนด interface สำหรับ query params
+interface TripManuallyParams {
+  planID?: string;
+}
+
+// กำหนด interface สำหรับข้อมูลแผน (PlanData)
+interface PlanData {
+  author_email: string;
+  author_img: string;
+  end_date: string;
+  end_time: string;
+  plan_id: string;
+  province_id: string;
+  province_label: string;
+  region_label: string;
+  start_date: string;
+  start_time: string;
+  trip_location: any[]; // กำหนด type ให้เหมาะสมกับข้อมูล
+  trip_name: string;
+  visibility: boolean;
+}
 
 export default function TripManually() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const tripName = Array.isArray(params.tripName) ? params.tripName[0] : params.tripName;
-  const province = Array.isArray(params.province) ? params.province[0] : params.province;
-  const startDate = Array.isArray(params.startDate) ? params.startDate[0] : params.startDate;
-  const endDate = Array.isArray(params.endDate) ? params.endDate[0] : params.endDate;
+  const planid = params.planID;
+  const [plandata, setPlanData] = useState<PlanData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const start = new Date(startDate as string);
-  const end = new Date(endDate as string);
+  useEffect(() => {
+    getPlanData();
+  }, []);
+
+  const getPlanData = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error('User not logged in');
+    }
+    const idToken = await currentUser.getIdToken();
+    setLoading(true);
+    try {
+      const response = await api.get(`/plan/getplanbyid/${planid}`, {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+      // สมมติว่า response.data มี property "plan_data"
+      setPlanData(response.data.plan_data as PlanData);
+      console.log(response.data.plan_data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const start = new Date("2025-01-01");
+  const end = new Date("2025-01-01");
   const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24)) + 1;
 
   const [expandedDays, setExpandedDays] = useState<number[]>([]);
@@ -28,7 +86,7 @@ export default function TripManually() {
   const [searchText, setSearchText] = useState('');
 
   const toggleDay = (index: number) => {
-    setExpandedDays(prev => 
+    setExpandedDays(prev =>
       prev.includes(index) ? prev.filter(day => day !== index) : [...prev, index]
     );
   };
@@ -42,6 +100,14 @@ export default function TripManually() {
     toggleModal();
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#203B82" />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
@@ -52,22 +118,19 @@ export default function TripManually() {
         </TouchableOpacity>
 
         <ScrollView 
-        contentContainerStyle={styles.contentContainer} 
-        showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.contentContainer} 
+          showsVerticalScrollIndicator={false}
         >
           <ImageBackground 
             source={require("@/assets/images/Chonburi.png")}
             style={styles.tripCard}
             imageStyle={{ borderRadius: 8 }}
           >
-            
             <View style={styles.tripContent}>
-              <Text 
-              style={styles.tripName}>{tripName}</Text>
+              <Text style={styles.tripName}>{plandata?.trip_name}</Text>
 
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name="calendar-clear" size={19} color="#FFFFFF" />
-                
+                <Ionicons name="calendar-clear" size={19} color="#FFFFFF" />
                 <Text style={styles.tripDate}>
                   {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - 
                   {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -76,7 +139,7 @@ export default function TripManually() {
 
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Feather name="map-pin" size={20} color="#FFFFFF" />
-                <Text style={styles.province}>{province}</Text>
+                <Text style={styles.province}>{plandata?.province_label || "Province Here"}</Text>
               </View>
 
               <TouchableOpacity style={styles.editButton}>
@@ -86,21 +149,21 @@ export default function TripManually() {
             </View>
 
             <View style={styles.iconContainer}>
-              <TouchableOpacity onPress={() => {router.push("/(tabs)/add/maptrip")}}style={styles.iconButton}>
-
-              <Feather name="map" size={20} color="#FFFFFF" />
+              <TouchableOpacity 
+                onPress={() => { router.push("/(tabs)/add/maptrip") }}
+                style={styles.iconButton}
+              >
+                <Feather name="map" size={20} color="#FFFFFF" />
                 <Text style={styles.iconTextInline}>View Location</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.iconButton}>
-                
-              <FontAwesome6 name="user-plus" size={19} color="#FFFFFF"  />
+                <FontAwesome6 name="user-plus" size={19} color="#FFFFFF" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconButton}>
                 <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
-            
           </ImageBackground>
           {Array.from({ length: days }).map((_, index) => (
             <View key={index} style={styles.dayContainer}>
@@ -161,6 +224,12 @@ export default function TripManually() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     marginTop: 40,
@@ -176,17 +245,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 8,
     overflow: 'hidden',
+    margin: 16,
     opacity: 1,
-  },
-  tripImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 8,
-    marginBottom: 8,
-    padding: 70,
-    // shadowOpacity: 0,
-    // shadowRadius: 10,
-    // elevation: 5,
   },
   tripName: {
     fontSize: 24,
@@ -202,7 +262,7 @@ const styles = StyleSheet.create({
   province: {
     fontSize: 16,
     color: '#FFFFFF',
-    marginLeft: 4
+    marginLeft: 4,
   },
   dayContainer: {
     backgroundColor: '#FFFFFF',
@@ -298,7 +358,7 @@ const styles = StyleSheet.create({
   },
   dropdownContent: {
     padding: 10,
-    backgroundColor: 'rgba(224, 224, 224, )',
+    backgroundColor: 'rgba(224, 224, 224, 1)',
     borderRadius: 8,
     marginTop: 8,
   },
@@ -331,8 +391,8 @@ const styles = StyleSheet.create({
   },
   modalContent: { 
     backgroundColor: 'white',
-    padding:20,
-    height:'50%',
+    padding: 20,
+    height: '50%',
     borderRadius: 10,
     alignItems: 'center',
   },
@@ -354,13 +414,12 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 10,
-    padding: 10
+    padding: 10,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-   
   },
   cancelButton: {
     padding: 10,

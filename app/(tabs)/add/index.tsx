@@ -25,7 +25,7 @@ import api from '@/utils/axiosInstance';
 import { useUserStore } from '@/store/useUser';
 import {auth} from '@/config/firebaseconfig'
 import uuid from 'react-native-uuid';
-
+import apiTAT from '@/utils/axiosTATInstance';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -220,6 +220,16 @@ export default function CreateTrip() {
   }
   const { user } = useUserStore();
 
+  // const handleFetchTATData = async () => {
+  //   await apiTAT.get('/location/provinces')
+  //   .then(response => {
+  //     console.log(response.data);
+  //   })
+  //   .catch(error => {
+  //     console.error('Error:', error);
+  //   });
+  // }
+
   const handleCreatePlan = async() => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
@@ -242,6 +252,7 @@ export default function CreateTrip() {
     const dataJson = {
       "plan_id":  planID,
       "author_email": user.email,
+      "author_img": user.image,
       "trip_name": tripName,
       "region_label": selectedValueRegion,
       "province_label": selectedValueProvince,
@@ -267,6 +278,12 @@ export default function CreateTrip() {
         Authorization: `Bearer ${idToken}`
       }
     });
+    router.push({
+          pathname: "/(tabs)/add/tripmanually",
+          params: {
+            planID: planID,
+          }
+        });
     // console.log(response)
   // .then( ()=>{
   //   router.push({
@@ -488,6 +505,7 @@ export default function CreateTrip() {
             marginBottom: 10,
           }}
           onPress={handleCreatePlan}
+          // onPress={handleFetchTATData}
         >
           <ThemedText style={{ color: 'white', textAlign: 'center' }}>
             Create Plan Manually
