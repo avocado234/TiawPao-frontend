@@ -1,13 +1,13 @@
 import React from 'react'
 import { StyleSheet, Image, ScrollView, SafeAreaView, Pressable } from "react-native";
-import { Text, Button, View, XGroup, XStack, YStack } from "tamagui";
-import { ArrowLeft, Bold } from "@tamagui/lucide-icons";
+import { Text, Button, View, XStack, YStack } from "tamagui";
 import Imageswipe from "@/components/imageswipe";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { ThemedText } from '@/components/ThemedText';
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
 import Bgelement from "@/components/Bgelement";
+
+
 const homedetail = () => {
     const router = useRouter();
     const param = useLocalSearchParams();
@@ -43,6 +43,7 @@ const homedetail = () => {
                 <YStack>
                     <ThemedText style={styles.text}>        Koh Larn (Coral Island) is a perfect day trip from Pattaya, just 40 minutes by ferry or speedboat from Bali Hai Pier. Its clear beaches and warm waters are ideal for parasailing, jet skiing, banana boat rides, and snorkeling. For stunning views, visit the Big Buddha Viewpoint. You can explore the island by renting an affordable scooter or joining a group tour, which usually includes transportation.</ThemedText>
                 </YStack>
+            <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
             <Imageswipe/>
             </ScrollView>
         </View>
@@ -93,12 +94,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 30,
         marginVertical: 12,
         textAlign: 'justify',
+        marginBottom: 30,
     },
     texttopic3: {
         fontSize: 16,
         color: '#203B82',
         fontWeight: 'bold',
-        marginHorizontal: 17,
+        marginHorizontal: 25,
+        marginBottom:15,
     },
     texttopic4: {
         fontSize: 16,
