@@ -53,7 +53,6 @@ const Plan: React.FC = () => {
       if (!currentUser) {
         throw new Error('User not logged in');
       }
-
       const idToken = await currentUser.getIdToken();
       const userPlanIds: string[] = user.userplan_id;
       const planDataResponses = await Promise.all(
@@ -80,6 +79,50 @@ const Plan: React.FC = () => {
     }
   };
 
+  const handleDelete = async (planId: string) => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error('User not logged in');
+      }
+      const idToken = await currentUser.getIdToken();
+       // สร้าง FormData สำหรับส่งข้อมูล
+       const formData = new FormData();
+       formData.append('plan_id', planId);
+       
+
+       const payload = { plan_id: planId };
+       await api.delete(`/user/deleteuserplanbyemail/${user.email}`, {
+         data: payload,
+         headers: {
+           Authorization: `Bearer ${idToken}`,
+           "Content-Type": "application/json"
+         }
+       });
+       
+      
+      // เรียก DELETE endpoint สำหรับลบ plan โดยใช้ plan_id
+      await api.delete(`/plan/deleteplanbyid/${planId}`, {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      });
+  
+ 
+  
+      
+      
+  
+      // อัปเดต state เพื่อลบ plan ที่ถูกลบออกจาก list
+      setPlanDataArray(prev =>
+        prev.filter(trip => trip.plan_data.plan_id !== planId)
+      );
+    } catch (err) {
+      console.error("Error deleting plan:", err);
+    }
+  };
+  
+
   useEffect(() => {
     getUserTrip();
   }, []);
@@ -105,7 +148,11 @@ const Plan: React.FC = () => {
           showsVerticalScrollIndicator={false} 
           contentContainerStyle={styles.scrollContainer}>
           {/* ส่งข้อมูล trips (Trip[]) ไปยัง MyPlanBox */}
-          <MyPlanBox trips={planDataArray} isEditMode={isEditMode} onDelete={() => { console.log("DELETE") }} />
+          <MyPlanBox
+            trips={planDataArray}
+            isEditMode={isEditMode}
+            onDelete={handleDelete}
+          />
         </ScrollView>
         <TouchableOpacity
           style={styles.editButton}
