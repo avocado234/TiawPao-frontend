@@ -18,7 +18,7 @@ import Bgelement from '@/components/Bgelement';
 import api from '@/utils/axiosInstance';
 import { useUserStore } from '@/store/useUser';
 import { auth } from '@/config/firebaseconfig';
-
+import LoadingComponent from '@/components/LoadingComponent';
 const { width, height } = Dimensions.get('screen');
 
 interface PlanData {
@@ -132,11 +132,7 @@ const Plan: React.FC = () => {
 
   if (loading && !refreshing) {
     return (
-      <SafeAreaView style={styles.container}>
-        <ThemedView style={[styles.themedView, styles.loadingContainer]}>
-          <ActivityIndicator size="large" color="#fff" />
-        </ThemedView>
-      </SafeAreaView>
+     <LoadingComponent/>
     );
   }
 

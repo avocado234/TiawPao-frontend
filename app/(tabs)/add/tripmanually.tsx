@@ -20,7 +20,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import api from '@/utils/axiosInstance';
-
+import LoadingComponent from '@/components/LoadingComponent';
 interface TripManuallyParams {
   planID?: string;
 }
@@ -100,9 +100,7 @@ export default function TripManually() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#203B82" />
-      </SafeAreaView>
+      <LoadingComponent/>
     );
   }
 
