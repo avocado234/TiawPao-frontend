@@ -16,6 +16,8 @@ interface User {
 interface UserStoreState {
   user: User;
   setUserData: (data: Partial<User>) => void;
+  addUserPlanId: (planId: string) => void;
+  removeUserPlanId: (planId: string) => void;
   resetUserData: () => void;
 }
 
@@ -34,6 +36,17 @@ export const useUserStore = create<UserStoreState>((set) => ({
   },
   setUserData: (data) =>
     set((state) => ({ user: { ...state.user, ...data } })),
+  addUserPlanId: (planId: string) =>
+    set((state) => ({
+      user: { ...state.user, userplan_id: [...state.user.userplan_id, planId] },
+    })),
+  removeUserPlanId: (planId: string) =>
+    set((state) => ({
+      user: {
+        ...state.user,
+        userplan_id: state.user.userplan_id.filter((id) => id !== planId),
+      },
+    })),
   resetUserData: () =>
     set({
       user: {
