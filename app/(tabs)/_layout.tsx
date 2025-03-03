@@ -6,8 +6,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { View ,Text} from 'tamagui';
 import Stack from 'expo-router';
+import { useColorScheme } from 'react-native';
 export default function TabLayout() {
-
+  const theme = useColorScheme();
   return (
     <Tabs screenOptions={{
       headerShown:false,
@@ -19,7 +20,7 @@ export default function TabLayout() {
         right:16,
         height:72,
         elevation:0,
-        backgroundColor:"white",
+        backgroundColor: theme == 'dark' ? "#18181b" : "white",
         // borderTopLeftRadius: 30, 
         // borderTopRightRadius: 30, 
         borderTopColor: "ิิิblack", 
@@ -38,11 +39,11 @@ export default function TabLayout() {
             }}>
               <Foundation 
                 name="home" 
-                color={focused ? "#5680EC" : "#001A35"}
+                color={focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35" }
                 size={24}
               />
               <Text style={{
-                color: focused ? "#5680EC" : "#001A35",
+                color: focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35",
                 fontSize:9,
                 marginTop: 4,
                 fontWeight:"bold"
@@ -61,11 +62,11 @@ export default function TabLayout() {
             }}>
               <Ionicons 
                 name="search" 
-                color={focused ? "#5680EC" : "#001A35"}
+                color={focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35"}
                 size={24}
               />
               <Text style={{
-                color: focused ? "#5680EC" : "#001A35",
+                color: focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35",
                 fontSize:9,
                 marginTop: 4,
                 fontWeight:"bold"
@@ -84,10 +85,10 @@ export default function TabLayout() {
                 height: 70,
                 width:70,
                 borderRadius:999,
-                backgroundColor:"white",
+                backgroundColor:theme == 'dark'? "#001A35" : "white",
                 borderWidth: 2,
                 borderColor: "#5680EC",
-                shadowColor: "gray",
+                shadowColor: "#5680EC",
                 shadowOffset: { width: 0, height: 1 },
                 shadowOpacity: 0.8,
                 shadowRadius: 5,
@@ -112,11 +113,11 @@ export default function TabLayout() {
             }}>
               <FontAwesome 
                 name="bookmark" 
-                color={focused ? "#5680EC" : "#001A35"}
+                color={focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35"}
                 size={24}
               />
               <Text style={{
-                color: focused ? "#5680EC" : "#001A35",
+                color: focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35",
                 fontSize:9,
                 marginTop: 4,
                 fontWeight:"bold"
@@ -135,11 +136,11 @@ export default function TabLayout() {
             }}>
               <Ionicons
                 name="person" 
-                color={focused ? "#5680EC" : "#001A35"}
+                color={focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35"}
                 size={24}
               />
               <Text style={{
-                color: focused ? "#5680EC" : "#001A35",
+                color: focused ? "#5680EC" : theme == 'dark' ? "white" : "#001A35",
                 fontSize:9,
                 marginTop: 4,
                 fontWeight:"bold"
