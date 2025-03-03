@@ -218,7 +218,7 @@ export default function CreateTrip() {
     setSelectedValueProvince(value.label);
     setSelectedValueProvinceID(value.id);
   }
-  const { user } = useUserStore();
+  const { addUserPlanId,user } = useUserStore();
 
   // const handleFetchTATData = async () => {
   //   await apiTAT.get('/location/provinces')
@@ -235,7 +235,7 @@ export default function CreateTrip() {
     if (!currentUser) {
       throw new Error('User not logged in');
     }
-
+    console.log("BEFORE" + user.userplan_id)
     const idToken = await currentUser.getIdToken();
     const missingFields = getMissingFields();
     if (missingFields.length > 0) {
@@ -247,7 +247,7 @@ export default function CreateTrip() {
       return;
     }
    try{
-    console.log("TEST")
+    // console.log("TEST")
     const planID = uuid.v4();
     const dataJson = {
       "plan_id":  planID,
@@ -269,6 +269,9 @@ export default function CreateTrip() {
         Authorization: `Bearer ${idToken}`
       }
     });
+    addUserPlanId(planID);
+    console.log("After" + user.userplan_id)
+
     const formData = new FormData();
     formData.append("userplan_id", planID);
 
