@@ -101,12 +101,20 @@ const Plan: React.FC = () => {
         <View style={styles.headerWrapper}>
           <ThemedText style={styles.headerText}>My Plan</ThemedText>
         </View>
-        <ScrollView 
-          showsVerticalScrollIndicator={false} 
-          contentContainerStyle={styles.scrollContainer}>
-          {/* ส่งข้อมูล trips (Trip[]) ไปยัง MyPlanBox */}
-          <MyPlanBox trips={planDataArray} isEditMode={isEditMode} onDelete={() => { console.log("DELETE") }} />
-        </ScrollView>
+  
+        {planDataArray.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <ThemedText style={styles.emptyText}>Please create your plan</ThemedText>
+          </View>
+        ) : (
+          <ScrollView 
+            showsVerticalScrollIndicator={false} 
+            contentContainerStyle={styles.scrollContainer}
+          >
+            <MyPlanBox trips={planDataArray} isEditMode={isEditMode} onDelete={() => { console.log("DELETE") }} />
+          </ScrollView>
+        )}
+  
         <TouchableOpacity
           style={styles.editButton}
           onPress={() => setIsEditMode(!isEditMode)}
@@ -120,6 +128,7 @@ const Plan: React.FC = () => {
       </ThemedView>
     </SafeAreaView>
   );
+  
 };
 
 const styles = StyleSheet.create({
@@ -131,11 +140,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#203B82'
   },
   headerWrapper: {
-    marginTop: height * 0.05, 
+    marginTop: height * 0.08,
   },
   headerText: {
-    fontSize: width * 0.1,
-    marginHorizontal: 20, 
+    fontSize: 32,
+    paddingHorizontal: width * 0.04, 
     color: 'white',
     fontWeight: 'bold',
     marginBottom: height * 0.01,
@@ -151,6 +160,15 @@ const styles = StyleSheet.create({
     bottom: height * 0.1,
     padding: width * 0.04,
     borderRadius: width * 0.1,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
