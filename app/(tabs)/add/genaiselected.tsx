@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ThemedCustomBackButton from '@/components/ThemeCustomBackButton';
 import { View, Text, SafeAreaView, Pressable, useColorScheme, Image, Alert} from 'react-native';
 import { ArrowLeft, ArrowRightToLine,PlusCircle,Plus,Minus } from "@tamagui/lucide-icons";
-import {  XStack, YStack,Button } from 'tamagui';
+import {  XStack, YStack,Button, ScrollView } from 'tamagui';
 import { ImageBackground } from 'expo-image';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from "@/components/Bgelement";
@@ -294,6 +294,7 @@ export default function Main() {
     );
   }
   return (
+    
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={styles.ThemeView}>
         <Bgelement />
@@ -304,17 +305,25 @@ export default function Main() {
           <YStack style={styles.YStackNameTrip}>
             <ThemedText style={[styles.TextHeader, { fontWeight: "bold" }]}>{tripName}</ThemedText>
           </YStack>
+      <ScrollView>
           <YStack style={styles.YStackRenderContent}>
-            <ThemedText style={styles.TextSubScript}>What kind of trip are you planning?</ThemedText>
-            {TypeTripRender()}
-            <ThemedText style={styles.TextSubScript}>What your travel vibes?</ThemedText>
-            {SelectedVibs()}
-            <ThemedText style={styles.TextSubScript}>Number of traveler</ThemedText>
-            {AgeRender()}
-            <Button style={{backgroundColor:'#10b981'}}
-            onPress={Submit_Button}
-            ><Text style={{ color: 'white', textAlign: 'center' }} >Submit</Text></Button>
+            <YStack>
+              <ThemedText style={styles.TextSubScript}>What kind of trip are you planning?</ThemedText>
+              {TypeTripRender()}
+                <ThemedText style={styles.TextSubScript}>What your travel vibes?</ThemedText>
+                <ScrollView style={{ flexDirection: 'row'}}>    
+              {SelectedVibs()}
+              </ScrollView>
+              <ThemedText style={styles.TextSubScript}>Number of traveler</ThemedText>
+              {AgeRender()}
+              </YStack>
+            <YStack style={{marginTop:50}}>
+               <Button style={{backgroundColor:'#10b981'}}
+                onPress={Submit_Button}
+                ><Text style={{ color: 'white', textAlign: 'center' }} >Submit</Text></Button>
+            </YStack>
           </YStack>
+    </ScrollView>
         </YStack>
       </ThemedView>
     </SafeAreaView>
@@ -330,7 +339,8 @@ const styles = {
     paddingHorizontal: 16,
     paddingVertical: 8,
     alignItems: 'center',
-    // backgroundColor: 'red',
+    marginTop: 20,
+    //backgroundColor: 'red',
   },
   YStackAllComponent: {
     flex: 1,
@@ -349,7 +359,8 @@ const styles = {
   },
   YStackRenderContent:
   {
-    //backgroundColor: "tranparent",
+    justifyContent: 'space-between',
+    
   },
   XstackFourSelect:
   {
@@ -399,23 +410,23 @@ const styles = {
   },
   TextNumber:
   {
-    fontSize: 17,
+    fontSize: 16,
     minWidth: 30,  
   },
   TextSubScript:
   {
-    fontSize: 23,
+    fontSize: 20,
     marginLeft: 10,
     marginTop: 10,
     marginBottom: 10,
   },
   TextTraveler:{
-    fontSize: 20,
+    fontSize: 16,
     marginLeft: 10,
   },
   TextSubTravler:
   {
-    fontSize: 15,
+    fontSize: 14,
     marginLeft: 10,
     marginTop: -5,
     color:"#909090"

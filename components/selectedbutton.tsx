@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   text: {
-    fontSize: 15,
+    fontSize: 14,
   },
   XstackCompo: {
     justifyContent: "center",
