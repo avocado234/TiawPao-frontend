@@ -20,13 +20,11 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import api from '@/utils/axiosInstance';
-
-// กำหนด interface สำหรับ query params
+import LoadingComponent from '@/components/LoadingComponent';
 interface TripManuallyParams {
   planID?: string;
 }
 
-// กำหนด interface สำหรับข้อมูลแผน (PlanData)
 interface PlanData {
   author_email: string;
   author_img: string;
@@ -38,7 +36,7 @@ interface PlanData {
   region_label: string;
   start_date: string;
   start_time: string;
-  trip_location: any[]; // กำหนด type ให้เหมาะสมกับข้อมูล
+  trip_location: any[]; 
   trip_name: string;
   visibility: boolean;
 }
@@ -102,9 +100,7 @@ export default function TripManually() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#203B82" />
-      </SafeAreaView>
+      <LoadingComponent/>
     );
   }
 

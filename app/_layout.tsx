@@ -16,7 +16,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import {auth} from '../config/firebaseconfig'
 import api from '../utils/axiosInstance';
 import { useUserStore } from '../store/useUser';
-
+import LoadingComponent from '@/components/LoadingComponent';
 import { onAuthStateChanged ,User } from 'firebase/auth';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -121,9 +121,7 @@ const getUserData = async (email: any) => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <LoadingComponent />
     );
   }
   
