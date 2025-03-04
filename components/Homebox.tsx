@@ -6,9 +6,9 @@ import { useRouter } from "expo-router";
 interface Place {
     id: string;
     name: string;
-    location: string;
-    rating: number;
+    province: string;
     image: any;
+    introduction : string;
 }
 
 interface HomeboxProps {
@@ -18,14 +18,10 @@ interface HomeboxProps {
 const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     return (
         <View style={styles.card}>
-            <Image source={place.image} style={styles.image} />
+            <Image source={{ uri: place.image }} style={styles.image} resizeMode="cover" />
             <View style={styles.content}>
-                <Text className="text-[16px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
-                <Text style={styles.location}>{place.location}</Text>
-                <View style={styles.ratingContainer}>
-                    <MaterialIcons name="star" size={16} color="gold" />
-                    <Text style={styles.ratingText}>{place.rating}</Text>
-                </View>
+                <Text className="text-[18px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
+                <Text style={styles.location}>{place.province}</Text>
             </View>
         </View>
     );
@@ -35,13 +31,15 @@ const Homebox: React.FC<HomeboxProps> = ({ places }) => {
     const router = useRouter();
 
     const PresstoHomedetail = (place: Place) => {
+        console.log("Sending to homedetail:", place);
         router.push({
             pathname: "/homedetail",
             params: {
                 id: place.id,
                 name: place.name,
-                location: place.location,
-                image: place.image,
+                location: place.province,
+                image: place.image || '',
+                introduction: place.introduction,
             },
         });
     };
@@ -71,8 +69,8 @@ const styles = StyleSheet.create({
         elevation: 4,
         width: 160,
         marginRight: 12,
-        left :10,
-       
+        left: 10,
+
     },
     image: {
         width: "100%",
@@ -91,7 +89,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
     },
     ratingText: {
-        fontSize: 14,
+        fontSize: 16,
         marginLeft: 4,
     },
 });

@@ -4,7 +4,7 @@ import { Image, StyleSheet } from "react-native";
 const Bgelement = () => {
   return (
     <Image
-      source={require("@/assets/images/Bgcycle.png")}
+      source={require("@/assets/images/BG.png")}
       style={styles.backgroundImage}
     />
   );
@@ -13,9 +13,8 @@ const Bgelement = () => {
 const styles = StyleSheet.create({
   backgroundImage: {
     position: "absolute",
-    top: -200,
-    right: -180,
-    width: "200%",
+    top: -250,
+    width: "100%",
     height: "80%",
   },
 });

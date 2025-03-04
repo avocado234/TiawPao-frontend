@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2},
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 2,
     elevation: 3,
     marginBottom: 15,
     paddingBottom: 5,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   tripTitle: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#fff",
     marginTop: 8,
@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: "#fff",
-    marginLeft: 4,
+    marginLeft: 6,
+    fontSize: 16,
   },
   body: {
     padding: 16,
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
   reviewText: {
     fontWeight: "bold",
     color: "#16367F",
+    fontSize: 16,
   },
   rating: {
     flexDirection: "row",
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
     color: "#333",
     fontWeight: "bold",
     marginLeft: 4,
+    fontSize: 16,
   },
   reviewDesc: {
     marginTop: 4,
