@@ -305,7 +305,7 @@ export default function Main() {
           <YStack style={styles.YStackNameTrip}>
             <ThemedText style={[styles.TextHeader, { fontWeight: "bold" }]}>{tripName}</ThemedText>
           </YStack>
-      <ScrollView>
+      <ScrollView style={{flex:1}}>
           <YStack style={styles.YStackRenderContent}>
             <YStack>
               <ThemedText style={styles.TextSubScript}>What kind of trip are you planning?</ThemedText>
@@ -317,11 +317,12 @@ export default function Main() {
               <ThemedText style={styles.TextSubScript}>Number of traveler</ThemedText>
               {AgeRender()}
               </YStack>
-            <YStack style={{marginTop:50}}>
+            <YStack style={{marginTop:30}}>
                <Button style={{backgroundColor:'#10b981'}}
                 onPress={Submit_Button}
                 ><Text style={{ color: 'white', textAlign: 'center' }} >Submit</Text></Button>
-            </YStack>
+              <Button style={{backgroundColor:'transparent'}}></Button>
+              </YStack>
           </YStack>
     </ScrollView>
         </YStack>
@@ -359,7 +360,7 @@ const styles = {
   },
   YStackRenderContent:
   {
-    justifyContent: 'space-between',
+   // justifyContent: 'space-between',
     
   },
   XstackFourSelect:
