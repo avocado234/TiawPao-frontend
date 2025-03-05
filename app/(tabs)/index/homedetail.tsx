@@ -7,53 +7,18 @@ import { ThemedText } from '@/components/ThemedText';
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
 import Bgelement from "@/components/Bgelement";
 import apiTAT from '@/utils/axiosTATInstance';
-
-interface ImageswipeData {
-    id: string;
-    name: string;
-    detailimage: { uri: string };
-}
+import Main from '../add/genaiselected';
 
 const homedetail = () => {
     const param = useLocalSearchParams();
-    const { id, name, location, image ,introduction} = param;
-    const [imageswipes, setImageswipes] = useState<ImageswipeData[]>([]);
-
-    // const fetchImageswipeData = async () => {
-    //     try {
-    //         const response = await apiTAT.get('/places?place_category_id=2&limit=130&place_sub_category_id=38');
-    //         setImageswipes(transformImageswipe(response.data));
-    //       } catch (error: any) {
-    //         if (error.response) {
-    //           console.error('Error response:', error.response);
-    //         } else if (error.request) {
-    //           console.error('Error request:', error.request);
-    //         } else {
-    //           console.error('Error message:', error.message);
-    //         }
-    //       }
-    // }
-    // const transformImageswipe = (data: any): ImageswipeData[] => {
-    //     return data.data.map((item: any) => {
-    //         console.log('Raw Item:', item);
-    //         const imageUrl = item.sha?.detailPicture?.[0] ?? null;
-    //         console.log('Final Image URL:', imageUrl);
-    //             return {
-    //                 id: item.placeId,
-    //                 name: item.name,
-    //                 detailimage: imageUrl // ส่งไปให้ imageswipe เป็น detailimage (เอาแค่รูปเดียว)
-    //             };
-    //         })
-    //         .filter((item: ImageswipeData) =>
-    //             item.id &&
-    //             item.name &&
-    //             item.detailimage 
-    //         );
-    // };
-    
-    // useEffect(() => {
-    //     fetchImageswipeData(); }, []);
-
+    const { id, name, location, detailimage ,introduction, thumbnailimage} = param;
+    const images = Array.isArray(detailimage) 
+        ? detailimage.map((img: any) => ({
+            id: img.id,
+            title: img.title,
+            image: img.uri
+        }))
+        : [];
     return (
         <View style={styles.themedView}>
             <Bgelement/>
@@ -65,14 +30,20 @@ const homedetail = () => {
                 <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
             <ScrollView>
-            {typeof image === 'string' && (
-                <Image source={{ uri: image }} style={styles.imagemain} resizeMode="cover" />)}
+            {typeof thumbnailimage === 'string' && (
+                <Image source={{ uri: thumbnailimage }} style={styles.imagemain} resizeMode="cover" />)}
                 <ThemedText style={styles.texttopic4}>Details</ThemedText>
                 <YStack>
                     <ThemedText style={styles.text}>  {introduction}</ThemedText>
                 </YStack>
             <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
-            <Imageswipe/>
+            {images.length > 0 ? (
+                    images.map((img: { image: string }, index: number) => (
+                        <Image key={index} source={{ uri: img.image }} style={styles.imagemain} resizeMode="cover" />
+                    ))
+                ) : (
+                    <Text style={styles.text2}>No images available</Text>
+                )}
             </ScrollView>
         </View>
     );
@@ -137,6 +108,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 25,
         marginVertical: 10,
 
+    },
+    text2 : {
+        fontSize: 16,
+        marginHorizontal: 30,
+        textAlign: 'justify',
+        marginBottom: 30,
     }
 })
 
