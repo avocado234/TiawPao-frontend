@@ -7,6 +7,7 @@ interface Hotel {
     name: string;
     location: string;
     detailimage: string | null;
+    thumbnailimage : string | null;
     introduction : string;
 }
 
@@ -16,6 +17,7 @@ interface HotelListProps {
 
 const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
     const router = useRouter();
+
     const PresstoHomedetail = (hotel: Hotel) => {
         console.log("Hotel object:", hotel);
         console.log("Sending to homedetail:", hotel);
@@ -25,15 +27,16 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
                 id: hotel.id,
                 name: hotel.name,
                 location: hotel.location,
-                image: hotel.detailimage || '',
+                detailimage: hotel.detailimage || '',
+                thumbnailimage: hotel.thumbnailimage,
                 introduction: hotel.introduction,
             },
         });
     };
     return (
         <View className="flex-1 rounded-lg bg-white shadow-lg flex-row mb-4">
-            {hotel.detailimage ? (
-                <Image source={{ uri: hotel.detailimage }} className="w-28 h-28 rounded-lg bg-fixed" />
+            {hotel.thumbnailimage ? (
+                <Image source={{ uri: hotel.thumbnailimage }} className="w-28 h-28 rounded-lg bg-fixed" />
             ) : (
                 <View className="w-28 h-28 bg-gray-200 rounded-sm flex items-center justify-center">
                     <Text className="text-gray-500">No Image</Text>
@@ -46,7 +49,7 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
                 <Text className="mt-2 text-m text-gray-500" numberOfLines={1} ellipsizeMode="tail">
                     {hotel.location}
                 </Text>
-                <TouchableOpacity activeOpacity={0.5} onPress={() => PresstoHomedetail(hotel) }>
+                <TouchableOpacity activeOpacity={0.5} onPress={() => PresstoHomedetail(hotel)}>
                     <Text className="text-blue-500 text-right text-[15px] font-bold right-3 ">More details</Text>
                 </TouchableOpacity>
             </View>
