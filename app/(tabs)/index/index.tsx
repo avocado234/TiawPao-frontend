@@ -24,6 +24,7 @@ interface HotelItem {
   name: string;
   location: string;
   detailimage: string | null;
+  introduction: string 
 }
 
 interface TravelItem {
@@ -75,9 +76,17 @@ const Homepage: React.FC = () => {
           name: item.name,
           location,
           detailimage: item.sha?.detailPicture?.[0] ?? item.thumbnailUrl?.[0] ?? null,
+          introduction: item.introduction,
         };
       })
-      .filter((item: HotelItem) => item.id && item.name && item.location && item.detailimage); 
+      .filter((item: HotelItem) => 
+        item.id && 
+        item.name && 
+        item.location && 
+        item.detailimage && 
+        item.introduction?.trim() !== "" &&
+        item.introduction !== null
+    ); 
   };
 
   const fetchTravelData = async () => {
@@ -93,8 +102,6 @@ const Homepage: React.FC = () => {
     return data.data
       .map((item: any) => {
         const imageUrl = item.thumbnailUrl?.[0] ?? null; // ดึงค่ามาแบบชัดเจน
-        
-       
         return {
           id: item.placeId,
           name: item.name,
@@ -103,7 +110,14 @@ const Homepage: React.FC = () => {
           image: imageUrl,
         };
       })
-      .filter((item: TravelItem) => item.introduction && item.id && item.name && item.province && item.image);
+      .filter((item: TravelItem) => 
+        item.introduction?.trim() !== "" && 
+        item.introduction !== null &&
+        item.id && 
+        item.name && 
+        item.province && 
+        item.image
+    );
   };
   
 
