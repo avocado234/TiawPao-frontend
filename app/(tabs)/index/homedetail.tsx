@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { StyleSheet, Image, ScrollView, SafeAreaView, Pressable } from "react-native";
 import { Text, Button, View, XStack, YStack } from "tamagui";
 import Imageswipe from "@/components/imageswipe";
@@ -6,25 +6,53 @@ import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText } from '@/components/ThemedText';
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
 import Bgelement from "@/components/Bgelement";
+import apiTAT from '@/utils/axiosTATInstance';
 
+interface ImageswipeData {
+    id: string;
+    name: string;
+    detailimage: { uri: string };
+}
 
 const homedetail = () => {
-    const router = useRouter();
     const param = useLocalSearchParams();
-    let pic;
-    const { id, name, location, image } = param;
-    if (id === "1") {
-        pic = require(`@/assets/images/koh-larn-thailand.jpg`);
-    }
-    if (id === "2") {
-        pic = require(`@/assets/images/Oldtown.png`);
-    }
-    if (id === "3") {
-        pic = require(`@/assets/images/Doiinthanon.png`);
-    }
-    if (id === "4") {
-        pic = require(`@/assets/images/wat-arun.jpg`);
-    }
+    const { id, name, location, image ,introduction} = param;
+    const [imageswipes, setImageswipes] = useState<ImageswipeData[]>([]);
+
+    // const fetchImageswipeData = async () => {
+    //     try {
+    //         const response = await apiTAT.get('/places?place_category_id=2&limit=130&place_sub_category_id=38');
+    //         setImageswipes(transformImageswipe(response.data));
+    //       } catch (error: any) {
+    //         if (error.response) {
+    //           console.error('Error response:', error.response);
+    //         } else if (error.request) {
+    //           console.error('Error request:', error.request);
+    //         } else {
+    //           console.error('Error message:', error.message);
+    //         }
+    //       }
+    // }
+    // const transformImageswipe = (data: any): ImageswipeData[] => {
+    //     return data.data.map((item: any) => {
+    //         console.log('Raw Item:', item);
+    //         const imageUrl = item.sha?.detailPicture?.[0] ?? null;
+    //         console.log('Final Image URL:', imageUrl);
+    //             return {
+    //                 id: item.placeId,
+    //                 name: item.name,
+    //                 detailimage: imageUrl // ส่งไปให้ imageswipe เป็น detailimage (เอาแค่รูปเดียว)
+    //             };
+    //         })
+    //         .filter((item: ImageswipeData) =>
+    //             item.id &&
+    //             item.name &&
+    //             item.detailimage 
+    //         );
+    // };
+    
+    // useEffect(() => {
+    //     fetchImageswipeData(); }, []);
 
     return (
         <View style={styles.themedView}>
@@ -37,11 +65,11 @@ const homedetail = () => {
                 <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
             <ScrollView>
-                <Image source={pic}
-                    style={styles.imagemain}
-                    resizeMode='cover' />
+            {typeof image === 'string' && (
+                <Image source={{ uri: image }} style={styles.imagemain} resizeMode="cover" />)}
+                <ThemedText style={styles.texttopic4}>Details</ThemedText>
                 <YStack>
-                    <ThemedText style={styles.text}>        Koh Larn (Coral Island) is a perfect day trip from Pattaya, just 40 minutes by ferry or speedboat from Bali Hai Pier. Its clear beaches and warm waters are ideal for parasailing, jet skiing, banana boat rides, and snorkeling. For stunning views, visit the Big Buddha Viewpoint. You can explore the island by renting an affordable scooter or joining a group tour, which usually includes transportation.</ThemedText>
+                    <ThemedText style={styles.text}>  {introduction}</ThemedText>
                 </YStack>
             <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
             <Imageswipe/>
@@ -92,22 +120,23 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         marginHorizontal: 30,
-        marginVertical: 12,
         textAlign: 'justify',
         marginBottom: 30,
     },
     texttopic3: {
         fontSize: 16,
-        color: '#203B82',
+        color: 'gray',
         fontWeight: 'bold',
         marginHorizontal: 25,
         marginBottom:15,
     },
     texttopic4: {
         fontSize: 16,
-        color: '#4B5563',
-        fontWeight: 'semibold',
-        margin: 10,
+        color: 'gray',
+        fontWeight: 'bold',
+        marginHorizontal: 25,
+        marginVertical: 10,
+
     }
 })
 
