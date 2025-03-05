@@ -24,6 +24,7 @@ interface HotelItem {
   name: string;
   location: string;
   detailimage: string | null;
+  thumbnailimage : string | null;
   introduction: string 
 }
 
@@ -31,9 +32,11 @@ interface TravelItem {
   id: string;
   name: string;
   province: string;
-  image: string | null;
-  introduction: string;
+  imagethumbnail: string | null;
+  imagedetail: string | null;
+  introduction : string;
 }
+
 
 
 const Homepage: React.FC = () => {
@@ -46,8 +49,10 @@ const Homepage: React.FC = () => {
   const fetchHotelData = async () => {
     try {
       const response = await apiTAT.get('/places?place_category_id=2&limit=130&place_sub_category_id=38');
+      // console.log(response.data)
       setHotelData(transformHotels(response.data));
     } catch (error: any) {
+      console.log("flow this")
       if (error.response) {
         console.error('Error response:', error.response);
       } else if (error.request) {
@@ -61,33 +66,36 @@ const Homepage: React.FC = () => {
   const transformHotels = (data: any): HotelItem[] => {
     return data.data
       .map((item: any) => {
-        
+        const imageUrl = item.thumbnailUrl?.[0] ?? null;
+        const detailImages = item.detailPicture && item.detailPicture.length > 0 
+          ? item.detailPicture.map((imgUrl: string) => ({
+              uri: imgUrl,
+          })) 
+          : [];
         const location = [
-          // item.location?.address,     
-          // item.location?.sub_district?.name,
-          // item.location?.district?.name,    
-          item.location?.province?.name,     
+          item.location?.province?.name,
         ]
           .filter(Boolean)
-          .join('  ');
-        
+          .join(', ');
+
         return {
           id: item.placeId,
           name: item.name,
           location,
-          detailimage: item.sha?.detailPicture?.[0] ?? item.thumbnailUrl?.[0] ?? null,
-          introduction: item.introduction,
+          detailimage: detailImages,
+          thumbnailimage: imageUrl,
+          introduction: item.introduction || '',
         };
       })
-      .filter((item: HotelItem) => 
-        item.id && 
-        item.name && 
-        item.location && 
-        item.detailimage && 
-        item.introduction?.trim() !== "" &&
-        item.introduction !== null
-    ); 
-  };
+      .filter((item: HotelItem) =>
+        item.id &&
+        item.name &&
+        item.location &&
+        item.detailimage &&
+        item.thumbnailimage?.trim() !== "" &&
+        item.introduction !== null && item.introduction !== ""
+      );
+};
 
   const fetchTravelData = async () => {
     try {
@@ -101,13 +109,14 @@ const Homepage: React.FC = () => {
   const transformTravel = (data: any): TravelItem[] => {
     return data.data
       .map((item: any) => {
-        const imageUrl = item.thumbnailUrl?.[0] ?? null; // ดึงค่ามาแบบชัดเจน
+        const imageUrl = item.thumbnailUrl?.[0] ?? null; // Take the value clearly
         return {
           id: item.placeId,
           name: item.name,
           introduction: item.introduction,
           province: item.location?.province?.name,
-          image: imageUrl,
+          imagethumbnail: imageUrl, // Ensure you use the correct field name
+          imagedetail: item.imagedetail,
         };
       })
       .filter((item: TravelItem) => 
@@ -116,7 +125,7 @@ const Homepage: React.FC = () => {
         item.id && 
         item.name && 
         item.province && 
-        item.image
+        item.imagethumbnail // Make sure this matches your interface
     );
   };
   
