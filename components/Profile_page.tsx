@@ -344,7 +344,7 @@ const Propage = () => {
           </ThemedView>
         </ThemedView>
         { isEdit && <Pressable className="absolute"  onPress={pickImage} style={styles.avatar} > 
-          <Image source={{ uri: image==null?user.img:image}} 
+          <Image source={{ uri: image==null?user.image:image}} 
             style={{  width: 100,
             height: 100,
             borderRadius: 50,
@@ -354,7 +354,7 @@ const Propage = () => {
             transform: [{ translateX: -50 }],
         }} />
         </Pressable>}
-        { !isEdit && <Image className="absolute" source={{ uri: user.img }} style={styles.avatar} />}
+        { !isEdit && <Image className="absolute" source={{ uri: user.image }} style={styles.avatar} />}
       </ThemedView>
       <CustomDateTimePicker
         visible={isDatePickerVisible}
