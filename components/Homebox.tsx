@@ -7,7 +7,8 @@ interface Place {
     id: string;
     name: string;
     province: string;
-    image: any;
+    imagethumbnail: any;
+    imagedetail: any;
     introduction : string;
 }
 
@@ -18,7 +19,7 @@ interface HomeboxProps {
 const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     return (
         <View style={styles.card}>
-            <Image source={{ uri: place.image }} style={styles.image} resizeMode="cover" />
+            <Image source={{ uri: place.imagethumbnail }} style={styles.image} resizeMode="cover" />
             <View style={styles.content}>
                 <Text className="text-[18px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
                 <Text style={styles.location}>{place.province}</Text>
@@ -29,16 +30,17 @@ const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
 
 const Homebox: React.FC<HomeboxProps> = ({ places }) => {
     const router = useRouter();
-
     const PresstoHomedetail = (place: Place) => {
+        console.log(place.introduction)
         console.log("Sending to homedetail:", place);
         router.push({
             pathname: "/homedetail",
             params: {
-                id: place.id,
+                id : place.id,
                 name: place.name,
                 location: place.province,
-                image: place.image || '',
+                thumbnailimage: place.imagethumbnail || '',
+                detailimage: place.imagedetail || '',
                 introduction: place.introduction,
             },
         });
