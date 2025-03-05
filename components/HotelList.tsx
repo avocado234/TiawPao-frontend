@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { router, useRouter } from "expo-router";
 
 interface Hotel {
     id: string;
     name: string;
     location: string;
     detailimage: string | null;
+    introduction : string;
 }
 
 interface HotelListProps {
@@ -13,6 +15,21 @@ interface HotelListProps {
 }
 
 const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
+    const router = useRouter();
+    const PresstoHomedetail = (hotel: Hotel) => {
+        console.log("Hotel object:", hotel);
+        console.log("Sending to homedetail:", hotel);
+        router.push({
+            pathname: "/homedetail",
+            params: {
+                id: hotel.id,
+                name: hotel.name,
+                location: hotel.location,
+                image: hotel.detailimage || '',
+                introduction: hotel.introduction,
+            },
+        });
+    };
     return (
         <View className="flex-1 rounded-lg bg-white shadow-lg flex-row mb-4">
             {hotel.detailimage ? (
@@ -29,7 +46,7 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
                 <Text className="mt-2 text-m text-gray-500" numberOfLines={1} ellipsizeMode="tail">
                     {hotel.location}
                 </Text>
-                <TouchableOpacity activeOpacity={0.5} onPress={() => console.log(`Selected: ${hotel.name}`)}>
+                <TouchableOpacity activeOpacity={0.5} onPress={() => PresstoHomedetail(hotel) }>
                     <Text className="text-blue-500 text-right text-[15px] font-bold right-3 ">More details</Text>
                 </TouchableOpacity>
             </View>
