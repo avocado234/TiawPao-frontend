@@ -35,7 +35,7 @@ const CustomDateTimePicker: React.FC<CustomDateTimePickerProps> = ({
               onChange={onChange}
               textColor={textColor as any} // Apply text color (iOS-specific prop)
             />
-            <Button title="ปิด" onPress={onClose} color={isDarkMode ? '#bbb' : '#007AFF'} />
+            <Button title="Confirm" onPress={onClose} color={isDarkMode ? '#bbb' : '#007AFF'} />
           </View>
         </View>
       </Modal>

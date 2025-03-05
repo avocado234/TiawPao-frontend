@@ -12,7 +12,7 @@ interface ThemedDropDownProps {
     onSelect?: (value: string) => void;
 }
 
-export default function ThemedDropDownPicker({ value, setValue, items, style, dropDownContainerStyle, ...props }: ThemedDropDownProps) {
+export default function ThemedDropDownPicker({ value, setValue, items,  ...props }: ThemedDropDownProps) {
     const theme = useColorScheme();
     const [open, setOpen] = useState(false);
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, SafeAreaView } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { ThemedView } from './ThemedView';
 
 interface Trip {
   id: number;
@@ -19,20 +20,27 @@ interface FilterplanProps {
 }
 
 const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
+  const { width } = useWindowDimensions();
   const [budget, setBudget] = useState<number>(9999);
-  const [activeFilter, setActiveFilter] = useState<string>('');
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   const sortTrips = (type: 'rating' | 'budget' | 'name', order: 'asc' | 'desc') => {
-    setActiveFilter(`${type}-${order}`);
+    const newFilter = `${type}-${order}`;
+
+    if (activeFilter === newFilter) {
+      setActiveFilter(null);
+      setFilteredTrips(trips); // ยกเลิก filter แล้วคืนค่าเดิม
+      return;
+    }
+
+    setActiveFilter(newFilter);
     let sortedTrips = [...trips];
 
     if (type === 'rating') {
       sortedTrips.sort((a, b) => order === 'desc' ? parseFloat(b.rating) - parseFloat(a.rating) : parseFloat(a.rating) - parseFloat(b.rating));
-    } 
-    else if (type === 'budget') {
+    } else if (type === 'budget') {
       sortedTrips.sort((a, b) => order === 'desc' ? parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', '')) : parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', '')));
-    } 
-    else if (type === 'name') {
+    } else if (type === 'name') {
       sortedTrips.sort((a, b) => order === 'asc' ? a.nametrip.localeCompare(b.nametrip) : b.nametrip.localeCompare(a.nametrip));
     }
 
@@ -46,60 +54,114 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Filters</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemedView style={[styles.container, { padding: width * 0.04 }]}>
+        <View style={[styles.innerContainer, { padding: width * 0.03 }]}>
+          <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Sort By</Text>
+          <View style={styles.buttonRow}>
+            {[
+              { label: 'Budget (Low to High)', type: 'budget', order: 'asc' },
+              { label: 'Budget (High to Low)', type: 'budget', order: 'desc' },
+              { label: '( A - Z )', type: 'name', order: 'asc' },
+              { label: '( Z - A )', type: 'name', order: 'desc' },
+              { label: 'Rating', type: 'rating', order: 'desc' }
+            ].map(({ label, type, order }) => (
+              <TouchableOpacity
+                key={`${type}-${order}`}
+                style={[
+                  styles.button,
+                  activeFilter === `${type}-${order}` && styles.activeButton
+                ]}
+                onPress={() => sortTrips(type as 'rating' | 'budget' | 'name', order as 'asc' | 'desc')}
+                activeOpacity={0.7}
+              >
+                <Text style={[
+                  styles.buttonText,
+                  activeFilter === `${type}-${order}` && styles.activeButtonText
+                ]}>
+                  {label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-      <Text style={styles.subTitle}>Sort By</Text>
-      <View style={styles.buttonRow}>
-        
-        <Pressable style={[styles.button, activeFilter === 'budget-asc' && styles.activeButton]} onPress={() => sortTrips('budget', 'asc')}>
-          <Text style={styles.buttonText}>Budget (Low to High)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'budget-desc' && styles.activeButton]} onPress={() => sortTrips('budget', 'desc')}>
-          <Text style={styles.buttonText}>Budget (High to Low)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'name-asc' && styles.activeButton]} onPress={() => sortTrips('name', 'asc')}>
-          <Text style={styles.buttonText}>Name (A-Z)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'name-desc' && styles.activeButton]} onPress={() => sortTrips('name', 'desc')}>
-          <Text style={styles.buttonText}>Name (Z-A)</Text>
-        </Pressable>
-        <Pressable style={[styles.button, activeFilter === 'rating-desc' && styles.activeButton]} onPress={() => sortTrips('rating', 'desc')}>
-          <Text style={styles.buttonText}>Rating</Text>
-        </Pressable>
-      </View>
+          <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Range Budget</Text>
+          <View style={styles.sliderContainer}>
+            <Text style={[styles.sliderLabel, { fontSize: width * 0.035, width: width * 0.12 }]}>
+              0 ฿
+            </Text>
+            <Slider
+              style={[styles.slider, { width: width * 0.6 }]} 
+              minimumValue={0}
+              maximumValue={9000}
+              step={1}
+              value={budget}
+              onValueChange={setBudget}
+              onSlidingComplete={filterByBudget}
+              minimumTrackTintColor="#fff"
+              maximumTrackTintColor="#ddd"
+              thumbTintColor="white"
+            />
+            <Text style={[styles.sliderLabel, { fontSize: width * 0.035, width: width * 0.12 }]}>
+              {budget} ฿
+            </Text>
+          </View>
 
-      <Text style={styles.subTitle}>Range Budget</Text>
-      <View style={styles.sliderContainer}>
-        <Text style={styles.sliderLabel}>0 $</Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={0}
-          maximumValue={50000}
-          step={1}
-          value={budget}
-          onValueChange={filterByBudget}
-          minimumTrackTintColor="#5680EC"
-          maximumTrackTintColor="#ddd"
-          thumbTintColor="#5680EC"
-        />
-        <Text style={styles.sliderLabel}>{budget} $</Text>
-      </View>
-    </View>
+        </View>
+      </ThemedView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 15, backgroundColor: "#203B82", borderRadius: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', color: 'white', textAlign: 'center' },
-  subTitle: { fontSize: 16, fontWeight: 'bold', color: 'white', marginTop: 10 },
-  buttonRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
-  button: { backgroundColor: 'white', borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, margin: 5, alignItems: 'center' },
-  activeButton: {backgroundColor: '#5680EC' },
-  buttonText: { fontSize: 14, color: '#000', fontWeight: 'bold' },
-  sliderContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 15 },
-  sliderLabel: { color: 'white', fontWeight: 'bold', width: 80, textAlign: 'center' },
-  slider: { flex: 1 },
+  container: {
+    backgroundColor: "#5680EC",
+  },
+  innerContainer: {
+    backgroundColor: "rgba(32, 59, 130, 0.3)",
+    borderRadius: 10,
+  },
+  subTitle: {
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+  },
+  button: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    margin: 5,
+    alignItems: "center",
+  },
+  activeButton: {
+    backgroundColor: "#203B82",
+  },
+  buttonText: {
+    color: "black",
+    fontWeight: "bold",
+  },
+  activeButtonText: {
+    color: "white",
+  },
+  sliderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sliderLabel: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  slider: {
+    alignSelf: "center",
+  },
 });
 
 export default Filterplan;

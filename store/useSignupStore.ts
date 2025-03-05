@@ -1,44 +1,46 @@
-// store/useSignupStore.ts
 import { create } from "zustand";
 
 interface SignupState {
+  userid: string;
+  image: string;
+  password:string
   username: string;
-  password: string;
   email: string;
-  firstname: string;
-  lastname:string;
-  date_of_birth:string;
   tel: string;
-  gender:string;
-  otpVerified: boolean;
+  firstname: string;
+  lastname: string;
+  date_of_birth: string;
+  gender: string;
+  userplan_id: string[];
   setSignupData: (data: Partial<SignupState>) => void;
   resetSignupData: () => void;
 }
 
 export const useSignupStore = create<SignupState>((set) => ({
+  userid: "",
+  image: "",
+  password:"",
   username: "",
-  password: "",
   email: "",
+  tel: "",
   firstname: "",
   lastname: "",
-  tel: "",
-  date_of_birth:"",
-  gender:"",
-  otpVerified: false, 
+  date_of_birth: "",
+  gender: "",
+  userplan_id: [],
   setSignupData: (data) => set((state) => ({ ...state, ...data })),
   resetSignupData: () =>
     set({
+      userid: "",
+      image: "",
+      password:"",
       username: "",
-      password: "",
       email: "",
+      tel: "",
       firstname: "",
       lastname: "",
-      tel: "",
-      date_of_birth:"",
-      gender:"",
-      otpVerified: false,
+      date_of_birth: "",
+      gender: "",
+      userplan_id: [],
     }),
 }));
-
-
-

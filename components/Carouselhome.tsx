@@ -9,6 +9,7 @@ import {
     NativeSyntheticEvent,
     TouchableOpacity,
 } from "react-native";
+import { useRouter } from "expo-router";
 
 interface CarouselItem {
     id: string;
@@ -19,20 +20,32 @@ const Carousel: React.FC = () => {
     const flatListRef = useRef<FlatList<CarouselItem>>(null);
     const screenWidth = Dimensions.get("window").width;
     const [activeIndex, setActiveIndex] = useState<number>(0);
+    const isAutoScrolling = useRef(false);
+    const router = useRouter();
+    const snapToInterval = screenWidth;
 
     const carouselData: CarouselItem[] = [
         { id: "01", image: require("@/assets/images/test.png") },
         { id: "02", image: require("@/assets/images/test2.png") },
         { id: "03", image: require("@/assets/images/test3.png") },
+        { id: "04", image: require("@/assets/images/test3.png") },
+        { id: "05", image: require("@/assets/images/test3.png") },
     ];
-    
-
 
     useEffect(() => {
         const interval = setInterval(() => {
-            const nextIndex = (activeIndex + 1) % carouselData.length;
-            flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
-            setActiveIndex(nextIndex);
+            if (!isAutoScrolling.current && flatListRef.current) {
+                const nextIndex = (activeIndex + 1) % carouselData.length;
+                isAutoScrolling.current = true; 
+                flatListRef.current.scrollToIndex({
+                    index: nextIndex,
+                    animated: true,
+                });
+                setActiveIndex(nextIndex);
+                setTimeout(() => {
+                    isAutoScrolling.current = false; 
+                }, 500);
+            }
         }, 3000);
 
         return () => clearInterval(interval);
@@ -45,14 +58,15 @@ const Carousel: React.FC = () => {
     });
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        if (isAutoScrolling.current) return; 
         const scrollPosition = event.nativeEvent.contentOffset.x;
         const index = Math.round(scrollPosition / screenWidth);
         setActiveIndex(index);
     };
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
-        <TouchableOpacity>
-            <Image source={item.image} style={styles.image} />
+        <TouchableOpacity onPress={() => router.push( '/HomeRecommend')}>
+            <Image  source={item.image} style={styles.image} />
         </TouchableOpacity>
     );
 
@@ -68,8 +82,8 @@ const Carousel: React.FC = () => {
     );
 
     return (
-        <View>
-            <FlatList
+        <View >
+            <FlatList 
                 data={carouselData}
                 ref={flatListRef}
                 getItemLayout={getItemLayout}
@@ -80,6 +94,8 @@ const Carousel: React.FC = () => {
                 onScroll={handleScroll}
                 showsHorizontalScrollIndicator={false}
                 scrollEventThrottle={16}
+                snapToInterval={snapToInterval}
+                snapToAlignment="start"
             />
             {renderDotIndicators()}
         </View>
@@ -90,10 +106,10 @@ export default Carousel;
 
 const styles = StyleSheet.create({
     image: {
-    
-        height: 210,
-        width: 410,
-        resizeMode: "cover",
+        width: Dimensions.get("window").width,
+        height: 220,
+        paddingRight:10
+       
     },
     dotContainer: {
         flexDirection: "row",
@@ -110,7 +126,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#000",
     },
     inactiveDot: {
-        opacity : 0.3,
+        opacity: 0.3,
         backgroundColor: "#000",
     },
 });

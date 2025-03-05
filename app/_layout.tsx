@@ -16,7 +16,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import {auth} from '../config/firebaseconfig'
 import api from '../utils/axiosInstance';
 import { useUserStore } from '../store/useUser';
-
+import LoadingComponent from '@/components/LoadingComponent';
 import { onAuthStateChanged ,User } from 'firebase/auth';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -45,6 +45,8 @@ export default function RootLayout() {
       if (usercur && !isOnHome) {
         // ถ้าล็อกอินแล้ว แต่ตอนนี้ยังอยู่หน้า login => ไปหน้า Home (tabs)
         router.replace('/(tabs)'); 
+        // router.replace('/(tabs)'); 
+
       } else if (!usercur && isOnHome) {
         // ถ้ายังไม่ล็อกอิน แต่ตอนนี้อยู่ใน (tabs) => กลับไปหน้า login
         router.replace('/signin');
@@ -75,14 +77,16 @@ const getUserData = async (email: any) => {
     const dataUser = userData.data;
     console.log(dataUser);
     setUserData({
+      userid: dataUser.userid,           // เพิ่มถ้ามี
+      image: dataUser.image,             // เปลี่ยนจาก img เป็น image
       username: dataUser.username,
       email: dataUser.email,
       firstname: dataUser.firstname,
       lastname: dataUser.lastname,
-      dateofbirth: dataUser.date_of_birth,
+      date_of_birth: dataUser.date_of_birth, // เปลี่ยนจาก dateofbirth เป็น date_of_birth
       tel: dataUser.tel,
       gender: dataUser.gender,
-      img:dataUser.image
+      userplan_id: dataUser.userplan_id, // เพิ่มถ้ามี
     });
   } catch (err) {
     console.log(err);
@@ -117,9 +121,7 @@ const getUserData = async (email: any) => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      <LoadingComponent />
     );
   }
   
@@ -156,10 +158,6 @@ const getUserData = async (email: any) => {
           <Stack.Screen name="forgetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="resetpassword" options={{ headerShown : false }} />
           <Stack.Screen name="+not-found" />
-          <Stack.Screen name="tripManually" options={{ headerShown: false }} />
-          <Stack.Screen name="homedetail" options={{headerShown: false}} />
-          <Stack.Screen name="tripgenai" options={{headerShown: false}} />
-          <Stack.Screen name="genaiselected" options={{headerShown: false}} />
 
         </Stack>
       {/* </AuthProvider> */}

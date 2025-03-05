@@ -39,7 +39,8 @@ const Propage = () => {
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [dateOfBirth, setDateOfBirth] = useState(new Date(user.dateofbirth));
+  const [dateOfBirth, setDateOfBirth] = useState(new Date(user.date_of_birth));
+
   const [dateString, setDateString] = useState<String>('')
   // const theme = useColorScheme();
   // const [isDark, setIsDark] = useState(theme === 'light' ? false : true);
@@ -171,10 +172,10 @@ const Propage = () => {
             email: dataUser.email,
             firstname: dataUser.firstname,
             lastname: dataUser.lastname,
-            dateofbirth: dataUser.date_of_birth,
+            date_of_birth: dataUser.date_of_birth,
             tel: dataUser.tel,
             gender: dataUser.gender,
-            img: dataUser.image
+            image: dataUser.image
           });
 
           Alert.alert("User updated successfully!");
