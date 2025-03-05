@@ -147,7 +147,7 @@ const MergedComponent = () => {
 
   const callGeminiAPI = async () => {
     try {
-      const apiKey = 'AIzaSyAUJGN7BHSF7VXbZ5s6AM6I5W6OGwR-vkI'; 
+      const apiKey = 'Hell_Nah_API'; 
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const payload = {
