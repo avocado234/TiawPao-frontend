@@ -28,6 +28,7 @@ import ThemedTextInput from './ThemedTextInput';
 import api from '@/utils/axiosInstance';
 const Propage = () => {
   const { user, setUserData, resetUserData } = useUserStore();
+  const router = useRouter();
   const baseUrl = "http://20.187.146.79:8000"; //Azure
   const [username, setUsername] = useState<String>(user.username);
   const [firstname, setFirstname] = useState<String>(user.firstname);
@@ -328,7 +329,8 @@ const Propage = () => {
               </Pressable>
             }
             {isEdit &&
-              <ThemedView className='w-[90%] flex flex-row justify-between' style={{ backgroundColor: 'transparent' }}>
+              <ThemedView className="w-[90%]" style={{ backgroundColor: 'transparent' }}>
+              <ThemedView className='w-[100%] flex flex-row justify-between pb-4' style={{ backgroundColor: 'transparent' }}>
                 <Pressable style={styles.save_button}
                   onPress={handleUpdate}
                 >
@@ -339,6 +341,13 @@ const Propage = () => {
                 >
                   <Text style={[{ color: isDark ? 'white' : 'white' }]} >Cancel</Text>
                 </Pressable>
+              </ThemedView>
+              <Pressable style={[{backgroundColor: isDark ? 'white' : '#203B82'},styles.reset_button]}
+                onPress={()=>{router.push("/(tabs)/profile/resetpassword")}}
+              >
+                <Text style={[{ color: isDark ? '#203B82' : 'white' }]} >Reset Password</Text>
+              </Pressable>
+
               </ThemedView>
             }
           </ThemedView>
@@ -388,7 +397,7 @@ const styles = StyleSheet.create({
   },
   setting_plane: {
     width: '100%',
-    height: '98%',
+    height: '95%',
     // backgroundColor: "white",
     marginTop: '5%',
     borderRadius: 30,
@@ -484,6 +493,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'red',
+    borderRadius: 30,
+    marginBottom: 5,
+  },
+  reset_button: {
+    width: '100%',
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 30,
     marginBottom: 5,
   },

@@ -10,6 +10,7 @@ export default function ProfileLayout() {
 
     <Stack screenOptions={{ gestureEnabled: false }}>
           <Stack.Screen name="index" options={{ headerShown: false}} />
+          <Stack.Screen name="resetpassword" options={{ headerShown: false}} />
      </Stack>
   );
 }
