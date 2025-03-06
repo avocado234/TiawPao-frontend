@@ -20,6 +20,17 @@ interface PlanData {
 }
 
 const TripCard: React.FC<PlanData> = (props) => {
+  // Helper function to format the date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    // Example format: "Mar 6, 2025"
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ThemedView style={styles.card}>
@@ -28,11 +39,13 @@ const TripCard: React.FC<PlanData> = (props) => {
             <Image source={{ uri: props.author_img }} style={styles.avatar} />
             <Text style={styles.userName}>{props.author_email}</Text>
           </View>
-          <Text style={styles.price}>ราคา</Text>
-          <Text numberOfLines={1} ellipsizeMode="clip" style={styles.tripTitle}>{props.trip_name}</Text>
+          {/* <Text style={styles.price}>ราคา</Text> */}
+          <Text numberOfLines={1} ellipsizeMode="clip" style={styles.tripTitle}>
+            {props.trip_name}
+          </Text>
           <View style={styles.tripInfo}>
             <FontAwesome name="calendar" size={18} color="#fff" />
-            <Text style={styles.dateText}> {props.start_date}</Text>
+            <Text style={styles.dateText}> {formatDate(props.start_date)} - {formatDate(props.end_date)}</Text>
           </View>
           <View style={styles.tripInfo}>
             <FontAwesome name="map-marker" size={18} color="#fff" />
@@ -41,13 +54,13 @@ const TripCard: React.FC<PlanData> = (props) => {
         </View>
         <View style={styles.body}>
           <View style={styles.reviewSection}>
-            <Text style={styles.reviewText}>Review</Text>
-            <View style={styles.rating}>
+            <Text style={styles.reviewText}>Description</Text>
+            {/* <View style={styles.rating}>
               <FontAwesome name="star" size={14} color="#FBC02D" />
               <Text style={styles.ratingText}> 4.8</Text>
-            </View>
+            </View> */}
           </View>
-          <Text style={styles.reviewDesc}>รายละเอียด...</Text>
+          <Text style={styles.reviewDesc}>lorem</Text>
         </View>
       </ThemedView>
     </View>
