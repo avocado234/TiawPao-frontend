@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         width: 160,
         marginRight: 12,
         left: 10,
+        
 
     },
     image: {

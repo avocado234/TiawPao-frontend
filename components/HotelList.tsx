@@ -18,7 +18,7 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
             {hotel.detailimage ? (
                 <Image source={{ uri: hotel.detailimage }} className="w-28 h-28 rounded-lg bg-fixed" />
             ) : (
-                <View className="w-28 h-28 bg-gray-200 rounded-sm flex items-center justify-center">
+                <View className="w-24 h-24 bg-gray-200 rounded-sm flex items-center justify-center">
                     <Text className="text-gray-500">No Image</Text>
                 </View>
             )}

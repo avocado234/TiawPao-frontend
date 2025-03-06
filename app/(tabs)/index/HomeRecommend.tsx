@@ -7,12 +7,16 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter ,useLocalSearchParams} from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeRecommend() {
   const router = useRouter();
+  const param = useLocalSearchParams();
+      const { id, name, location, image ,introduction,numberOfDays,provinceWithDay,regionNames,regions,distance,placeImageUrls } = param;
+  
 
   return (
     <SafeAreaView style={styles.container}>
