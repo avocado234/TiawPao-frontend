@@ -28,6 +28,7 @@ import ThemedTextInput from './ThemedTextInput';
 import api from '@/utils/axiosInstance';
 const Propage = () => {
   const { user, setUserData, resetUserData } = useUserStore();
+  const router = useRouter();
   const baseUrl = "http://20.187.146.79:8000"; //Azure
   const [username, setUsername] = useState<String>(user.username);
   const [firstname, setFirstname] = useState<String>(user.firstname);
@@ -342,7 +343,7 @@ const Propage = () => {
                 </Pressable>
               </ThemedView>
               <Pressable style={[{backgroundColor: isDark ? 'white' : '#203B82'},styles.reset_button]}
-                onPress={ handleCancel }
+                onPress={()=>{router.push("/(tabs)/profile/resetpassword")}}
               >
                 <Text style={[{ color: isDark ? '#203B82' : 'white' }]} >Reset Password</Text>
               </Pressable>
