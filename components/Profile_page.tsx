@@ -12,6 +12,8 @@ import { Picker } from '@react-native-picker/picker';
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CustomDateTimePicker from '@/components/CustomDateTimePicker'; // ปรับ path ให้ถูกต้องตามโปรเจคของคุณ
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from "expo-file-system";
 
 // import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { XStack, YStack, Select, Card } from "tamagui";
@@ -26,6 +28,8 @@ import ThemedTextInput from './ThemedTextInput';
 import api from '@/utils/axiosInstance';
 const Propage = () => {
   const { user, setUserData, resetUserData } = useUserStore();
+  const router = useRouter();
+  const baseUrl = "http://20.187.146.79:8000"; //Azure
   const [username, setUsername] = useState<String>(user.username);
   const [firstname, setFirstname] = useState<String>(user.firstname);
   const [lastname, setLastName] = useState<String>(user.lastname);
@@ -43,6 +47,7 @@ const Propage = () => {
   // const [isDark, setIsDark] = useState(theme === 'light' ? false : true);
   const theme = useColorScheme();
   const isDark = theme === 'dark';
+  const [image, setImage] = useState<string | null>(null);
 
   useEffect(() => {
     const year = dateOfBirth.getFullYear();
@@ -88,7 +93,8 @@ const Propage = () => {
       lastname !== user.lastname ||
       tel !== user.tel ||
       gender !== user.gender ||
-      dateString !== user.date_of_birth
+      dateString !== user.dateofbirth ||
+      image !== null
     ) {
       try {
         const currentUser = auth.currentUser;
@@ -101,6 +107,38 @@ const Propage = () => {
         console.log(idToken)
         console.log(user.email)
         console.log(dateString);
+        let imageUrl = user.img;
+        // Upload image if a new one is selected
+        if (image !== null) {
+            const uri = image.startsWith("file://") ? image : `file://${image}`;
+            const fileInfo = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+
+            const formData = new FormData();
+            formData.append("image", {
+              uri: image,
+              name: "image.jpg",  // You can change the file extension based on the image type
+              type: "image/jpeg", // Or use the appropriate MIME type for the file
+            });
+            try {
+              console.log("Uploading image...");
+              const uploadResponse = await api.post("/user/uploadImage", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+              });
+
+              if (uploadResponse.status === 200) {
+                imageUrl = baseUrl+uploadResponse.data.path; // Adjust based on your backend response
+                console.log("Uploaded image URL:", imageUrl);
+              } else {
+                throw new Error("Image upload failed");
+              }
+            } catch (uploadError) {
+              console.error("Image Upload Error:", uploadError);
+              Alert.alert("Image Upload Failed", "Please try again.");
+              return;
+            }
+
+        }
+
         const updateUser: any = await api.put(
           `/user/update/${user.email}`,
           {
@@ -109,7 +147,8 @@ const Propage = () => {
             firstname,
             lastname,
             date_of_birth,
-            gender
+            gender,
+            image: imageUrl,
           },
           {
             headers: {
@@ -149,6 +188,7 @@ const Propage = () => {
         Alert.alert("Error", "Something went wrong during the update.");
       }
     }
+    setImage(null);
     setIsEdit(false);
   };
 
@@ -158,11 +198,27 @@ const Propage = () => {
     setLastName(user.lastname);
     setTel(user.tel);
     setGender(user.gender);
+    setImage(null);
     setIsEdit(false);
   };
+  const pickImage = async () => {
+    console.log("test");
+    let result = await ImagePicker.launchImageLibraryAsync({
+// No permissions request is necessary for launching the image library
+      mediaTypes: ['images', 'videos'],
+      allowsEditing: true,
+      quality: 1,
+      aspect: [4, 3],
+    });
 
+    console.log(result);
 
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
   return (
+
     <View style={styles.screen}>
       <ThemedView style={styles.plane} className='flex'>
         <ThemedView style={[
@@ -273,7 +329,8 @@ const Propage = () => {
               </Pressable>
             }
             {isEdit &&
-              <ThemedView className='w-[90%] flex flex-row justify-between' style={{ backgroundColor: 'transparent' }}>
+              <ThemedView className="w-[90%]" style={{ backgroundColor: 'transparent' }}>
+              <ThemedView className='w-[100%] flex flex-row justify-between pb-4' style={{ backgroundColor: 'transparent' }}>
                 <Pressable style={styles.save_button}
                   onPress={handleUpdate}
                 >
@@ -285,10 +342,28 @@ const Propage = () => {
                   <Text style={[{ color: isDark ? 'white' : 'white' }]} >Cancel</Text>
                 </Pressable>
               </ThemedView>
+              <Pressable style={[{backgroundColor: isDark ? 'white' : '#203B82'},styles.reset_button]}
+                onPress={()=>{router.push("/(tabs)/profile/resetpassword")}}
+              >
+                <Text style={[{ color: isDark ? '#203B82' : 'white' }]} >Reset Password</Text>
+              </Pressable>
+
+              </ThemedView>
             }
           </ThemedView>
         </ThemedView>
-        <Image className="absolute" source={{ uri: user.image }} style={styles.avatar} />
+        { isEdit && <Pressable className="absolute"  onPress={pickImage} style={styles.avatar} > 
+          <Image source={{ uri: image==null?user.image:image}} 
+            style={{  width: 100,
+            height: 100,
+            borderRadius: 50,
+            position: 'absolute',
+            left: '50%',
+            top: '5%',
+            transform: [{ translateX: -50 }],
+        }} />
+        </Pressable>}
+        { !isEdit && <Image className="absolute" source={{ uri: user.image }} style={styles.avatar} />}
       </ThemedView>
       <CustomDateTimePicker
         visible={isDatePickerVisible}
@@ -322,7 +397,7 @@ const styles = StyleSheet.create({
   },
   setting_plane: {
     width: '100%',
-    height: '98%',
+    height: '95%',
     // backgroundColor: "white",
     marginTop: '5%',
     borderRadius: 30,
@@ -418,6 +493,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'red',
+    borderRadius: 30,
+    marginBottom: 5,
+  },
+  reset_button: {
+    width: '100%',
+    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 30,
     marginBottom: 5,
   },

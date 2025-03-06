@@ -92,8 +92,8 @@ const Search: React.FC = () => {
     );
   }
   return (
-    <SafeAreaView style={styles.container}>
-      <ThemedView style={styles.themedView}>
+   <SafeAreaView className="flex-1 w-full !h-full">
+         <ThemedView className="flex-1 w-full !h-full mt-5">
         <Bgelement />
         <View style={styles.headerWrapper}>
           <ThemedText style={styles.headerText}>Public Plan</ThemedText>
@@ -141,11 +141,10 @@ const Search: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  themedView: { flex: 1 },
+ 
   headerWrapper: {
-    marginTop: height * 0.05,
-    paddingHorizontal: width * 0.06,
+    marginTop: 48,
+    paddingHorizontal: width * 0.04,
     marginBottom: height * 0.015,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -155,6 +154,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.1,
     color: 'white',
     fontWeight: 'bold',
+    
   },
   filterContainer: {
     overflow: 'hidden',
