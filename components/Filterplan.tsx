@@ -56,15 +56,15 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={[styles.container, { padding: width * 0.04 }]}>
-        <View style={[styles.innerContainer, { padding: width * 0.03 }]}>
+        <View style={[styles.innerContainer, { padding: width * 0.02 }]}>
           <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Sort By</Text>
           <View style={styles.buttonRow}>
             {[
-              { label: 'Budget (Low to High)', type: 'budget', order: 'asc' },
-              { label: 'Budget (High to Low)', type: 'budget', order: 'desc' },
-              { label: '( A - Z )', type: 'name', order: 'asc' },
-              { label: '( Z - A )', type: 'name', order: 'desc' },
-              { label: 'Rating', type: 'rating', order: 'desc' }
+             
+              { label: '(A - Z)', type: 'name', order: 'asc' },
+              { label: '(Z - A)', type: 'name', order: 'desc' },
+              { label: 'Budget(Low - High)', type: 'budget', order: 'asc' },
+              { label: 'Budget(High - Low)', type: 'budget', order: 'desc' },
             ].map(({ label, type, order }) => (
               <TouchableOpacity
                 key={`${type}-${order}`}
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    flexWrap: "wrap-reverse",
     justifyContent: "center",
   },
   button: {
