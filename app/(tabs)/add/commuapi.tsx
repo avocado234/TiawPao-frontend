@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import apiTAT from '@/utils/axiosTATInstance';
+import api from '@/utils/axiosTATInstance';
+import { auth } from '@/config/firebaseconfig';
+import uuid from 'react-native-uuid';
+import { useUserStore } from '@/store/useUser';
+
 
 interface PlaceData {
   id: string;
@@ -9,17 +13,17 @@ interface PlaceData {
   latitude: string;
   longitude: string;
   type: string;
+  thumbnailUrl: string;
 }
 
 const MergedComponent = () => {
+  const { user } = useUserStore();
+  const params = useLocalSearchParams();
+  const { tripName, region, province, startDate, startTime, endDate, endTime, visibility, peopletype, isMust, isNature, isEcoL, isArt, isBeach, isaAdventure, isCamping, isUrban, isRural, isLux, isLocal, isFood, isShop, kids, adults, } = params;
   const [prompt, setPrompt] = useState(' Plan a 3-day trip to Chonburi from April 14-17, 2025, starting each day from 8:00 AM to 6:00 PM, and traveling solo. The types of activities should include beach, camping, and shopping. If any of these activities are not suitable, feel free to exclude them from the schedule. Additionally, all locations must be in English, and the information should be based on the TAT API. Finally, please return the response in JSON format with the location names and times, or any adjustments that you think are appropriate.Here’s an example of the response I’m expecting: only{ "schedule": [ { "location": "Pattaya Beach", "start_time": "2025-04-14T08:00:00", "end_time": "2025-04-14T12:00:00" }, { "location": "Jomtien Beach", "start_time": "2025-04-14T13:00:00", "end_time": "2025-04-14T17:00:00" }, { "location": "Central Festival Pattaya", "start_time": "2025-04-14T17:30:00", "end_time": "2025-04-14T20:00:00" } ] }"');
   const [responseText, setResponseText] = useState('');
+  const [data, setData] = useState<PlaceData[]>([]);
   const [places, setPlaces] = useState<PlaceData[]>([]);
-
-  const params = useLocalSearchParams();
-  const {
-    tripName,region,province,startDate,startTime,endDate,endTime,visibility,peopletype,isMust,isNature,isEcoL,isArt,isBeach,isaAdventure,isCamping,isUrban,isRural,isLux,isLocal,isFood,isShop,kids,adults,
-  } = params;
 
   const provinceMap: Record<number, string> = {
     571: "Amnat Charoen",
@@ -107,47 +111,54 @@ const MergedComponent = () => {
   };
 
   useEffect(() => {
-    const handleFetchTATData = async () => {
-      if (!province) return;
+  const handleFetchTATData = async () => {
+    if (!province) return;
 
-      const provinceId = getProvinceId(province.toString());
-      console.log("Province ID:", provinceId);
+    console.log("Province:", province); 
 
-      if (!provinceId) {
-        console.error("Province ID not found!");
-        return;
+    const provinceId = getProvinceId(province.toString());
+    console.log("Province ID:", provinceId);
+
+    try {
+      const response = await api.get(
+        `https://tatdataapi.io/api/v2/places?province_id=${provinceId}&limit=200&sort_by=thumbnailUrl&status=true&has_name=true&has_thumbnail=true`
+      );
+
+      if (response.data?.data?.length > 0) {
+        const newPlaces = response.data.data.map((place: any) => ({
+          id: place.placeId,
+          name: place.name,
+          latitude: place.latitude,
+          longitude: place.longitude,
+          thumbnailUrl: place.thumbnailUrl,
+          type: place.category.name,
+        }));
+
+        setPlaces(newPlaces);
+        //console.log("Place Data:", newPlaces.map((place: any) => ({ id: place.id, name: place.name, thumbnailUrl: place.thumbnailUrl })));
+      } else {
+        console.warn("No place data found!");
       }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  handleFetchTATData();
+}, [province]);
 
-      try {
-        const response = await apiTAT.get(
-          `https://tatdataapi.io/api/v2/places?province_id=${provinceId}&sha_flag=no&limit=300&updated_at=2024-03-01&has_name=true&has_thumbnail=true`
-        );
 
-        if (response.data?.data?.length > 0) {
-          const newPlaces = response.data.data.map((place: any) => ({
-            id: place.placeId,
-            name: place.name,
-            latitude: place.latitude,
-            longitude: place.longitude,
-            type: place.category.name,
-          }));
+  useEffect(() => {
+  setData(places);
+  }, [places]);
+  
 
-          setPlaces(newPlaces);
-          console.log("Place Data:", newPlaces.map((place: any) => ({ name: place.name, id: place.id })));
-        } else {
-          console.warn("No place data found!");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    handleFetchTATData();
-  }, [province]);
+  useEffect(() => {
+    callGeminiAPI();
+  }, []); // Add this useEffect to call the API when the component mounts
 
   const callGeminiAPI = async () => {
     try {
-      const apiKey = 'Hell_Nah_API'; 
+      const apiKey = 'Hell Nah'; 
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const payload = {
@@ -182,72 +193,11 @@ const MergedComponent = () => {
     }
   };
 
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Gemini API Example</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter text prompt"
-        value={prompt}
-        onChangeText={setPrompt}
-      />
-      <Button title="Generate Content" onPress={callGeminiAPI} />
-      <Text style={styles.response}>{responseText}</Text>
-      <View style={styles.placesContainer}>
-        <Text style={styles.subtitle}>Places Data</Text>
-        {places.map((place) => (
-          <View key={place.id} style={styles.placeItem}>
-            <Text style={styles.placeName}>{place.name}</Text>
-            <Text>{`Lat: ${place.latitude}, Lon: ${place.longitude}`}</Text>
-            <Text>{`Type: ${place.type}`}</Text>
-          </View>
-        ))}
-      </View>
-    </ScrollView>
-  );
-};
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: '#fff',
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 12,
-    fontWeight: 'bold',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginBottom: 12,
-    borderRadius: 4,
-  },
-  response: {
-    marginTop: 20,
-    fontSize: 14,
-    fontFamily: 'monospace',
-  },
-  placesContainer: {
-    marginTop: 30,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  placeItem: {
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingBottom: 8,
-  },
-  placeName: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
+
+  console.log("Data:", data);
+  console.log("Response Text:", responseText);
+  return null;
+};
 
 export default MergedComponent;
