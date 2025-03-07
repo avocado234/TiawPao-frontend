@@ -12,7 +12,7 @@ import {
 import { useRouter } from "expo-router";
 
 interface CarouselItem {
-    image: string | undefined;
+    image: string ;
     id: string;
     routeId: string;
     name: string;
@@ -23,7 +23,7 @@ interface CarouselItem {
     regionNames: string[];
     regions: any[];
     distance: number;
-    placeImageUrls: string[];
+    placeImageUrls: any;
   
     
 }
@@ -39,7 +39,7 @@ const Carousel: React.FC<CarouselProps> = ({ carouselData }) => {
     const isAutoScrolling = useRef(false);
     const router = useRouter();
     const snapToInterval = screenWidth;
-    console.log(carouselData);
+ 
     useEffect(() => {
         const interval = setInterval(() => {
             if (!isAutoScrolling.current && flatListRef.current) {
@@ -73,13 +73,28 @@ const Carousel: React.FC<CarouselProps> = ({ carouselData }) => {
     };
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
-        <TouchableOpacity onPress={() => router.push('/HomeRecommend')}>
-          <Image  source={{ uri: item.image }} style={styles.image} />
+        <TouchableOpacity 
+            onPress={() => router.push({ 
+                pathname: "/HomeRecommend", 
+                params: {
+                    id: item.id,
+                    name: item.name,
+                    introduction: item.introduction,
+                    numberOfDays: item.numberOfDays,
+                    provinceWithDay: item.provinceWithDay, 
+                    regionNames: item.regionNames,
+                    regions: item.regions,
+                    distance: item.distance,
+                    placeImageUrls: item.placeImageUrls,
+                    image: item.image,
+                    thumbnailUrl: item.thumbnailUrl
+                }
+            })}
+        >
+            <Image source={{ uri: item.image }} style={styles.image} />
         </TouchableOpacity>
-      );
-      
-      
-
+    );
+    
 
     const renderDotIndicators = () => (
         <View style={styles.dotContainer}>
