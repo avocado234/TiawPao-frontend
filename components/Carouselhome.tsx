@@ -12,7 +12,7 @@ import {
 import { useRouter } from "expo-router";
 
 interface CarouselItem {
-    id: string;
+    _id: string;
     image: any;
 }
 
@@ -24,10 +24,10 @@ const Carousel: React.FC = () => {
     const router = useRouter();
     const snapToInterval = screenWidth;
 
-    const carouselData = [
-        { id: "1", image: require("@/assets/images/test.png"), title: "Trip 1", description: "This is Trip 1" },
-        { id: "2", image: require("@/assets/images/test2.png"), title: "Trip 2", description: "This is Trip 2" },
-        { id: "3", image: require("@/assets/images/test3.png"), title: "Trip 3", description: "This is Trip 3" },
+    const carouselData: CarouselItem[] = [
+        { _id: "67cb12b5a97f49320d2647a2", image: require("@/assets/images/test.png") },
+        { _id: "67cb16d9a97f49320d26481a", image: require("@/assets/images/test2.png") },
+        { _id: "67cb175ba97f49320d26482c", image: require("@/assets/images/test3.png") },
     ];
 
     useEffect(() => {
@@ -64,11 +64,15 @@ const Carousel: React.FC = () => {
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
         <TouchableOpacity 
+            key={item._id}  // ✅ แก้ไขปัญหา unique key
             onPress={() => {
-                console.log("🖱️ Clicked item:", item);  // Debug ตรวจสอบค่าที่ส่งไป
+                console.log("🖱️ Clicked item:", item);
+                console.log("🔍 Available keys in item:", Object.keys(item));
+                console.log("📤 Sending ID:", item._id);
+
                 router.push({
                     pathname: "../HomeRecommend",
-                    params: { id: item.id }
+                    params: { id: item._id }
                 });
             }}
         >
@@ -78,10 +82,10 @@ const Carousel: React.FC = () => {
 
     const renderDotIndicators = () => (
         <View style={styles.dotContainer}>
-            {carouselData.map((_, index) => (
+            {carouselData.map((item) => (
                 <View
-                    key={index}
-                    style={[styles.dot, activeIndex === index ? styles.activeDot : styles.inactiveDot]}
+                    key={item._id}  // ✅ ใช้ `_id` เป็น key แทน index
+                    style={[styles.dot, carouselData.indexOf(item) === activeIndex ? styles.activeDot : styles.inactiveDot]}
                 />
             ))}
         </View>
@@ -94,7 +98,7 @@ const Carousel: React.FC = () => {
                 ref={flatListRef}
                 getItemLayout={getItemLayout}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id} // ✅ ใช้ `_id` เป็น key
                 horizontal
                 pagingEnabled
                 onScroll={handleScroll}

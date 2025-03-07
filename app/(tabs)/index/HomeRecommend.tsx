@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -7,227 +7,212 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  Platform,
+  ActivityIndicator,
+  StatusBar,
 } from "react-native";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 
-// 🔹 กำหนดประเภทข้อมูลของ contentData
+
 interface Place {
   name: string;
-  image: any;
+  image: string;
   detail: string;
 }
 
 interface TripData {
+  _id: string;
   title: string;
-  subtitle: string; // เพิ่ม subtitle เหมือน Homedetail.tsx
-  mainImage: any;
+  mainImage: string;
   description: string;
   places: Place[];
 }
 
-// 🔹 ข้อมูลของแต่ละทริป
-const contentData: Record<string, TripData> = {
-    "1": {
-      title: "Rayong-Chanthaburi Road Trip",
-      subtitle: "Thailand",
-      mainImage: require("@/assets/images/rayong/rayong1.png"), // ✅ ต้องมีภาพใน assets
-      description: "Embark on a scenic road trip through Rayong and Chanthaburi, two beautiful provinces offering stunning beaches, lush forests, and rich cultural heritage.",
-  
-      places: [
-        {
-          name: "Laem Charoen Beach",
-          image: require("@/assets/images/rayong/rayong2.png"),
-          detail: "A peaceful beach near Rayong City, perfect for relaxing and enjoying fresh seafood from the local restaurants."
-        },
-        {
-          name: "Wat Pa Pradu",
-          image: require("@/assets/images/rayong/rayong3.png"),
-          detail: "A historic temple famous for its large reclining Buddha image, unique because it is turned on its left side instead of the usual right."
-        },
-        {
-          name: "Chao Lao Beach",
-          image: require("@/assets/images/rayong/rayong4.png"),
-          detail: "One of the most beautiful beaches in Chanthaburi, offering soft white sand and clear blue waters, ideal for swimming and snorkeling."
-        },
-        {
-          name: "Oasis Sea World",
-          image: require("@/assets/images/rayong/rayong5.png"),
-          detail: "A marine attraction where visitors can watch dolphin shows and even swim with these intelligent creatures."
-        },
-        {
-          name: "Cathedral of the Immaculate Conception",
-          image: require("@/assets/images/rayong/rayong6.png"),
-          detail: "The largest Catholic church in Thailand, featuring stunning Gothic architecture and located in Chanthaburi’s Old Town."
-        }
-      ]
-    },
-  
-  "2": {
-    title: "Korat 2 Days 1 Night",
-    subtitle: "Nakhon Ratchasima",
-    mainImage: require("@/assets/images/korat/korat1.png"),
-    description: "Nakhon Ratchasima, commonly known as Korat, serves as the gateway to Thailand's northeastern region.",
-    places: [
-      {
-        name: "Petrified Wood Museum",
-        image: require("@/assets/images/korat/korat2.png"),
-        detail: "Located in Suranaree Subdistrict, this museum showcases fossilized woods dating back 800,000 to 320 million years."
-      },
-      {
-        name: "Thao Suranaree Monument",
-        image: require("@/assets/images/korat/korat3.png"),
-        detail: "Erected in 1934, this monument honors the bravery of Thao Suranaree (Lady Mo), who defended Korat from invaders in 1826."
-      },
-      {
-        name: "Phimai Historical Park",
-        image: require("@/assets/images/korat/korat5.png"),
-        detail: "Home to one of the largest Khmer temples in Thailand, offering a glimpse into the region's ancient past."
-      },
-    ]
-  },
-  "3": {
-    title: "Trang-Satun Low Carbon 3 Days 2 Nights",
-    subtitle: "Southern Thailand",
-    mainImage: require("@/assets/images/trang/trang1.png"), // ✅ ต้องมีภาพใน assets
-    description: "Embark on a low-carbon adventure through Trang and Satun, two stunning provinces with breathtaking natural attractions, rich cultural heritage, and delicious southern Thai cuisine.",
-    
-    places: [
-      {
-        name: "Pak Meng Beach",
-        image: require("@/assets/images/trang/trang2.png"),
-        detail: "A scenic beach with a long stretch of golden sand, facing the Andaman Sea. It's a perfect spot to relax and enjoy the sunset."
-      },
-      {
-        name: "Emerald Cave (Morakot Cave)",
-        image: require("@/assets/images/trang/trang3.png"),
-        detail: "A hidden lagoon accessible only by swimming through a dark cave tunnel. The water inside is emerald green, making it a magical experience."
-      },
-      {
-        name: "Koh Lao Liang",
-        image: require("@/assets/images/trang/trang4.png"),
-        detail: "A paradise island famous for its towering limestone cliffs, crystal-clear waters, and excellent snorkeling and rock climbing spots."
-      },
-      {
-        name: "Thale Ban National Park",
-        image: require("@/assets/images/trang/trang5.png"),
-        detail: "A biodiversity hotspot in Satun, home to lush rainforests, diverse wildlife, and beautiful freshwater lakes surrounded by limestone mountains."
-      },
-      {
-        name: "Satun UNESCO Global Geopark",
-        image: require("@/assets/images/trang/trang6.png"),
-        detail: "Recognized by UNESCO, this geopark showcases stunning karst landscapes, ancient fossils, and caves that date back millions of years."
-      }
-    ]
-  }
-
-};
-
 export default function HomeRecommend() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const insets = useSafeAreaInsets();
 
-  console.log("✅ Received params:", params);  // Debug ตรวจสอบค่าที่ได้รับจาก router
+  const [tripData, setTripData] = useState<TripData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const tripId = params.id ? String(params.id) : "1";
-  console.log("🚀 Resolved tripId:", tripId);  // Debug ตรวจสอบค่าหลังจากแปลงเป็น string
+  const tripId = params.id ? String(params.id) : null;
 
-  const content = contentData[tripId] || contentData["1"];
+  useEffect(() => {
+    if (!tripId) {
+      setError("❌ Invalid trip ID");
+      setLoading(false);
+      return;
+    }
+
+    const fetchTripData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5001/trips/${tripId}`);
+        setTripData(response.data);
+      } catch (err) {
+        setError("Failed to fetch trip data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTripData();
+  }, [tripId]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeContainer}>
+        <ActivityIndicator size="large" color="#5680EC" style={{ marginTop: 50 }} />
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !tripData) {
+    return (
+      <SafeAreaView style={styles.safeContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* ✅ SafeAreaView ครอบ Header เพื่อให้พื้นหลังสีฟ้าเต็มถึงขอบจอ */}
-      <SafeAreaView style={styles.safeHeader}>
-        <View style={styles.header}>
+    <SafeAreaProvider>
+      <StatusBar barStyle="light-content" backgroundColor="#5680EC" translucent={true} />
+
+      <SafeAreaView style={styles.safeContainer}>
+        {/* 🔹 Header Background */}
+        <View style={[styles.headerBackground, { height: insets.top + 60 }]} />
+
+        {/* 🔹 Header */}
+        <View style={[styles.header, { paddingTop: insets.top }]}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={28} color="black" />
+            <Ionicons name="arrow-back" size={28} color="white" />
           </TouchableOpacity>
-          <View style={styles.headerTextContainer}>
-            <Text style={styles.headerTitle}>{content.title}</Text>
-            <Text style={styles.headerSubtitle}>{content.subtitle}</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerTitle} numberOfLines={2} ellipsizeMode="tail">
+              {tripData.title}
+            </Text>
           </View>
         </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Image source={{ uri: tripData.mainImage }} style={styles.mainImage} resizeMode="cover" />
+          <TouchableOpacity style={styles.saveButton}>
+            <Ionicons name="heart-outline" size={24} color="red" />
+            <Text style={styles.saveText}>Save</Text>
+          </TouchableOpacity>
+
+          <View style={styles.content}>
+            <Text style={styles.description}>{tripData.description}</Text>
+
+            {tripData.places.map((place) => (
+              <View key={place.name} style={styles.placeContainer}>
+                <Image source={{ uri: place.image }} style={styles.placeImage} />
+                <Text style={styles.placeTitle}>{place.name}</Text>
+                <Text style={styles.placeDetail}>{place.detail}</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </SafeAreaView>
-
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* 🔹 รูปภาพหลัก */}
-        <Image source={content.mainImage} style={styles.mainImage} resizeMode="cover" />
-
-        {/* 🔹 คำอธิบายหลัก */}
-        <View style={styles.content}>
-          <Text style={styles.text}>{content.description}</Text>
-
-          {/* 🔹 แสดงสถานที่แต่ละแห่ง (ถ้ามี) */}
-          {content.places.length > 0 && content.places.map((place, index) => (
-            <View key={index}>
-              <Image source={place.image} style={styles.image} />
-              <Text style={styles.subtitle}>{place.name}</Text>
-              <Text style={styles.text}>{place.detail}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
-
-  // ✅ SafeAreaView ที่ทำให้ Header สีฟ้าเต็มถึงขอบจอ
-  safeHeader: {
-    backgroundColor: "#5680EC",
-    
+  safeContainer: {
+    flex: 1,
+    backgroundColor: "white",
   },
- 
-  header: {
+  headerBackground: {
+    width: "100%",
+    position: "absolute",
     backgroundColor: "#5680EC",
-    paddingVertical: 20,
-    paddingHorizontal: 30,
+  },
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 30, // ✅ ป้องกันทับ Notch บน iPhone
-  },
-  backButton: { marginRight: 10 },
-  headerTextContainer: {
-    flex: 1,
     justifyContent: "center",
+    paddingHorizontal: 20,
+    height: 60,
+    textAlign: "left",
+  },
+  backButton: {
+    position: "absolute",
+    left: 20,
+    zIndex: 10,
+  },
+  titleContainer: {
+    flex: 1,
+    position: "absolute",
+    left: 60,
+    right: 60,
+    top: 12, // ✅ ทำให้ Title อยู่ตรงกลาง
+    alignItems: "center",
+    
   },
   headerTitle: {
+    color: '#fbdf61',
     fontSize: 30,
-    fontWeight: "bold",
-    color: "#fbdf61",
+    marginLeft: -20,
+    fontFamily: "System",
+    textAlign: "left",
+    backgroundColor: "transparent",
+    
   },
-  headerSubtitle: {
-    fontSize: 20,
-    color: "white",
-  },
-
-  /* 🔹 เนื้อหาและรูป */
-  scrollContent: { paddingBottom: 80 },
+  scrollContent: { paddingBottom: 80, marginTop: 60 },
   mainImage: {
     width: "100%",
     height: 250,
     resizeMode: "cover",
   },
+  saveButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    right: 20,
+    top: 220,
+    backgroundColor: "white",
+    padding: 8,
+    borderRadius: 20,
+  },
+  saveText: {
+    marginLeft: 5,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
   content: { padding: 20 },
-  text: {
+  description: {
     fontSize: 16,
     color: "#444",
     marginBottom: 10,
   },
-  subtitle: {
+  placeContainer: {
+    marginBottom: 20,
+  },
+  placeImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+  },
+  placeTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#555",
     marginTop: 10,
-    marginBottom: 5,
   },
-  image: {
-    width: "100%",
-    height: 200,
-    marginVertical: 10,
-    borderRadius: 10,
+  placeDetail: {
+    fontSize: 14,
+    color: "#444",
+  },
+  errorText: {
+    textAlign: "center",
+    marginTop: 50,
+    color: "red",
+    fontSize: 16,
   },
 });
