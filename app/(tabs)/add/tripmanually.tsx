@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  SafeAreaView, 
-  ImageBackground, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  ImageBackground,
+  TouchableOpacity,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from 'react-native';
+import type { CardProps } from 'tamagui';
+import { Button, Card, H2, Image, XStack } from 'tamagui';
 import { ThemedView } from '@/components/ThemedView';
-import Bgelement from "@/components/Bgelement";
+import Bgelement from '@/components/Bgelement';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
@@ -20,7 +23,15 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import api from '@/utils/axiosInstance';
+import apiTAT from '@/utils/axiosTATInstance';
 import LoadingComponent from '@/components/LoadingComponent';
+import { useFocusEffect } from '@react-navigation/native';
+import { ChevronDown } from '@tamagui/lucide-icons';
+import { Accordion, Paragraph, Square } from 'tamagui';
+import FilterDropDown from '@/components/FilterDropDown';
+import { catagoriesData } from '@/data/catagories';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { DialogInstance } from '@/components/DialogInstance';
 interface TripManuallyParams {
   planID?: string;
 }
@@ -36,7 +47,7 @@ interface PlanData {
   region_label: string;
   start_date: string;
   start_time: string;
-  trip_location: any[]; 
+  trip_location: any[];
   trip_name: string;
   visibility: boolean;
 }
@@ -46,11 +57,22 @@ export default function TripManually() {
   const params = useLocalSearchParams();
   const planid = params.planID;
   const [plandata, setPlanData] = useState<PlanData | null>(null);
+  const [placeslist, setPlacesList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isTimeModalVisible, setTimeModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [catagories, setCatagories] = useState<number>(0);
+  const [activeDay, setActiveDay] = useState<number>(-1); // store index of active day
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState(new Date());
 
-  useEffect(() => {
-    getPlanData();
-  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getPlanData();
+    }, [planid])
+  );
 
   const getPlanData = async () => {
     const currentUser = auth.currentUser;
@@ -61,13 +83,14 @@ export default function TripManually() {
     setLoading(true);
     try {
       const response = await api.get(`/plan/getplanbyid/${planid}`, {
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
+        headers: { Authorization: `Bearer ${idToken}` },
       });
-      // สมมติว่า response.data มี property "plan_data"
       setPlanData(response.data.plan_data as PlanData);
-      console.log(response.data.plan_data);
+      console.log(response.data.plan_data.province_id);
+      const places: any = await apiTAT.get(
+        `/places?province_id=${response.data.plan_data.province_id}&limit=50&has_thumbnail=has_thumbnail`
+      );
+      setPlacesList(places.data.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -75,117 +98,154 @@ export default function TripManually() {
     }
   };
 
-  const start = new Date("2025-01-01");
-  const end = new Date("2025-01-01");
+  const start = new Date(plandata?.start_date || new Date().toISOString());
+  const end = new Date(plandata?.end_date || new Date().toISOString());
   const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24)) + 1;
-
-  const [expandedDays, setExpandedDays] = useState<number[]>([]);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
-
-  const toggleDay = (index: number) => {
-    setExpandedDays(prev =>
-      prev.includes(index) ? prev.filter(day => day !== index) : [...prev, index]
-    );
-  };
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
+  // When user taps the "Add to Trip" button on a card,
+  // close the location modal and open the time selection modal.
+  const openTimeModal = (placeId: string) => {
+    setSelectedPlaceId(placeId); // กำหนด place ที่เลือก
+    toggleModal(); // ปิด modal สถานที่
+    // setTimeModalVisible(true); // เปิด modal เลือกเวลา
+    setTimeout(() => {
+      setTimeModalVisible(true); // เปิด modal เลือกเวลา
+    }, 300);
+  };
+
+  const confirmTimeSelection = async () => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error('User not logged in');
+      }
+      const idToken = await currentUser.getIdToken();
+      // ส่งข้อมูล selectedPlaceId และ selectedTime ไปยัง API
+      const response = await api.put(
+        `/plan/addtriplocation/${planid}`,
+        { place_id: selectedPlaceId, time: selectedTime.toISOString() },
+        { headers: { Authorization: `Bearer ${idToken}` } }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+    setTimeModalVisible(false); // ปิด modal เลือกเวลา
+    toggleModal(); // กลับไปเปิด modal สถานที่อีกครั้ง
+  };
+  
+  const cancelTimeModal = () => {
+    setTimeModalVisible(false); // ปิด modal เลือกเวลา
+    toggleModal(); // กลับไปเปิด modal สถานที่อีกครั้ง
+  };
+
+  const handleDropdownCat = (value: any) => {
+    console.log(value);
+    setCatagories(value);
+  };
+
   const addToPlan = () => {
-    // Logic to add the location to the plan
     toggleModal();
   };
 
   if (loading) {
-    return (
-      <LoadingComponent/>
-    );
+    return <LoadingComponent />;
   }
+
+  // const testdata = [
+  //   { id: 1, name: 'test1' },
+  //   { id: 2, name: 'test1' },
+  //   { id: 3, name: 'test1' },
+  // ];
 
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
-
-        <TouchableOpacity style={styles.backButton} onPress={() => router.push('/add')}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
           <Icon name="arrow-back-outline" size={24} color="#203B82" />
         </TouchableOpacity>
-
-        <ScrollView 
-          contentContainerStyle={styles.contentContainer} 
-          showsVerticalScrollIndicator={false}
-        >
-          <ImageBackground 
+        <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+          <ImageBackground
             source={require("@/assets/images/Chonburi.png")}
             style={styles.tripCard}
             imageStyle={{ borderRadius: 8 }}
           >
             <View style={styles.tripContent}>
               <Text style={styles.tripName}>{plandata?.trip_name}</Text>
-
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Ionicons name="calendar-clear" size={19} color="#FFFFFF" />
                 <Text style={styles.tripDate}>
-                  {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - 
+                  {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} -
                   {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </Text>
               </View>
-
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Feather name="map-pin" size={20} color="#FFFFFF" />
                 <Text style={styles.province}>{plandata?.province_label || "Province Here"}</Text>
               </View>
-
               <TouchableOpacity style={styles.editButton}>
                 <Text style={styles.editButtonText}>Edit</Text>
                 <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
               </TouchableOpacity>
             </View>
-
             <View style={styles.iconContainer}>
-              <TouchableOpacity 
-                onPress={() => { router.push("/(tabs)/add/maptrip") }}
-                style={styles.iconButton}
-              >
+              <TouchableOpacity onPress={() => router.push("/(tabs)/add/maptrip")} style={styles.iconButton}>
                 <Feather name="map" size={20} color="#FFFFFF" />
                 <Text style={styles.iconTextInline}>View Location</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.iconButton}>
-                <FontAwesome6 name="user-plus" size={19} color="#FFFFFF" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton}>
-                <Ionicons name="settings-outline" size={24} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
           </ImageBackground>
           {Array.from({ length: days }).map((_, index) => (
-            <View key={index} style={styles.dayContainer}>
-              <TouchableOpacity onPress={() => toggleDay(index)} style={styles.dayHeader}>
-                <Text style={styles.dayText}>
-                  Day {index + 1}, {new Date(start.getTime() + index * 86400000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                </Text>
-                <Icon 
-                  name={expandedDays.includes(index) ? "chevron-up-outline" : "chevron-down-outline"} 
-                  size={20} 
-                  color="#203B82" 
-                />
-              </TouchableOpacity>
-              {expandedDays.includes(index) && (
-                <View style={styles.dropdownContent}>
-                  <View style={styles.dropdownRow}>
-                    <Icon name="add-circle-outline" size={24} color="#203B82" />
-                    <Text style={styles.dropdownText}>Build your day by adding some location</Text>
-                  </View>
-                  <TouchableOpacity style={styles.addButton} onPress={toggleModal}>
-                    <Icon name="add-outline" size={16} color="#FFFFFF" />
-                    <Text style={styles.addButtonText}>Add</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
+            <Accordion
+              key={index}
+              overflow="hidden"
+              width="full"
+              borderRadius="$3"
+              backgroundColor="$white0"
+              paddingBottom="$2"
+              type="multiple"
+            >
+              <Accordion.Item value="a1">
+                <Accordion.Trigger
+                  flexDirection="row"
+                  justifyContent="space-between"
+                  onPress={() => setActiveDay(activeDay === index ? -1 : index)}
+                >
+                  {({ open }: any) => (
+                    <>
+                      <Paragraph>
+                        Day {index + 1},{' '}
+                        {new Date(start.getTime() + index * 86400000).toLocaleDateString('en-GB', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </Paragraph>
+                      <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
+                        <ChevronDown size="$1" />
+                      </Square>
+                    </>
+                  )}
+                </Accordion.Trigger>
+                <Accordion.HeightAnimator animation="medium">
+                  <Accordion.Content animation="medium" exitStyle={{ opacity: 0 }}>
+                    <Paragraph>
+                      <TouchableOpacity onPress={toggleModal}>
+                        <View style={styles.dropdownRow}>
+                          <Icon name="add-circle-outline" size={24} color="#203B82" />
+                          <Text style={styles.dropdownText}>Adding some location</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </Paragraph>
+                  </Accordion.Content>
+                </Accordion.HeightAnimator>
+              </Accordion.Item>
+            </Accordion>
           ))}
           <View style={styles.budgetContainer}>
             <Text style={styles.budgetText}>Average budget</Text>
@@ -193,9 +253,18 @@ export default function TripManually() {
           </View>
         </ScrollView>
       </ThemedView>
+
+      {/* Modal for Location List (Filter & Search) */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Location</Text>
+          {/* <View style={styles.dropdownContainer}>
+            <FilterDropDown
+              onValueChange={handleDropdownCat}
+              data={catagoriesData}
+              label="Province"
+            />
+          </View> */}
           <View style={styles.searchContainer}>
             <Icon name="search-outline" size={20} color="#203B82" />
             <TextInput
@@ -205,27 +274,83 @@ export default function TripManually() {
               onChangeText={setSearchText}
             />
           </View>
+          <ScrollView style={styles.cardContainer}>
+            {placeslist.map((item: any) => (
+              <Card key={item?.placeId} elevate size="$4" marginBottom="$5">
+                <Card.Header padded>
+                  <View style={styles.cardHeaderContainer}>
+                    <H2 style={styles.cardTitle}>{item.name}</H2>
+                    <Paragraph style={styles.cardAddress} theme="alt2">
+                      {item.location.address}
+                    </Paragraph>
+                  </View>
+                </Card.Header>
+                <Card.Footer padded>
+                  <XStack flex={1} />
+                  <Button
+                    onPress={() => openTimeModal(item.placeId)}
+                    borderRadius="$10"
+                  >
+                    Add to Trip
+                  </Button>
+                  {/* <DialogInstance/> */}
+                </Card.Footer>
+                <Card.Background>
+                  <Image
+                    resizeMode="cover"
+                    alignSelf="center"
+                    source={{ uri: item.thumbnailUrl[0] }}
+                    style={styles.cardImage}
+                  />
+                </Card.Background>
+              </Card>
+            ))}
+          </ScrollView>
           <View style={styles.modalButtons}>
             <TouchableOpacity onPress={toggleModal} style={styles.cancelButton}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={addToPlan} style={styles.addToPlanButton}>
-              <Text style={styles.addToPlanButtonText}>Add to plan</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>
+      {/* Modal สำหรับเลือกเวลา */}
+     
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  // ScrollView container inside modal for Cards
+  cardContainer: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 16,
   },
+  cardImage: {
+    borderRadius: 10,
+    width: '100%',
+    height: '100%',
+  },
+  // Card header styles
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  cardAddress: {
+    fontSize: 14,
+    color: 'black',
+    marginTop: 4,
+  },
+  cardHeaderContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    // Note: `backdropFilter` is not natively supported in React Native.
+    borderRadius: 15,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  // General container styles
   container: {
     flex: 1,
     marginTop: 40,
@@ -259,16 +384,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFFFF',
     marginLeft: 4,
-  },
-  dayContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 8,
-  },
-  dayText: {
-    fontSize: 16,
-    color: '#203B82',
   },
   budgetContainer: {
     flexDirection: 'row',
@@ -352,12 +467,6 @@ const styles = StyleSheet.create({
     color: '#203B82',
     marginLeft: 8,
   },
-  dropdownContent: {
-    padding: 10,
-    backgroundColor: 'rgba(224, 224, 224, 1)',
-    borderRadius: 8,
-    marginTop: 8,
-  },
   dropdownRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -367,34 +476,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: '#203B82',
   },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#203B82',
-    borderRadius: 16,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    alignSelf: 'flex-start',
-  },
-  addButtonText: {
-    color: '#fff',
-    marginLeft: 4,
-  },
-  dayHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  modalContent: { 
-    backgroundColor: 'white',
-    padding: 20,
-    height: '50%',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  // Container style for the FilterDropDown wrapper
+  dropdownContainer: {
+    width: '100%',
     marginBottom: 20,
   },
   searchContainer: {
@@ -403,7 +487,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#203B82',
     borderRadius: 8,
-    paddingHorizontal: 30,
+    paddingHorizontal: 10,
     marginBottom: 20,
     width: '100%',
   },
@@ -412,9 +496,22 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 10,
   },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    height: '60%',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
   modalButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    paddingTop: 10,
+    justifyContent: 'center',
     width: '100%',
   },
   cancelButton: {

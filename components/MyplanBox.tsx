@@ -50,7 +50,14 @@ const MyPlanBox: React.FC<MyPlanBoxProps> = ({ trips, isEditMode, onDelete }) =>
           style={[styles.cardWrapper, isEditMode && styles.cardWrapperEdit]}
         >
           <TouchableOpacity
-            onPress={() => router.push("/(tabs)/add/tripmanually")}
+            onPress={() => {
+                router.replace({
+                  pathname: "/(tabs)/add/tripmanually",
+                  params: {
+                    planID: trip.plan_data.plan_id,
+                  }
+                });
+              }}
             activeOpacity={0.8}
             style={[styles.card, isEditMode && styles.cardEdit]}
           >

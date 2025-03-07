@@ -23,8 +23,8 @@ export default function TabLayout() {
         backgroundColor: theme == 'dark' ? "#18181b" : "white",
         // borderTopLeftRadius: 30, 
         // borderTopRightRadius: 30, 
-        borderTopColor: "ิิิblack", 
-        borderTopWidth: 0.5,       
+        // borderTopColor: "gray", 
+        // borderTopWidth: 0.5,       
         alignItems:"center",
         justifyContent:"center",
       }
