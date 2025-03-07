@@ -1,6 +1,8 @@
 import React from "react";
 import { Text, StyleSheet, Pressable, useColorScheme } from "react-native";
 import { House, User, Users2, Heart } from "@tamagui/lucide-icons";
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { XStack } from "tamagui";
 
 type ButtonProps = {
@@ -38,10 +40,10 @@ const CustomButton: React.FC<ButtonProps> = ({marginright,marginleft,logo,title,
   };
 
   const showLogo = () => {
-    if (logo === "Users2") return <Users2 size={20} color={TextColor} style={{ marginTop: -3 }} />;
-    if (logo === "Heart") return <Heart size={20} color={TextColor} style={{ marginTop: 0 }} />;
-    if (logo === "House") return <House size={20} color={TextColor} style={{ marginTop: -3 }} />;
-    if (logo === "User") return <User size={20} color={TextColor} style={{ marginTop: -3 }} />;
+    if (logo === "Users2") return <Ionicons name="people" size={22} color={TextColor} style={{ marginTop: -3, alignItems: 'center',marginRight: 6}} />;
+    if (logo === "Heart") return <Ionicons name="heart" size={20} color={TextColor} style={{ marginTop: 0, alignItems: 'center',marginRight: 6 }} />;
+    if (logo === "House") return <Ionicons name="home" size={20} color={TextColor} style={{ marginTop: -3, alignItems: 'center',marginRight: 6 }} />;
+    if (logo === "User") return <Ionicons name="person" size={20} color={TextColor} style={{ marginTop: -3, alignItems: 'center',marginRight: 6 }} />;
   };
   let RealBackgroundColor;
   if(active)
@@ -81,6 +83,7 @@ const CustomButton: React.FC<ButtonProps> = ({marginright,marginleft,logo,title,
           borderColor: BorderColor,
           marginLeft: marginleft,
           marginRight: marginright,
+          
         },
       ]}
       onPress={handlePress}

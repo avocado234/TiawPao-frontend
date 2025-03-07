@@ -270,12 +270,12 @@ export default function Main() {
         <XStack style={styles.XStackTraveler}>
           <YStack>
             <ThemedText style={styles.TextTraveler}>Adults</ThemedText>
-            <ThemedText style={styles.TextSubTravler}>Age up to 16</ThemedText>
+            <ThemedText style={styles.TextSubTravler}>Age up to 17</ThemedText>
           </YStack>
           <XStack style={styles.xStackUpandDown}>
-          <Pressable style={styles.ButtonTwin}><Minus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("adults","no")} /></Pressable>
+          <Pressable style={styles.ButtonTwin}><Minus size={35} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("adults","no")} /></Pressable>
           <ThemedText style={styles.TextNumber}> {adults} </ThemedText>
-          <Pressable style={styles.ButtonTwin}><Plus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("adults","plus")}/></Pressable>
+          <Pressable style={styles.ButtonTwin}><Plus size={35} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("adults","plus")}/></Pressable>
           </XStack>
         </XStack>
 
@@ -285,9 +285,9 @@ export default function Main() {
             <ThemedText style={styles.TextSubTravler}>Age 3-17</ThemedText>
           </YStack>
           <XStack style={styles.xStackUpandDown}>
-          <Pressable style={styles.ButtonTwin}><Minus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("kid","no")} /></Pressable>
+          <Pressable style={styles.ButtonTwin}><Minus size={35} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 ,marginLeft:-10}} onPress={() => update_value("kid","no")} /></Pressable>
           <ThemedText style={styles.TextNumber}> {kids} </ThemedText>
-          <Pressable style={styles.ButtonTwin}><Plus size={40} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("kid","plus")}/></Pressable>
+          <Pressable style={styles.ButtonTwin}><Plus size={35} color={"white"} style={{backgroundColor:'#203B82', borderRadius:50 }} onPress={() => update_value("kid","plus")}/></Pressable>
           </XStack>
         </XStack>
       </YStack>
@@ -411,7 +411,7 @@ const styles = {
   },
   TextNumber:
   {
-    fontSize: 16,
+    fontSize: 18,
     minWidth: 30,  
   },
   TextSubScript:
