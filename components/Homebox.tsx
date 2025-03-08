@@ -6,10 +6,10 @@ import { useRouter } from "expo-router";
 interface Place {
     id: string;
     name: string;
-    province: string;
-    imagethumbnail: any;
-    imagedetail: any;
-    introduction : string;
+    location: string;
+    detailimage: any;
+    thumbnailimage: any;
+    introduction: string;
 }
 
 interface HomeboxProps {
@@ -19,10 +19,10 @@ interface HomeboxProps {
 const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     return (
         <View style={styles.card}>
-            <Image source={{ uri: place.imagethumbnail }} style={styles.image} resizeMode="cover" />
+            <Image source={{ uri: place.thumbnailimage }} style={styles.image} resizeMode="cover" />
             <View style={styles.content}>
                 <Text className="text-[18px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
-                <Text style={styles.location}>{place.province}</Text>
+                <Text style={styles.location}>{place.location}</Text>
             </View>
         </View>
     );
@@ -36,11 +36,11 @@ const Homebox: React.FC<HomeboxProps> = ({ places }) => {
         router.push({
             pathname: "/homedetail",
             params: {
-                id : place.id,
+                id: place.id,
                 name: place.name,
-                location: place.province,
-                thumbnailimage: place.imagethumbnail || '',
-                detailimage: place.imagedetail || '',
+                location: place.location,
+                thumbnailimage: place.thumbnailimage || '',
+                detailimage: place.detailimage || '',
                 introduction: place.introduction,
             },
         });

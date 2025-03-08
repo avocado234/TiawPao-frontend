@@ -6,9 +6,9 @@ interface Hotel {
     id: string;
     name: string;
     location: string;
-    detailimage: string | null;
-    thumbnailimage : string | null;
     introduction : string;
+    thumbnailimage: any ;
+    detailimage: any;
 }
 
 interface HotelListProps {
@@ -21,17 +21,18 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
     const PresstoHomedetail = (hotel: Hotel) => {
         console.log("Hotel object:", hotel);
         console.log("Sending to homedetail:", hotel);
-        router.push({
-            pathname: "/homedetail",
-            params: {
-                id: hotel.id,
-                name: hotel.name,
-                location: hotel.location,
-                detailimage: hotel.detailimage || '',
-                thumbnailimage: hotel.thumbnailimage,
-                introduction: hotel.introduction,
-            },
-        });
+        const detailimage = typeof hotel.detailimage === 'string' ? hotel.detailimage : JSON.stringify(hotel.detailimage);
+            router.push({
+                pathname: 'homedetail',
+                params: {
+                    id: hotel.id,
+                    name: hotel.name,
+                    location: hotel.location,
+                    introduction: hotel.introduction,
+                    thumbnailimage: hotel.thumbnailimage,
+                    detailimage: detailimage
+                }
+            })
     };
     return (
         <View className="flex-1 rounded-lg bg-white shadow-lg flex-row mb-4">
