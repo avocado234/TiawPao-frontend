@@ -5,8 +5,9 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  ImageSourcePropType,
 } from 'react-native';
-import { ScrollView } from 'tamagui';
+import { ScrollView, Text } from 'tamagui';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from '@/components/Bgelement';
@@ -23,21 +24,19 @@ interface HotelItem {
   id: string;
   name: string;
   location: string;
-  detailimage: string | null;
-  thumbnailimage : string | null;
-  introduction: string 
+  detailimage: any;
+  thumbnailimage: any;
+  introduction: string;
 }
 
 interface TravelItem {
   id: string;
   name: string;
-  province: string;
-  imagethumbnail: string | null;
-  imagedetail: string | null;
-  introduction : string;
+  location: string;
+  detailimage: any;
+  thumbnailimage: any;
+  introduction: string;
 }
-
-
 
 const Homepage: React.FC = () => {
   const router = useRouter();
@@ -45,14 +44,11 @@ const Homepage: React.FC = () => {
   const [hotelData, setHotelData] = useState<HotelItem[]>([]);
   const [travelData, setTravelData] = useState<TravelItem[]>([]);
 
-
   const fetchHotelData = async () => {
     try {
-      const response = await apiTAT.get('/places?place_category_id=2&limit=130&place_sub_category_id=38');
-      // console.log(response.data)
+      const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=2&limit=130&sort_by=detailPicture&place_sub_category_id=38&has_introduction=true&has_name=true&has_thumbnail=true');
       setHotelData(transformHotels(response.data));
     } catch (error: any) {
-      console.log("flow this")
       if (error.response) {
         console.error('Error response:', error.response);
       } else if (error.request) {
@@ -64,72 +60,69 @@ const Homepage: React.FC = () => {
   };
 
   const transformHotels = (data: any): HotelItem[] => {
-    return data.data
-      .map((item: any) => {
-        const imageUrl = item.thumbnailUrl?.[0] ?? null;
-        const detailImages = item.detailPicture && item.detailPicture.length > 0 
-          ? item.detailPicture.map((imgUrl: string) => ({
-              uri: imgUrl,
-          })) 
-          : [];
-        const location = [
-          item.location?.province?.name,
-        ]
-          .filter(Boolean)
-          .join(', ');
-
-        return {
-          id: item.placeId,
-          name: item.name,
-          location,
-          detailimage: detailImages,
-          thumbnailimage: imageUrl,
-          introduction: item.introduction || '',
-        };
-      })
-      .filter((item: HotelItem) =>
-        item.id &&
-        item.name &&
-        item.location &&
-        item.detailimage &&
-        item.thumbnailimage?.trim() !== "" &&
-        item.introduction !== null && item.introduction !== ""
-      );
-};
+    return data.data.map((item: any) => {
+      const detailImages = Array.isArray(item.sha?.detailPicture)
+        ? item.sha.detailPicture.map((imgUrl: string) => ({ uri: imgUrl }))
+        : [];
+      return {
+        id: item.placeId,
+        name: item.name,
+        location: item.location?.province?.name ?? '',
+        detailimage: detailImages,
+        thumbnailimage: item.thumbnailUrl?.[0] ?? null,
+        introduction: item.introduction || '',
+      };
+    })
+    .filter((item: HotelItem) =>
+      item.introduction?.trim() !== "" &&
+      item.introduction !== null &&
+      item.id &&
+      item.name &&
+      item.location &&
+      item.thumbnailimage &&
+      item.detailimage.length > 0
+    );
+  };
 
   const fetchTravelData = async () => {
     try {
-      const response = await apiTAT.get('/places?place_category_id=3&limit=30&place_sub_category_id=3');
+      const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=3&sha_flag=true&limit=30&sort_by=detailPicture&place_sub_category_id=3&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
       setTravelData(transformTravel(response.data));
     } catch (error: any) {
-      console.error('Error fetching travel data:', error);
+      if (error.response) {
+        console.error('Error response:', error.response);
+      } else if (error.request) {
+        console.error('Error request:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
     }
   };
-  
+
   const transformTravel = (data: any): TravelItem[] => {
-    return data.data
-      .map((item: any) => {
-        const imageUrl = item.thumbnailUrl?.[0] ?? null; // Take the value clearly
+    return data.data.map((item: any) => {
+        const detailImages = Array.isArray(item.sha?.detailPicture)
+            ? item.sha.detailPicture.map((imgUrl: string) => ({ uri: imgUrl }))
+            : [];
         return {
-          id: item.placeId,
-          name: item.name,
-          introduction: item.introduction,
-          province: item.location?.province?.name,
-          imagethumbnail: imageUrl, // Ensure you use the correct field name
-          imagedetail: item.imagedetail,
+            id: item.placeId,
+            name: item.name,
+            location: item.location?.province?.name ?? '',
+            detailimage: JSON.stringify(detailImages), // Convert to JSON string
+            thumbnailimage: item.thumbnailUrl?.[0] ?? null,
+            introduction: item.introduction || '',
         };
-      })
-      .filter((item: TravelItem) => 
-        item.introduction?.trim() !== "" && 
+    })
+    .filter((item: TravelItem) =>
+        item.introduction?.trim() !== "" &&
         item.introduction !== null &&
-        item.id && 
-        item.name && 
-        item.province && 
-        item.imagethumbnail // Make sure this matches your interface
+        item.id &&
+        item.name &&
+        item.location &&
+        item.thumbnailimage &&
+        JSON.parse(item.detailimage).length > 0
     );
   };
-  
-
 
   useEffect(() => {
     fetchHotelData();
@@ -161,7 +154,6 @@ const Homepage: React.FC = () => {
           <ThemedText className="text-2xl font-bold left-3">Journey together</ThemedText>
           <Homebox places={travelData} />
           <ThemedText className="text-2xl font-bold left-3">Food & Drink</ThemedText>
-        
           <ThemedText className="text-2xl font-bold left-3">Hotels</ThemedText>
           <View className="p-2">
             <HotelList hotels={hotelData} />
