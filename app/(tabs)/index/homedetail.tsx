@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, ScrollView, SafeAreaView, Pressable } from "react-native";
 import { Text, Button, View, XStack, YStack } from "tamagui";
 import Imageswipe from "@/components/imageswipe";
@@ -7,21 +7,38 @@ import { ThemedText } from '@/components/ThemedText';
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
 import Bgelement from "@/components/Bgelement";
 import apiTAT from '@/utils/axiosTATInstance';
-import Main from '../add/genaiselected';
 
 const homedetail = () => {
     const param = useLocalSearchParams();
-    const { id, name, location, detailimage ,introduction, thumbnailimage} = param;
-    const images = Array.isArray(detailimage) 
-        ? detailimage.map((img: any) => ({
-            id: img.id,
-            title: img.title,
-            image: img.uri
-        }))
+    const { id, name, location, detailimage, introduction, thumbnailimage } = param;
+
+    let DetailImage = [];
+    if (typeof detailimage === 'string') {
+        try {
+            DetailImage = JSON.parse(detailimage);
+        } catch (error) {
+            console.error('Failed to parse detailimage:', error);
+            DetailImage = [];
+        }
+    }
+
+    // Filter out images with empty uri
+    DetailImage = Array.isArray(DetailImage) 
+        ? DetailImage.filter((image: any) => image?.uri && typeof image.uri === 'string' && image.uri.trim() !== '')
         : [];
+
+    // Map DetailImage to match the expected structure in Imageswipe
+    const mappedDetailImages = DetailImage.map((image: any, index: number) => ({
+        id: index.toString(),
+        title: `Image ${index + 1}`,
+        image: image.uri,
+    }));
+
+    console.log('Detail Pictures:', mappedDetailImages);
+
     return (
         <View style={styles.themedView}>
-            <Bgelement/>
+            <Bgelement />
             <XStack style={styles.test}>
                 <ThemeCustomBackButton />
             </XStack>
@@ -30,19 +47,18 @@ const homedetail = () => {
                 <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
             <ScrollView>
-            {typeof thumbnailimage === 'string' && (
-                <Image source={{ uri: thumbnailimage }} style={styles.imagemain} resizeMode="cover" />)}
+                {typeof thumbnailimage === 'string' && (
+                    <Image source={{ uri: thumbnailimage }} style={styles.imagemain} resizeMode="cover" />
+                )}
                 <ThemedText style={styles.texttopic4}>Details</ThemedText>
                 <YStack>
-                    <ThemedText style={styles.text}>  {introduction}</ThemedText>
+                    <ThemedText style={styles.text}>{introduction}</ThemedText>
                 </YStack>
-            <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
-            {images.length > 0 ? (
-                    images.map((img: { image: string }, index: number) => (
-                        <Image key={index} source={{ uri: img.image }} style={styles.imagemain} resizeMode="cover" />
-                    ))
-                ) : (
-                    <Text style={styles.text2}>No images available</Text>
+                {mappedDetailImages.length > 0 && (
+                    <>
+                        <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
+                        <Imageswipe detailimages={mappedDetailImages} />
+                    </>
                 )}
             </ScrollView>
         </View>
@@ -99,7 +115,7 @@ const styles = StyleSheet.create({
         color: 'gray',
         fontWeight: 'bold',
         marginHorizontal: 25,
-        marginBottom:15,
+        marginBottom: 15,
     },
     texttopic4: {
         fontSize: 16,
@@ -109,7 +125,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
 
     },
-    text2 : {
+    text2: {
         fontSize: 16,
         marginHorizontal: 30,
         textAlign: 'justify',
