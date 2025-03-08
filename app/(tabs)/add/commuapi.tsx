@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import api from '@/utils/axiosTATInstance';
-import { auth } from '@/config/firebaseconfig';
-import uuid from 'react-native-uuid';
-import { useUserStore } from '@/store/useUser';
-
-
+import React, { useState, useEffect } from "react";
+import { useLocalSearchParams } from "expo-router";
+import api from "@/utils/axiosTATInstance";
+import { useUserStore } from "@/store/useUser";
+import { auth } from "@/config/firebaseconfig";
+import uuid from "react-native-uuid";
 interface PlaceData {
   id: string;
   name: string;
@@ -16,15 +13,50 @@ interface PlaceData {
   thumbnailUrl: string;
 }
 
-const MergedComponent = () => {
+interface TripItem {
+  ID: string;
+  PlaceName: string;
+  DateVisit: string;
+  StartTime: string;
+  EndTime: string;
+  ImageURL: string;
+  Latitude: string;
+  Longitude: string;
+}
+
+const Main = () => {
   const { user } = useUserStore();
   const params = useLocalSearchParams();
-  const { tripName, region, province, startDate, startTime, endDate, endTime, visibility, peopletype, isMust, isNature, isEcoL, isArt, isBeach, isaAdventure, isCamping, isUrban, isRural, isLux, isLocal, isFood, isShop, kids, adults, } = params;
-  const [prompt, setPrompt] = useState(' Plan a 3-day trip to Chonburi from April 14-17, 2025, starting each day from 8:00 AM to 6:00 PM, and traveling solo. The types of activities should include beach, camping, and shopping. If any of these activities are not suitable, feel free to exclude them from the schedule. Additionally, all locations must be in English, and the information should be based on the TAT API. Finally, please return the response in JSON format with the location names and times, or any adjustments that you think are appropriate.Here’s an example of the response I’m expecting: only{ "schedule": [ { "location": "Pattaya Beach", "start_time": "2025-04-14T08:00:00", "end_time": "2025-04-14T12:00:00" }, { "location": "Jomtien Beach", "start_time": "2025-04-14T13:00:00", "end_time": "2025-04-14T17:00:00" }, { "location": "Central Festival Pattaya", "start_time": "2025-04-14T17:30:00", "end_time": "2025-04-14T20:00:00" } ] }"');
-  const [responseText, setResponseText] = useState('');
+  const {
+    tripName,
+    region,
+    province,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    visibility,
+    peopletype,
+    isMust,
+    isNature,
+    isEcoL,
+    isArt,
+    isBeach,
+    isaAdventure,
+    isCamping,
+    isUrban,
+    isRural,
+    isLux,
+    isLocal,
+    isFood,
+    isShop,
+    kids,
+    adults,
+  } = params;
+  const [responseText, setResponseText] = useState<TripItem[] | null>(null);
   const [data, setData] = useState<PlaceData[]>([]);
   const [places, setPlaces] = useState<PlaceData[]>([]);
-
+  const [prompt, setPrompt] = useState("");
   const provinceMap: Record<number, string> = {
     571: "Amnat Charoen",
     218: "Ang Thong",
@@ -102,63 +134,57 @@ const MergedComponent = () => {
     116: "Uthai Thani",
     117: "Uttaradit",
     356: "Yala",
-    589: "Yasothon"
+    589: "Yasothon",
   };
 
   const getProvinceId = (provinceName: string): number | undefined => {
-    const foundKey = Object.keys(provinceMap).find(key => provinceMap[Number(key)] === provinceName);
+    const foundKey = Object.keys(provinceMap).find(
+      (key) => provinceMap[Number(key)] === provinceName
+    );
     return foundKey ? Number(foundKey) : undefined;
   };
-
-  useEffect(() => {
-  const handleFetchTATData = async () => {
-    if (!province) return;
-
-    console.log("Province:", province); 
-
-    const provinceId = getProvinceId(province.toString());
-    console.log("Province ID:", provinceId);
-
+  const Gototrip = async () => {
     try {
-      const response = await api.get(
-        `https://tatdataapi.io/api/v2/places?province_id=${provinceId}&limit=200&sort_by=thumbnailUrl&status=true&has_name=true&has_thumbnail=true`
-      );
-
-      if (response.data?.data?.length > 0) {
-        const newPlaces = response.data.data.map((place: any) => ({
-          id: place.placeId,
-          name: place.name,
-          latitude: place.latitude,
-          longitude: place.longitude,
-          thumbnailUrl: place.thumbnailUrl,
-          type: place.category.name,
-        }));
-
-        setPlaces(newPlaces);
-        //console.log("Place Data:", newPlaces.map((place: any) => ({ id: place.id, name: place.name, thumbnailUrl: place.thumbnailUrl })));
-      } else {
-        console.warn("No place data found!");
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error("User not logged in");
       }
+      
+      const idToken = await currentUser.getIdToken();
+      const planID = uuid.v4();
+      const dataJson = {
+        plan_id: planID,
+        author_email: user.email,
+        author_img: user.image,
+        trip_name: tripName,
+        region_label: region,
+        province_label: province,
+        province_id: getProvinceId(province?.toString() || ""),
+        start_date: new Date(startDate?.toString() || "").toISOString(),
+        start_time: new Date(startTime?.toString() || "").toISOString(),
+        end_date: new Date(endDate?.toString() || "").toISOString(),
+        end_time: new Date(endTime?.toString() || "").toISOString(),
+        trip_location: responseText || [],
+        visibility: visibility === "Public",
+      };
+      
+      const response = await api.post("/user/createplan", dataJson, {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        }
+      });
+      
+      console.log("Plan created successfully:", response.data);
+      return response.data;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error creating trip:", error);
+      throw error;
     }
   };
-  handleFetchTATData();
-}, [province]);
 
-
-  useEffect(() => {
-  setData(places);
-  }, [places]);
-  
-
-  useEffect(() => {
-    callGeminiAPI();
-  }, []); // Add this useEffect to call the API when the component mounts
-
-  const callGeminiAPI = async () => {
+  const callGeminiAPI = async (newPrompt : String) => {
     try {
-      const apiKey = 'Hell Nah'; 
+      const apiKey = "Hell_Nah_API";
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const payload = {
@@ -166,17 +192,16 @@ const MergedComponent = () => {
           {
             parts: [
               {
-                text: prompt,
+                text: newPrompt,
               },
             ],
           },
         ],
       };
-
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
@@ -185,19 +210,172 @@ const MergedComponent = () => {
         throw new Error(`API call failed with status ${response.status}`);
       }
 
-      const data = await response.json();
-      setResponseText(JSON.stringify(data, null, 2));
+      const responseData = await response.json();
+      console.log("Raw API Response:", responseData);
+
+      const answerText =
+        responseData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      console.log("Raw Answer Text:", answerText);
+
+      if (answerText) {
+        try {
+          if (answerText.includes("```json") && answerText.length < 10) {
+            throw new Error("Empty JSON response");
+          }
+          const cleanedAnswerText = answerText
+            .replace(/```json|```/g, "")
+            .replace(/[\r\n]+/g, "")
+            .trim();
+
+          if (!cleanedAnswerText || cleanedAnswerText.length < 2) {
+            throw new Error("Empty JSON after cleaning");
+          }
+
+          console.log("Cleaned Answer:", cleanedAnswerText);
+
+          const jsonRegex = /(\[.*\]|\{.*\})/s;
+          const jsonMatch = answerText.match(jsonRegex);
+
+          if (jsonMatch && jsonMatch[0].length > 5) {
+            const extractedJson = jsonMatch[0];
+            console.log("Extracted JSON:", extractedJson);
+            try {
+              const answer = JSON.parse(extractedJson);
+              setResponseText(answer);
+            } catch (innerError) {
+              console.error("Error parsing extracted JSON:", innerError);
+              setResponseText(null);
+            }
+          } else {
+            try {
+              if (
+                cleanedAnswerText.startsWith("[") ||
+                cleanedAnswerText.startsWith("{")
+              ) {
+                const answer = JSON.parse(cleanedAnswerText);
+                setResponseText(answer);
+              } else {
+                throw new Error("Not valid JSON format");
+              }
+            } catch (jsonError) {
+              console.error("JSON Parse Error:", jsonError);
+              setResponseText(null);
+            }
+          }
+        } catch (parseError) {
+          console.error("Parse Error:", parseError);
+          console.error("Failed text:", answerText);
+          setResponseText(null);
+        }
+      } else {
+        console.error("Response structure:", responseData);
+        const parts = responseData.candidates?.[0]?.content?.parts;
+        if (parts && Array.isArray(parts) && parts.length > 0) {
+          try {
+            let jsonData = null;
+
+            for (const part of parts) {
+              if (part.text) {
+                const cleaned = part.text.replace(/```json|```/g, "").trim();
+                jsonData = JSON.parse(cleaned);
+                break;
+              }
+            }
+            if (jsonData) {
+              setResponseText(jsonData);
+            } else {
+              setResponseText(null);
+            }
+          } catch (e) {
+            console.error("Failed to parse parts:", e);
+            setResponseText(null);
+          }
+        } else {
+          setResponseText(null);
+        }
+      }
     } catch (error) {
-      console.error(error);
-      setResponseText('Error: ');
+      console.error("API Error:", error);
+      setResponseText(null);
     }
   };
+  useEffect(() => {
+    const handleFetchTATData = async () => {
+      if (!province) return;
 
+      console.log("Province:", province);
+      const provinceId = getProvinceId(province.toString());
+      console.log("Province ID:", provinceId);
 
+      if (!provinceId) {
+        console.error("Province ID not found!");
+        return;
+      }
 
-  console.log("Data:", data);
-  console.log("Response Text:", responseText);
+      try {
+        const response = await api.get(
+          `https://tatdataapi.io/api/v2/places?province_id=${provinceId}&limit=200&sort_by=thumbnailUrl&status=true&has_name=true&has_thumbnail=true`
+        );
+
+        if (response.data?.data?.length > 0) {
+          const newPlaces = response.data.data.map((place: any) => ({
+            id: place.placeId,
+            name: place.name,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            thumbnailUrl: place.thumbnailUrl,
+            type: place.category.name,
+          }));
+
+          setPlaces(newPlaces);
+          setData(newPlaces);
+          let vibes = "";
+          if (isMust) vibes += "must see attraction,";
+          if (isNature) vibes += "nature,";
+          if (isEcoL) vibes += "ecotourism,";
+          if (isArt) vibes += "art & theater,";
+          if (isBeach) vibes += "beach,";
+          if (isaAdventure) vibes += "adventure,";
+          if (isCamping) vibes += "camping,";
+          if (isUrban) vibes += "urban,";
+          if (isRural) vibes += "rural,";
+          if (isLux) vibes += "luxury,";
+          if (isLocal) vibes += "local culture,";
+          if (isFood) vibes += "foodie,";
+          if (isShop) vibes += "shopping,";
+          vibes = vibes.slice(0, -1);
+          const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, ${startTime} to ${endTime}. The traveler go to ${region} , and the trip is for ${peopletype} That trip is need vibes is ${vibes}  and have ${kids} kids and ${adults} adults in this trip. Your response must be in JSON format and should include the following details value with: ID,PlaceName,DateVisit,StartTime,EndTime,ImageURL,Latitude,Longitude The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(
+            newPlaces
+          )} the answer must not have "/","/n", "\n","\" using "," insthead (set text more likely JSON), Example Answer: [{"ID": "1","PlaceName": "Bang Saen Beach","DateVisit": "14/03/2025","StartTime": "10:00","EndTime": "16:00","ImageURL": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","Latitude": "13.2842","Longitude": "100.9195" }]`;
+
+          setPrompt(newPrompt);
+
+          setTimeout(() => {
+            callGeminiAPI(newPrompt);
+          }, 100); 
+        } else {
+          console.warn("No place data found!");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    handleFetchTATData();
+  }, [province]);
+
+  useEffect(() => {
+    if (
+      responseText &&
+      Array.isArray(responseText) &&
+      responseText.length > 0
+    ) {
+      console.log("Result ", responseText);
+    }
+  }, [responseText]);
+
   return null;
 };
 
-export default MergedComponent;
+export default Main;
