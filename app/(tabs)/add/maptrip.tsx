@@ -1,17 +1,24 @@
-import { StyleSheet, Platform, View, Pressable } from 'react-native';
+import { StyleSheet, Platform, View, Pressable, ScrollView, Image} from 'react-native';
 import Longdo from 'longdomap-react-native-sdk';
 import { useColorScheme } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import apiTAT from '@/utils/axiosTATInstance';
 import { useNavigation ,useRouter} from 'expo-router';
 import { useEffect, useState } from 'react';
+import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
+import { ThemedText } from '@/components/ThemedText';
+import { TimePickerAndroid } from 'react-native';
+import { Text } from 'react-native';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const [isList, setIsList] = useState<boolean>(false);
   const router = useRouter();
   const [planData, setPlanData] = useState([]);
+  const [cursorLatitude,setCursorLatitude] = useState<float>(0.0);
+  const [cursorLongitude,setCursorLongitude] = useState<float>(0.0);
   const theme = useColorScheme();
-  Longdo.apiKey = 'YOU-API-KEY';
+  Longdo.apiKey = 'd5359b98f595a04e169cf69c4aa1d37b';
   let map: any;
   const trip_location = [
     {
@@ -52,6 +59,10 @@ export default function HomeScreen() {
 
     fetchPlaces();
   }, []);
+  useEffect(() => {
+    setCursorLongitude(planData.length > 0 ? parseFloat(planData[0]?.data?.longitude) || 0 : 100.5382); 
+    setCursorLatitude(planData.length > 0 ? parseFloat(planData[0]?.data?.latitude) || 0 : 13.7649);
+  },[planData])
   const mapOnReady = () => { 
    let location = {lon: 100.5382, lat: 13.7649}
    let newMarker = Longdo.object('Marker', location, 
@@ -91,8 +102,10 @@ export default function HomeScreen() {
     // Search the route
     map.call("Route.search");
   };
+  const toggle = () => {setIsList(!isList);console.log(isList)};
   return (
     <View style={styles.Container}>
+      <View style={[{width: isList ? '50%' : '100%'},styles.mapContainer]}>
       <Longdo.MapView
         ref={(callback: any) => {
           map = callback;
@@ -107,8 +120,8 @@ export default function HomeScreen() {
         }}
         // location={{ lon: 100.5382, lat: 13.7649 }}
         location={{
-          lon: planData.length > 0 ? parseFloat(planData[0]?.data?.longitude) || 0 : 100.5382, 
-          lat: planData.length > 0 ? parseFloat(planData[0]?.data?.latitude) || 0 : 13.7649
+          lon: cursorLongitude, 
+          lat: cursorLatitude
         }}
         lastView={false}
       />
@@ -122,6 +135,31 @@ export default function HomeScreen() {
           color='#203B82'
         />
       </Pressable>
+      <Pressable
+        onPress={toggle}
+        style={styles.listButton}
+      >
+        <MaterialIcons
+          name="list"
+          size={30}
+          color='#203B82'
+        />
+      </Pressable>
+      </View>
+      <ScrollView style={styles.infoContainer}>
+        {planData.map((place, index) => (
+          <Pressable onPress={() => {
+                setCursorLongitude(planData.length > 0 ? parseFloat(planData[index]?.data?.longitude) || 0 : 100.5382); 
+                setCursorLatitude(planData.length > 0 ? parseFloat(planData[index]?.data?.latitude) || 0 : 13.7649);
+            }}>
+            <View key={index} style={{backgroundColor:'#203B82',paddingVertical:10, marginVertical:5, alignItems:'center',borderRadius:20}}>
+              <Text style={{color:'white'}}>{place.data.name}</Text>
+              {/* <Text>{place.data.information.detail}</Text> */}
+            </View>
+          </Pressable>
+          //<Text key={index}>{place.data.name} {place.data.information.detail}</Text>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -129,12 +167,32 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   Container: {
     marginTop: Platform.OS === 'ios' ? 55 : 0,
-    flex: 1,
+    flexDirection:'row',
+    width:"100%",
+    height:"100%",
     backgroundColor: '#fff',
+  },
+  mapContainer: {
+    height: "100%",
+  },
+  infoContainer: {
+    width: "50%", // 25% of screen width
+    height: "100%",
+    padding: 10,
+    backgroundColor: "#f8f8f8", // Light gray background for visibility  
   },
   backButton: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 55 : 20,
+    top: Platform.OS === 'ios' ? 75 : 40,
+    left: 10,
+    zIndex: 10,
+    padding: 8,
+    backgroundColor: 'rgba(255,255,255,0.7)',
+    borderRadius: 20,
+  },
+  listButton: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 125 : 95,
     left: 10,
     zIndex: 10,
     padding: 8,
