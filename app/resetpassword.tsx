@@ -21,17 +21,16 @@ export default function ResetPassword() {
     const [secureTextConfirm, setSecureTextConfirm] = useState<boolean>(true);
 
     const resetPassword = async (email:string) => {
-        const auth = getAuth();
-      
-        try {
-          await sendPasswordResetEmail(auth, email);
-          console.log("Reset email sent successfully");
-          alert("Check your email for the reset link.");
-        } catch (error) {
-          console.error("Error sending reset email:", (error as any).message);
-          alert((error as Error).message);
-        }
-      };
+      const auth = getAuth();
+      try {
+        await sendPasswordResetEmail(auth, email);
+        console.log("Reset email sent successfully");
+        alert("Check your email for the reset link.");
+      } catch (error) {
+        console.error("Error sending reset email:", (error as any).message);
+        alert((error as Error).message);
+      }
+    };
 
 
 
