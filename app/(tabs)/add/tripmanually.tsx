@@ -32,6 +32,8 @@ import FilterDropDown from '@/components/FilterDropDown';
 import { catagoriesData } from '@/data/catagories';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DialogInstance } from '@/components/DialogInstance';
+import TimePickerComponent from '@/components/TimePickerComponent';
+import { useUserStore } from '@/store/useUser';
 interface TripManuallyParams {
   planID?: string;
 }
@@ -55,17 +57,20 @@ interface PlanData {
 export default function TripManually() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { user } = useUserStore();
   const planid = params.planID;
   const [plandata, setPlanData] = useState<PlanData | null>(null);
   const [placeslist, setPlacesList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isTimeModalVisible, setTimeModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
   const [catagories, setCatagories] = useState<number>(0);
   const [activeDay, setActiveDay] = useState<number>(-1); // store index of active day
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState(new Date());
+  const [searchText, setSearchText] = useState('');
+  const [isTimePickerVisible, setTimePickerVisible] = useState(false);
+  const [timeLocation, setTimeLocation] = useState<Date | null>(null);
 
 
   useFocusEffect(
@@ -74,6 +79,13 @@ export default function TripManually() {
     }, [planid])
   );
 
+  useEffect(() => {
+    console.log("This time Selected : " + timeLocation)
+    const hours = selectedTime.getHours();
+    const minutes = selectedTime.getMinutes();
+    const timeString = `${hours}:${minutes.toString().padStart(2, "0")}`;
+
+  }, [timeLocation])
   const getPlanData = async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
@@ -85,11 +97,13 @@ export default function TripManually() {
       const response = await api.get(`/plan/getplanbyid/${planid}`, {
         headers: { Authorization: `Bearer ${idToken}` },
       });
+      console.log("TEST")
       setPlanData(response.data.plan_data as PlanData);
       console.log(response.data.plan_data.province_id);
       const places: any = await apiTAT.get(
         `/places?province_id=${response.data.plan_data.province_id}&limit=50&has_thumbnail=has_thumbnail`
       );
+      console.log("TEST22")
       setPlacesList(places.data.data);
     } catch (error) {
       console.error(error);
@@ -116,36 +130,29 @@ export default function TripManually() {
       setTimeModalVisible(true); // เปิด modal เลือกเวลา
     }, 300);
   };
-
-  const confirmTimeSelection = async () => {
-    try {
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        throw new Error('User not logged in');
-      }
-      const idToken = await currentUser.getIdToken();
-      // ส่งข้อมูล selectedPlaceId และ selectedTime ไปยัง API
-      const response = await api.put(
-        `/plan/addtriplocation/${planid}`,
-        { place_id: selectedPlaceId, time: selectedTime.toISOString() },
-        { headers: { Authorization: `Bearer ${idToken}` } }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-    setTimeModalVisible(false); // ปิด modal เลือกเวลา
-    toggleModal(); // กลับไปเปิด modal สถานที่อีกครั้ง
-  };
+  const filteredPlaces = placeslist.filter((item) =>
+    (item?.name?.toLowerCase() || "").includes(searchText.toLowerCase()) ||
+    (item?.location?.address?.toLowerCase() || "").includes(searchText.toLowerCase())
+  );
   
+
+
   const cancelTimeModal = () => {
     setTimeModalVisible(false); // ปิด modal เลือกเวลา
     toggleModal(); // กลับไปเปิด modal สถานที่อีกครั้ง
   };
 
-  const handleDropdownCat = (value: any) => {
-    console.log(value);
-    setCatagories(value);
+  const showTimePicker = () => {
+    setTimePickerVisible(true);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisible(false);
+  };
+
+  const handleConfirm = (time: any) => {
+    setSelectedTime(time);
+    hideTimePicker();
   };
 
   const addToPlan = () => {
@@ -241,6 +248,8 @@ export default function TripManually() {
                           <Text style={styles.dropdownText}>Adding some location</Text>
                         </View>
                       </TouchableOpacity>
+                      {/* <DialogInstance placelist={placeslist}/> */}
+
                     </Paragraph>
                   </Accordion.Content>
                 </Accordion.HeightAnimator>
@@ -258,24 +267,40 @@ export default function TripManually() {
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Location</Text>
-          {/* <View style={styles.dropdownContainer}>
-            <FilterDropDown
-              onValueChange={handleDropdownCat}
-              data={catagoriesData}
-              label="Province"
+
+          {/* Time Selection Component */}
+          {/* <View style={styles.timeSelectContainer}>
+            <Text style={styles.selectedTimeText}>
+            {selectedTime ? `Selected Time for Location: ${selectedTime.toLocaleTimeString()}` : 'No time selected'}
+          </Text>
+            <Text style={styles.selectedTimeText}>
+              {selectedTime ? `Selected Time for Location: ${selectedTime.toLocaleTimeString()}` : 'No time selected'}
+            </Text>
+            <Button onPress={showTimePicker} style={styles.timeSelectButton}>
+              Select Time
+          </Button>
+            <DateTimePicker
+              value={selectedTime}
+              mode="time"
+              display="default"
+              onChange={(event, date) => {
+                hideTimePicker();
+                if (date) handleConfirm(date);
+              }}
             />
           </View> */}
           <View style={styles.searchContainer}>
             <Icon name="search-outline" size={20} color="#203B82" />
             <TextInput
-              style={styles.searchInput}
+              style={[styles.searchInput]}
               placeholder="Where do you want to go"
               value={searchText}
               onChangeText={setSearchText}
             />
           </View>
+
           <ScrollView style={styles.cardContainer}>
-            {placeslist.map((item: any) => (
+            {filteredPlaces.map((item) => (
               <Card key={item?.placeId} elevate size="$4" marginBottom="$5">
                 <Card.Header padded>
                   <View style={styles.cardHeaderContainer}>
@@ -287,13 +312,7 @@ export default function TripManually() {
                 </Card.Header>
                 <Card.Footer padded>
                   <XStack flex={1} />
-                  <Button
-                    onPress={() => openTimeModal(item.placeId)}
-                    borderRadius="$10"
-                  >
-                    Add to Trip
-                  </Button>
-                  {/* <DialogInstance/> */}
+                  <TimePickerComponent onChangeTime={setTimeLocation} planData={item} userData={user} />
                 </Card.Footer>
                 <Card.Background>
                   <Image
@@ -306,20 +325,49 @@ export default function TripManually() {
               </Card>
             ))}
           </ScrollView>
+
           <View style={styles.modalButtons}>
             <TouchableOpacity onPress={toggleModal} style={styles.cancelButton}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Time Picker Modal */}
+
         </View>
       </Modal>
       {/* Modal สำหรับเลือกเวลา */}
-     
+
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  timeSelectContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    marginVertical: 15,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  selectedTimeText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
+  timeSelectButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   // ScrollView container inside modal for Cards
   cardContainer: {
     backgroundColor: 'white',
@@ -504,8 +552,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalTitle: {
+    fontFamily:'Nunito-VariableFont_wght',
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 20,
   },
   modalButtons: {

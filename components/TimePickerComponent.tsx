@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   View, 
   Text, 
-  Button, 
   Platform, 
   TouchableOpacity, 
   Modal, 
@@ -10,9 +9,20 @@ import {
   useColorScheme 
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { XStack } from 'tamagui';
 
-const TimePickerComponent: React.FC = () => {
-  const colorScheme = useColorScheme(); // ตรวจจับว่าเป็น Dark Mode หรือ Light Mode
+interface TimePickerProps {
+  onChangeTime: (time: Date) => void;
+  planData :any
+  userData :any
+}
+
+const TimePickerComponent: React.FC<TimePickerProps> = ({ onChangeTime,planData,userData }) => {
+  console.log(planData)
+  console.log(userData)
+
+  
+  const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
   const [selectedTime, setSelectedTime] = useState<Date>(new Date());
@@ -22,23 +32,29 @@ const TimePickerComponent: React.FC = () => {
   const hideTimePicker = () => setTimePickerVisible(false);
 
   const handleConfirm = (event: DateTimePickerEvent, date?: Date) => {
-    if (date) setSelectedTime(date);
-    if (Platform.OS === 'android') hideTimePicker(); // ปิด Picker อัตโนมัติใน Android
+    if (date) {
+      setSelectedTime(date);
+      onChangeTime(date); // 🔹 ส่งค่ากลับไปที่ parent
+     
+      
+    }
+    if (Platform.OS === 'android') hideTimePicker();
   };
 
   return (
-    <View style={[styles.modalContent, isDarkMode ? styles.darkBackground : styles.lightBackground]}>
-      <Text style={[styles.modalTitle, isDarkMode ? styles.darkText : styles.lightText]}>Add Location</Text>
-
-      {/* Time Selection Component */}
+    <View style={styles.modalContent}>
       <View style={styles.timeSelectContainer}>
-        <Text style={[styles.selectedTimeText, isDarkMode ? styles.darkText : styles.lightText]}>
-          {selectedTime ? `Selected Time: ${selectedTime.toLocaleTimeString()}` : 'No time selected'}
-        </Text>
+        {/* <XStack style={{ borderWidth: 1, borderColor: "#203B82", padding: 20, borderRadius: 10 }}> */}
+          {/* <View className='pr-5'> */}
+            <TouchableOpacity onPress={showTimePicker} style={{ padding: '4%' ,borderRadius:30,backgroundColor:"white",alignItems:"center"}}>
+              <Text style={[styles.selectedTimeText, { color: '#203B82' }]}>Select Time</Text>
+            </TouchableOpacity>
+          {/* </View> */}
+          {/* <Text style={[styles.selectedTimeText, { color: '#203B82' ,padding:'2%'}]}>
+            Location Time: {selectedTime.toLocaleTimeString()}
+          </Text> */}
+        {/* </XStack> */}
 
-        <Button title="Select Time" onPress={showTimePicker} />
-
-        {/* Android ใช้ DateTimePicker ตรงๆ */}
         {isTimePickerVisible && Platform.OS === 'android' && (
           <DateTimePicker
             value={selectedTime}
@@ -48,7 +64,6 @@ const TimePickerComponent: React.FC = () => {
           />
         )}
 
-        {/* iOS ใช้ Modal เพื่อให้ UI ดีขึ้น */}
         {Platform.OS === 'ios' && (
           <Modal visible={isTimePickerVisible} transparent animationType="slide">
             <View style={styles.modalContainer}>
@@ -75,20 +90,16 @@ const styles = StyleSheet.create({
   modalContent: {
     padding: 20,
     borderRadius: 10,
+    width: '100%',
     alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
   },
   timeSelectContainer: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   selectedTimeText: {
     fontSize: 16,
-    marginBottom: 10,
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
@@ -100,33 +111,30 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    backgroundColor: '#FFFFFF',
   },
   doneButton: {
-    width: '100%',
+    width: '80%',
     backgroundColor: '#203B82',
-    paddingVertical: 10,
-    marginTop: 10,
+    paddingVertical: 12,
     alignItems: 'center',
     borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   doneButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
-
-  // 🎨 Light & Dark Mode Styles
   lightBackground: {
     backgroundColor: 'white',
   },
   darkBackground: {
-    backgroundColor: '#1E1E1E',
-  },
-  lightText: {
-    color: 'black',
-  },
-  darkText: {
-    color: 'white',
+    backgroundColor: 'black',
   },
 });
 

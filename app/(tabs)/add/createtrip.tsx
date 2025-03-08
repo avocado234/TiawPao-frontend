@@ -35,13 +35,16 @@ import Animated, {
 import { useFocusEffect } from '@react-navigation/native';
 
 type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western' | 'southern';
-
+export const unstable_settings = {
+    unmountOnBlur: true
+  }
 export default function CreateTrip() {
   // State Definitions
   const [selectedValueRegion, setSelectedValueRegion] = useState(null);
   const [selectedValueProvince, setSelectedValueProvince] = useState(null);
   const [selectedValueProvinceID, setSelectedValueProvinceID] = useState(null);
   const [tripName, setTripName] = useState('');
+  const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
@@ -244,6 +247,7 @@ export default function CreateTrip() {
       const dataJson = {
         "plan_id": planID,
         "author_email": user.email,
+        "author_name": user.username,
         "author_img": user.image,
         "trip_name": tripName,
         "region_label": selectedValueRegion,
@@ -253,6 +257,7 @@ export default function CreateTrip() {
         "start_time": startTime.toISOString(),
         "end_date": endDate.toISOString(),
         "end_time": endTime.toISOString(),
+        "description":description,
         "trip_location": [],
         "visibility": selectedOption === 'Public'
       };
@@ -381,6 +386,15 @@ export default function CreateTrip() {
           placeholder="e.g., Vacation in Thailand"
           value={tripName}
           onChangeText={setTripName}
+        />
+      </View>
+      <View style={{ marginBottom: 16 }}>
+        <ThemedText className="text-[#203B82] py-2">Description</ThemedText>
+        <ThemedTextInput
+          className="border border-[#203B82] h-[45px] rounded-lg px-4 py-2"
+          placeholder="e.g., A trip to explore the beauty of Thailand"
+          value={description}
+          onChangeText={setDescription}
         />
       </View>
 
