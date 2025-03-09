@@ -71,7 +71,6 @@ const SliderItem = ({ item, index, scrollX }: Props) => {
   return (
     <Animated.View style={[styles.itemContainer, rnAnimatedStyle]}>
       <Image source={{ uri: item.image }} style={{ width: '80%', height: 300, borderRadius: 15, marginHorizontal: 10 }} />
-      <ThemedText style={styles.imageTitle}>{item.title}</ThemedText>
     </Animated.View>
   );
 };
