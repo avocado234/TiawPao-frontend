@@ -108,7 +108,7 @@ const Propage = () => {
         console.log(idToken)
         console.log(user.email)
         console.log(dateString);
-        let imageUrl = user.img;
+        let imageUrl = user.image;
         // Upload image if a new one is selected
         if (image !== null) {
             const uri = image.startsWith("file://") ? image : `file://${image}`;

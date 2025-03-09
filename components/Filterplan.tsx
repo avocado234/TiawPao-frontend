@@ -18,8 +18,8 @@ interface Trip {
   trip_location: any[];
   trip_name: string;
   visibility: boolean;
-  price: string; // Added price to match filter logic
-  rating: string; // Added rating to match sort logic
+  // price: string; // Added price to match filter logic
+  // rating: string; // Added rating to match sort logic
 }
 
 interface FilterplanProps {
@@ -44,17 +44,18 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
     setActiveFilter(newFilter);
     const sortedTrips = [...trips];
 
-    if (type === 'rating') {
-      sortedTrips.sort((a, b) =>
-        order === 'desc' ? parseFloat(b.rating) - parseFloat(a.rating) : parseFloat(a.rating) - parseFloat(b.rating)
-      );
-    } else if (type === 'budget') {
-      sortedTrips.sort((a, b) =>
-        order === 'desc'
-          ? parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', ''))
-          : parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', ''))
-      );
-    } else if (type === 'name') {
+    // if (type === 'rating') {
+    //   sortedTrips.sort((a, b) =>
+    //     order === 'desc' ? parseFloat(b.rating) - parseFloat(a.rating) : parseFloat(a.rating) - parseFloat(b.rating)
+    //   );
+    // } else if (type === 'budget') {
+    //   sortedTrips.sort((a, b) =>
+    //     order === 'desc'
+    //       ? parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', ''))
+    //       : parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', ''))
+    //   );
+    // } 
+    if (type === 'name') {
       sortedTrips.sort((a, b) =>
         order === 'asc' ? a.trip_name.localeCompare(b.trip_name) : b.trip_name.localeCompare(a.trip_name)
       );
@@ -63,11 +64,11 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
     setFilteredTrips(sortedTrips);
   };
 
-  const filterByBudget = (value: number) => {
-    setBudget(value);
-    const filtered = trips.filter((trip) => parseFloat(trip.price.replace('$', '')) <= value);
-    setFilteredTrips(filtered);
-  };
+  // const filterByBudget = (value: number) => {
+  //   setBudget(value);
+  //   const filtered = trips.filter((trip) => parseFloat(trip.price.replace('$', '')) <= value);
+  //   setFilteredTrips(filtered);
+  // };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -78,8 +79,8 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
             {[
               { label: '(A - Z)', type: 'name', order: 'asc' },
               { label: '(Z - A)', type: 'name', order: 'desc' },
-              { label: 'Budget(Low - High)', type: 'budget', order: 'asc' },
-              { label: 'Budget(High - Low)', type: 'budget', order: 'desc' },
+              // { label: 'Budget(Low - High)', type: 'budget', order: 'asc' },
+              // { label: 'Budget(High - Low)', type: 'budget', order: 'desc' },
             ].map(({ label, type, order }) => (
               <TouchableOpacity
                 key={`${type}-${order}`}
@@ -102,7 +103,7 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
             ))}
           </View>
 
-          <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Range Budget</Text>
+          {/* <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Range Budget</Text>
           <View style={styles.sliderContainer}>
             <Text style={[styles.sliderLabel, { fontSize: width * 0.035, width: width * 0.12 }]}>
               0 ฿
@@ -122,7 +123,7 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
             <Text style={[styles.sliderLabel, { fontSize: width * 0.035, width: width * 0.12 }]}>
               {budget} ฿
             </Text>
-          </View>
+          </View> */}
         </View>
       </ThemedView>
     </SafeAreaView>
