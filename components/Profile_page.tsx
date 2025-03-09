@@ -1,6 +1,7 @@
 //Padding means inside box
 //margin means outside box
 import React, { useEffect } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react'
 import { ThemedText } from "./ThemedText";
 import { FontAwesome } from "@expo/vector-icons";
@@ -353,6 +354,7 @@ const Propage = () => {
           </ThemedView>
         </ThemedView>
         { isEdit && <Pressable className="absolute"  onPress={pickImage} style={styles.avatar} > 
+        <View>
           <Image source={{ uri: image==null?user.image:image}} 
             style={{  width: 100,
             height: 100,
@@ -361,7 +363,14 @@ const Propage = () => {
             left: '50%',
             top: '5%',
             transform: [{ translateX: -50 }],
-        }} />
+          }} />
+          <MaterialIcons
+            name="camera-alt"
+            size={80}
+            style={{transform:[{translateX:10},{translateY:15}],opacity:0.5}}
+            color='#203B82'
+          />
+        </View>
         </Pressable>}
         { !isEdit && <Image className="absolute" source={{ uri: user.image }} style={styles.avatar} />}
       </ThemedView>
