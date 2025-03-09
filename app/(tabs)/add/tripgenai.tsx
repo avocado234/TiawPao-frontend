@@ -115,7 +115,8 @@ const Main = () => {
         startTime: startTime,
         endDate: endDate,
         endTime: endTime,
-        visibility: visibility
+        visibility: visibility,
+        
       }
     });
   };

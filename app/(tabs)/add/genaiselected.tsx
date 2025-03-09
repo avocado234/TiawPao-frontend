@@ -11,6 +11,7 @@ import Bgelement from "@/components/Bgelement";
 import { ThemedText } from '@/components/ThemedText';
 import SelectedCompo from "@/components/selectedbutton";
 import { widths } from '@tamagui/config/types/media';
+import apiTAT from '@/utils/axiosTATInstance';
 
 
 export default function Main() {
@@ -43,6 +44,38 @@ export default function Main() {
   }
   const Submit_Button =()=>
   {
+    const Go_Commu = () =>
+    {
+      router.push({
+            pathname: "/(tabs)/add/commuapi",
+            params: {
+              tripName: tripName,
+              region: region,
+              province: province,
+              startDate: startDate,
+              startTime: startTime,
+              endDate: endDate,
+              endTime: endTime,
+              visibility: visibility,
+              peopletype: triptype,
+              isMust: Mustsee?.toString(),
+              isNature: Nature?.toString(),
+              isEcoL: Eco?.toString(),
+              isArt: ArtAndthea?.toString(),
+              isBeach: Beach?.toString(),
+              isaAdventure: Adventure?.toString(),
+              isCamping: Camping?.toString(),
+              isUrban: Urban?.toString(),
+              isRural: Rural?.toString(),
+              isLux: Luxury?.toString(),
+              isLocal: LocalCul?.toString(),
+              isFood: Foodie?.toString(),
+              isShop: Shopping?.toString(),
+              kids: kids,
+              adults:adults
+            }
+          });
+    }
     //console.log(selectedTrip);
     if( selectedTrip === null ||!vibeslock())
     {     
@@ -56,7 +89,8 @@ export default function Main() {
         }
         else
         {
-          console.log("AI Gen Approved!!");
+        console.log("go to commu");
+        Go_Commu();
         }
     }
   }
