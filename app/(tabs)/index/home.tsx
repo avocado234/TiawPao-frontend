@@ -24,22 +24,27 @@ interface HotelItem {
     routeId: string;
     name: string;
     location: string;
-    detailimage: string | null;
+    detailimage: any;
+    thumbnailimage: any;
+    introduction: string;
+
 }
 
 interface TravelItem {
     id: string;
     name: string;
-    province: string;
-    image: string | null;
+    location: string;
+    detailimage: any;
+    thumbnailimage: any;
     introduction: string;
 }
 
 interface RestaurantItem {
     id: string;
     name: string;
-    province: string;
-    image: string | null;
+    location: string;
+    detailimage: any;
+    thumbnailimage: any;
     introduction: string;
 }
 
@@ -69,59 +74,87 @@ const Homepage: React.FC = () => {
 
     const fetchHotelData = async () => {
         try {
-            const response = await apiTAT.get('/places?place_category_id=2&limit=15&place_sub_category_id=38');
+            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=2&limit=130&sort_by=detailPicture&place_sub_category_id=38&has_introduction=true&has_name=true&has_thumbnail=true');
             setHotelData(transformHotels(response.data));
         } catch (error: any) {
-            handleApiError(error);
+            if (error.response) {
+                console.error('Error response:', error.response);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+            } else {
+                console.error('Error message:', error.message);
+            }
         }
     };
 
     const transformHotels = (data: any): HotelItem[] => {
-        return data.data
-            .map((item: any) => {
-                const location = [
-                    item.location?.province?.name,
-                ]
-                    .filter(Boolean)
-                    .join('  ');
-
-                return {
-                    id: item.placeId,
-                    name: item.name,
-                    location,
-                    detailimage: item.sha?.detailPicture?.[0] ?? item.thumbnailUrl?.[0] ?? null,
-                };
-            })
-            .filter((item: HotelItem) => item.id && item.name && item.location && item.detailimage);
+        return data.data.map((item: any) => {
+            const detailImages = Array.isArray(item.sha?.detailPicture)
+                ? item.sha.detailPicture.map((imgUrl: string) => ({ uri: imgUrl }))
+                : [];
+            return {
+                id: item.placeId,
+                name: item.name,
+                location: item.location?.province?.name ?? '',
+                detailimage: detailImages,
+                thumbnailimage: item.thumbnailUrl?.[0] ?? null,
+                introduction: item.introduction || '',
+            };
+        })
+            .filter((item: HotelItem) =>
+                item.introduction?.trim() !== "" &&
+                item.introduction !== null &&
+                item.id &&
+                item.name &&
+                item.location &&
+                item.thumbnailimage &&
+                item.detailimage.length > 0
+            );
     };
 
     const fetchTravelData = async () => {
         try {
-            const response = await apiTAT.get('/places?place_category_id=3&limit=30&place_sub_category_id=3');
-            setTravelData(transformTravel(response.data));
+          const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=3&sha_flag=true&limit=30&sort_by=detailPicture&place_sub_category_id=3&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
+          setTravelData(transformTravel(response.data));
         } catch (error: any) {
-            handleApiError(error);
+          if (error.response) {
+            console.error('Error response:', error.response);
+          } else if (error.request) {
+            console.error('Error request:', error.request);
+          } else {
+            console.error('Error message:', error.message);
+          }
         }
-    };
+      };    
 
-    const transformTravel = (data: any): TravelItem[] => {
-        return data.data
-            .map((item: any) => {
-                const imageUrl = item.thumbnailUrl?.[0] ?? null;
-                return {
-                    id: item.placeId,
-                    name: item.name,
-                    introduction: item.introduction,
-                    province: item.location?.province?.name,
-                    image: imageUrl,
-                };
-            })
-            .filter((item: TravelItem) => item.introduction && item.id && item.name && item.province && item.image);
-    };
-
+      const transformTravel = (data: any): TravelItem[] => {
+        return data.data.map((item: any) => {
+            const detailImages = Array.isArray(item.sha?.detailPicture)
+                ? item.sha.detailPicture.map((imgUrl: string) => ({ uri: imgUrl }))
+                : [];
+            return {
+                id: item.placeId,
+                name: item.name,
+                location: item.location?.province?.name ?? '',
+                detailimage: JSON.stringify(detailImages),
+                thumbnailimage: item.thumbnailUrl?.[0] ?? null,
+                introduction: item.introduction || '',
+            };
+        })
+        .filter((item: TravelItem) =>
+            item.introduction?.trim() !== "" &&
+            item.introduction !== null &&
+            item.id &&
+            item.name &&
+            item.location &&
+            item.thumbnailimage &&
+            JSON.parse(item.detailimage).length > 0
+        );
+      };
+    
     const fetchRestaurantData = async () => {
         try {
-            const response = await apiTAT.get('/places?keyword=restaurant&limit=4&place_sub_category_id=165');
+            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=4&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
             setRestaurantData(transformRestaurant(response.data));
         } catch (error: any) {
             handleApiError(error);
@@ -132,14 +165,19 @@ const Homepage: React.FC = () => {
         return data.data
             .map((item: any) => {
                 const imageUrl = item.thumbnailUrl?.[0] ?? null;
+                const detailImages = Array.isArray(item.sha?.detailPicture)
+                    ? item.sha.detailPicture.map((imgUrl: string) => ({ uri: imgUrl }))
+                    : [];
                 return {
                     id: item.placeId,
                     name: item.name,
-                    province: item.location?.province?.name,
-                    image: imageUrl,
+                    location: item.location?.province?.name,
+                    thumbnailimage: imageUrl,
+                    detailimage: JSON.stringify(detailImages),
+                    introduction: item.introduction,
                 };
             })
-            .filter((item: RestaurantItem) => item.id && item.name && item.province && item.image);
+            .filter((item: RestaurantItem) => item.id && item.name && item.location && item.thumbnailimage);
     };
 
     const fetchCarouselData = async () => {
