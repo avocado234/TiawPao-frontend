@@ -1,32 +1,42 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, ScrollView, SafeAreaView, Pressable } from "react-native";
-import { Text, Button, View, XGroup, XStack, YStack } from "tamagui";
-import { ArrowLeft, Bold } from "@tamagui/lucide-icons";
-import Expecard from '@/components/experiencecard';
+import { Text, Button, View, XStack, YStack } from "tamagui";
+import Imageswipe from "@/components/imageswipe";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
-import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { ThemedText } from '@/components/ThemedText';
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
+import Bgelement from "@/components/Bgelement";
+import apiTAT from '@/utils/axiosTATInstance';
+
 const homedetail = () => {
-    const router = useRouter();
     const param = useLocalSearchParams();
-    let pic;
-    const { id, name, location, image } = param;
-    if (id === "1") {
-        pic = require(`@/assets/images/koh-larn-thailand.jpg`);
+    const { id, name, location, detailimage, introduction, thumbnailimage } = param;
+
+    let DetailImage = [];
+    if (typeof detailimage === 'string') {
+        try {
+            DetailImage = JSON.parse(detailimage);
+        } catch (error) {
+            console.error('Failed to parse detailimage:', error);
+            DetailImage = [];
+        }
     }
-    if (id === "2") {
-        pic = require(`@/assets/images/Oldtown.png`);
-    }
-    if (id === "3") {
-        pic = require(`@/assets/images/Doiinthanon.png`);
-    }
-    if (id === "4") {
-        pic = require(`@/assets/images/wat-arun.jpg`);
-    }
-    
+
+    DetailImage = Array.isArray(DetailImage) 
+        ? DetailImage.filter((image: any) => image?.uri && typeof image.uri === 'string' && image.uri.trim() !== '')
+        : [];
+
+    const mappedDetailImages = DetailImage.map((image: any, index: number) => ({
+        id: index.toString(),
+        title: `Image ${index + 1}`,
+        image: image.uri,
+    }));
+
+    console.log('Detail Pictures:', mappedDetailImages);
+
     return (
         <View style={styles.themedView}>
+            <Bgelement />
             <XStack style={styles.test}>
                 <ThemeCustomBackButton />
             </XStack>
@@ -35,27 +45,20 @@ const homedetail = () => {
                 <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
             <ScrollView>
-                <Image source={pic}
-                    style={styles.imagemain}
-                    resizeMode='cover' />
+                {typeof thumbnailimage === 'string' && (
+                    <Image source={{ uri: thumbnailimage }} style={styles.imagemain} resizeMode="cover" />
+                )}
+                <ThemedText style={styles.texttopic4}>Details</ThemedText>
                 <YStack>
-                    <ThemedText style={styles.text}>        Koh Larn (Coral Island) is a perfect day trip from Pattaya, just 40 minutes by ferry or speedboat from Bali Hai Pier. Its clear beaches and warm waters are ideal for parasailing, jet skiing, banana boat rides, and snorkeling. For stunning views, visit the Big Buddha Viewpoint. You can explore the island by renting an affordable scooter or joining a group tour, which usually includes transportation.</ThemedText>
-                    <Text style={styles.texttopic3}> The way to Experience Koh Larn </Text>
-                    <Text style={styles.texttopic4}> Activities </Text>
-                    <View className=''>
-                        <Expecard />
-                    </View>
-                    <Text style={styles.texttopic4}> Food & Drink </Text>
-                    <View className=''>
-                        <Expecard />
-                    </View>
-                    <Text style={styles.texttopic4}> Hotel </Text>
-                    <View className=''>
-                        <Expecard />
-                    </View>
+                    <ThemedText style={styles.text}>{introduction}</ThemedText>
                 </YStack>
+                {mappedDetailImages.length > 0 && (
+                    <>
+                        <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
+                        <Imageswipe detailimages={mappedDetailImages} />
+                    </>
+                )}
             </ScrollView>
-
         </View>
     );
 };
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
     },
     themedView: {
         flex: 1,
-        paddingBottom: 50
+        paddingBottom: 50,
     },
     test: {
         color: 'white',
@@ -79,15 +82,17 @@ const styles = StyleSheet.create({
     },
     texttopic: {
         color: '#fbdf61',
-        fontSize: 40,
+        fontSize: 32,
         marginLeft: 26,
+        fontWeight: 'bold',
     },
     texttopic2: {
         color: 'white',
         fontSize: 20,
-        marginLeft: 45,
-        marginTop: 5,
+        marginLeft: 35,
+        marginTop: -5,
         marginBottom: 12,
+        fontWeight: 'semibold',
     },
     topbackground: {
         backgroundColor: '#5680EC',
@@ -98,22 +103,31 @@ const styles = StyleSheet.create({
         height: 230,
     },
     text: {
-        fontSize: 12,
+        fontSize: 16,
         marginHorizontal: 30,
-        marginVertical: 12,
-        
+        textAlign: 'justify',
+        marginBottom: 30,
     },
     texttopic3: {
         fontSize: 16,
-        color: '#203B82',
+        color: 'gray',
         fontWeight: 'bold',
-        marginHorizontal: 17,
+        marginHorizontal: 25,
+        marginBottom: 15,
     },
     texttopic4: {
         fontSize: 16,
-        color: '#4B5563',
-        fontWeight: 'semibold',
-        margin: 10,
+        color: 'gray',
+        fontWeight: 'bold',
+        marginHorizontal: 25,
+        marginVertical: 10,
+
+    },
+    text2: {
+        fontSize: 16,
+        marginHorizontal: 30,
+        textAlign: 'justify',
+        marginBottom: 30,
     }
 })
 

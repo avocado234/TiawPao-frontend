@@ -7,8 +7,9 @@ interface Place {
     id: string;
     name: string;
     location: string;
-    rating: number;
-    image: any;
+    detailimage: any;
+    thumbnailimage: any;
+    introduction : string;
 }
 
 interface HomeboxProps {
@@ -18,14 +19,10 @@ interface HomeboxProps {
 const PlaceCard: React.FC<{ place: Place }> = ({ place }) => {
     return (
         <View style={styles.card}>
-            <Image source={place.image} style={styles.image} />
+            <Image source={{ uri: place.thumbnailimage }} style={styles.image} resizeMode="cover" />
             <View style={styles.content}>
-                <Text className="text-[16px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
+                <Text className="text-[18px] font-bold" numberOfLines={1} ellipsizeMode="tail">{place.name}</Text>
                 <Text style={styles.location}>{place.location}</Text>
-                <View style={styles.ratingContainer}>
-                    <MaterialIcons name="star" size={16} color="gold" />
-                    <Text style={styles.ratingText}>{place.rating}</Text>
-                </View>
             </View>
         </View>
     );
@@ -35,13 +32,16 @@ const Homebox: React.FC<HomeboxProps> = ({ places }) => {
     const router = useRouter();
 
     const PresstoHomedetail = (place: Place) => {
+        console.log("Sending to homedetail:", place);
         router.push({
             pathname: "/homedetail",
             params: {
                 id: place.id,
                 name: place.name,
                 location: place.location,
-                image: place.image,
+                thumbnailimage: place.thumbnailimage || '',
+                detailimage: place.detailimage || '',
+                introduction: place.introduction,
             },
         });
     };
@@ -71,8 +71,9 @@ const styles = StyleSheet.create({
         elevation: 4,
         width: 160,
         marginRight: 12,
-        left :10,
-       
+        left: 10,
+        
+
     },
     image: {
         width: "100%",
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
     },
     ratingText: {
-        fontSize: 14,
+        fontSize: 16,
         marginLeft: 4,
     },
 });

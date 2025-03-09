@@ -1,224 +1,150 @@
 import React from "react";
 import {
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   View,
   Image,
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
+import Bgelement from "@/components/Bgelement";
+import * as Animatable from "react-native-animatable";
+import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation } from "react-native-reanimated";
 
 export default function HomeRecommend() {
   const router = useRouter();
+  const param = useLocalSearchParams();
+  const {
+    name,
+    introduction,
+    numberOfDays,
+    regionNames,
+    distance,
+    placeImageUrls,
+    thumbnailUrl,
+  } = param;
+
+  const mainImageUri = typeof thumbnailUrl === "string" ? thumbnailUrl : "https://via.placeholder.com/500";
+  const imageUrlsArray = typeof placeImageUrls === "string" ? placeImageUrls.split(",") : [];
+
+  const scrollY = useSharedValue(0);
+
+  const animatedInfoCardStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: interpolate(
+            scrollY.value,
+            [0, 200],  // ช่วงที่ scroll (0 คือเริ่มต้น, 200 คือระยะที่ scroll ขึ้นไป)
+            [0, -150], // ค่า translateY ของ infoCard (0 = เริ่มต้น, -150 = ขึ้นไปทับ mainImage)
+            Extrapolation.CLAMP
+          ),
+        },
+      ],
+    };
+  });
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* 🔹 Header พร้อม Title */}
-      <View style={styles.header}>
+      <Bgelement />
+      <View style={[styles.header]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={28} color="white" />
+          <ThemeCustomBackButton />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Rayong First Time?</Text>
       </View>
-
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent} 
-        showsVerticalScrollIndicator={false}
-      >
-        <View>
-        <Image
-          source={{ uri: "https://api.tourismthailand.org/upload/live/article_desktop_cover_image/1124-32787.png" }} 
-          style={styles.mainImage}
-        />
-        </View>
-
-        {/* 🔹 ปุ่ม Save */}
-        <View style={styles.saveContainer}>
-          <TouchableOpacity style={styles.saveButton}>
-            <Ionicons name="heart-outline" size={20} color="red" />
-            <Text style={styles.saveText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* 🔹 เนื้อหา */}
-        <View style={styles.content}>
-          <Text style={styles.text}>
-            Need a quick and easy pick-me-up road <Text style={styles.link}>Trip?</Text> Check out this fantastic 2D1N itinerary.
-            Head to <Text style={styles.link}>Rayong</Text> and <Text style={styles.link}>Chanthaburi</Text> for a weekend getaway.
-          </Text>
-
-          {/* 🔹 Day 1 */}
-          <Text style={styles.dayTitle}>Day 1 - <Text style={styles.bold}>Rayong</Text></Text>
-
-          <Text style={styles.text}>
-            <Text style={styles.link}>Flora Exhibition Hall</Text>, Miracle of Natural, <Text style={styles.link}>Rayong</Text> (Mon - Sat, 09.30 - 16.30)
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32791.png" }}
-            style={styles.subImage}
-          />
-
-          <Text style={styles.text}>
-            King Taksin the Great Knowledge Park (Daily, closed Mondays: 09.30-16.00)
-          </Text>
-
-          <Text style={styles.link}>Yom Chinda Road</Text>
-          <Text style={styles.text}>
-            Stroll along Yom Chinda Road, where charming old buildings and a vintage atmosphere await.
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32796.png" }}
-            style={styles.subImage}
-          />
-
-          {/* 🔹 Day 2 */}
-          <Text style={styles.dayTitle}>Day 2 - <Text style={styles.bold}>Chanthaburi</Text></Text>
-
-          <Text style={styles.link}>Chanthaboon Waterfront Community</Text>
-          <Text style={styles.text}>
-            Stroll through Chanthaboon Waterfront Community, where you can experience charming old houses and a laid-back riverside lifestyle.
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32793.png" }}
-            style={styles.subImage}
-          />
-
-          <Text style={styles.link}>Nong Bua Walking Street</Text>
-          <Text style={styles.text}>
-            Discover unique sweets in the Nong Bua Walking Street. Taste special treats made from unique recipes.
-          </Text>
-
-          <Image
-            source={{ uri: "https://api.tourismthailand.org/upload/live/content_article/1124-32792.jpeg" }}
-            style={styles.subImage}
-          />
-
-          {/* 🔹 Responsible Tourism Tips */}
-          <Text style={styles.dayTitle}>Responsible Tourism Tips:</Text>
-          <Text style={styles.text}>
-            Eco-friendly road <Text style={styles.link}>Trips?</Text> Try switching to electric vehicles, an innovation that's kind to the environment.
-          </Text>
-        </View>
-      </ScrollView>
-
+      <Animatable.Image source={{ uri: mainImageUri }} style={styles.mainImage} animation="fadeIn" duration={800} />
       
+      <Animated.ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        onScroll={(event) => {
+          scrollY.value = event.nativeEvent.contentOffset.y;
+        }}
+        scrollEventThrottle={16}
+      >
+        <Animated.View style={[styles.infoCard, animatedInfoCardStyle]}>
+          <View style={styles.infoContainer}>
+            <Text style={styles.title}>{name}</Text>
+            <Text style={styles.introduction}>{introduction || "No description available."}</Text>
+
+            <View style={styles.infoRow}>
+              <Ionicons name="location-outline" size={24} color="#203B82" />
+              <Text style={styles.infoText}>Region : {Array.isArray(regionNames) ? regionNames.join(", ") : regionNames || "N/A"}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Ionicons name="calendar-outline" size={24} color="#203B82" />
+              <Text style={styles.infoText}>Number of Days : {numberOfDays} day</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Ionicons name="walk-outline" size={24} color="#203B82" />
+              <Text style={styles.infoText}>Distance : {distance || "No distance"} Km.</Text>
+            </View>
+          </View>
+
+          <Animatable.View animation="fadeInUp" delay={500} duration={600}>
+            <Text style={styles.subTitle}>Gallery</Text>
+            <Animated.ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.imageList}>
+              {imageUrlsArray.map((imageUri, index) => (
+                <Animatable.View key={index} animation="zoomIn" delay={index * 200}>
+                  <Image source={{ uri: imageUri }} style={styles.subImage} />
+                </Animatable.View>
+              ))}
+            </Animated.ScrollView>
+          </Animatable.View>
+        </Animated.View>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "white" },
-  
+  container: { flex: 1 },
   header: {
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 110, 
-    backgroundColor: "#203B82",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 50,
-  },
-
-  backButton: {
-    marginRight: 10,
-  },
-
-  headerTitle: {
-    fontSize: 24, // 🔹 ขยายขนาดตัวอักษร
-    fontWeight: "bold",
-    color: "yellow",
-  },
-
-  scrollContent: {
-    paddingBottom: 80, 
-  },
-
-  mainImage: {
-    width: "100%",
-    height: 150,
-   
-  },
-
-  subImage: {
-    width: "100%",
-    height: 200,
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-
-  content: {
-    padding: 20,
-  },
-
-  text: {
-    fontSize: 16,
-    color: "#444",
     marginBottom: 10,
+    paddingHorizontal: 16,
+    marginTop: 50,
   },
-
-  link: {
-    color: "#3A7DFF",
-    fontWeight: "bold",
+  backButton: { marginRight: 5 },
+  mainImage: {
+    marginTop: 100,
+    width: "100%",
+    height: 300,
+    justifyContent: "center",
+    alignSelf: "center",
+    zIndex: 0,
+    position: "absolute", 
   },
-
-  dayTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    marginTop: 15,
-  },
-
-  bold: { 
-    fontWeight: "bold",
-  },
-
-  saveContainer: { 
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginHorizontal: 20,
-    marginTop: -20,
-  },
-
-  saveButton: { 
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "white",
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 20,
-  },
-
-  saveText: { 
-    marginLeft: 5,
-    color: "red",
-    fontWeight: "bold",
-  },
-
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+  scrollContent: { paddingBottom: 60, zIndex: 1 },
+  infoCard: {
+    marginTop: 280, // ทำให้เริ่มจากตำแหน่งสูงกว่า mainImage เล็กน้อย
+    width: "100%",
+    height: "100%",
     backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-    paddingVertical: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+    elevation: 3,
+    zIndex: 1,
   },
-
-  navItem: {
-    alignItems: "center",
+  infoContainer: {
+    padding: 15,
   },
-
-  navText: {
-    fontSize: 12,
-    color: "#000",
-    marginTop: 2,
+  title: { fontSize: 22, fontWeight: "bold", color: "#203B82", marginBottom: 10 },
+  introduction: { fontSize: 16, color: "#444", marginBottom: 10 },
+  infoRow: { flexDirection: "row", alignItems: "center", marginBottom: 5 },
+  infoText: { fontSize: 16, color: "#555", marginLeft: 5 },
+  subTitle: { fontSize: 20, fontWeight: "bold", marginLeft: 15, marginBottom: 10, color: "#203B82", marginTop: 10 },
+  imageList: { paddingHorizontal: 10 },
+  subImage: {
+    width: 200,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 10,
   },
 });

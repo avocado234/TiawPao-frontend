@@ -64,7 +64,7 @@ const MainText = () => {
       <XStack>
         <XStack>
           <Text style={styles.MainFont} >in </Text>
-          <Text style={[styles.ProvinceFont, { fontWeight: "bold" }]}>{province}</Text>
+          <Text style={[styles.ProvinceFont, { fontWeight: "bold" }]}>{province} </Text>
         </XStack>
         <Image
           source={require("@/assets/images/Flag-thai.png")}
@@ -115,7 +115,8 @@ const Main = () => {
         startTime: startTime,
         endDate: endDate,
         endTime: endTime,
-        visibility: visibility
+        visibility: visibility,
+        
       }
     });
   };
@@ -147,6 +148,7 @@ const Main = () => {
   );
 };
 
+
 export default Main;
 
 const styles = {
@@ -154,12 +156,17 @@ const styles = {
     flex: 1,
   },
   ThemeSafeArea: {
+    
     flex: 1,
   },
   XStackReturnButton: {
+    marginTop: 20,
+
     paddingHorizontal: 16,
     paddingVertical: 8,
     alignItems: 'center',
+    
+    
     //backgroundColor: 'red',
 
   },

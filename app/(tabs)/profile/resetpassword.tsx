@@ -1,14 +1,16 @@
 import { ThemedPressableBackButton } from '@/components/ThemedPressableBackButton';
 import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
+import { useRouter,useNavigation } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import ThemedTextInput from '@/components/ThemedTextInput';
 import { ThemedView } from '@/components/ThemedView';
 import { MaterialIcons } from '@expo/vector-icons';
 import { EyeOff, Eye } from '@tamagui/lucide-icons';
+import { Alert } from 'react-native';
 import React, { useState } from 'react';
 import { View, Pressable, useColorScheme } from 'react-native';
 import { YStack, XStack } from 'tamagui';
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { useForgetStore } from '@/store/useForgetStore';
 
 export default function ResetPassword() {
@@ -17,19 +19,38 @@ export default function ResetPassword() {
         const { email } = useForgetStore(); // This is for the email from the Forgot Password flow
     const [password, setPassword] = useState<string>('');
     const [confirmpassword, setConfirmPassword] = useState<string>('');
+    const router = useRouter();
+    const navigation = useNavigation();
     const [secureText, setSecureText] = useState<boolean>(true);
     const [secureTextConfirm, setSecureTextConfirm] = useState<boolean>(true);
+    const resetPassword = async () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+            Alert.alert("Error", "No user is signed in.");
+            return;
+        }
 
-    const resetPassword = async (email:string) => {
-      const auth = getAuth();
-      try {
-        await sendPasswordResetEmail(auth, email);
-        console.log("Reset email sent successfully");
-        alert("Check your email for the reset link.");
-      } catch (error) {
-        console.error("Error sending reset email:", (error as any).message);
-        alert((error as Error).message);
-      }
+        if (password.length < 6) {
+            Alert.alert("Error", "Password must be at least 6 characters.");
+            return;
+        }
+
+        if (password !== confirmpassword) {
+            Alert.alert("Error", "Passwords do not match.");
+            return;
+        }
+
+        try {
+            // Reauthentication is required for security reasons
+            // const credential = EmailAuthProvider.credential(email, password);
+            // await reauthenticateWithCredential(user, credential);
+            Alert.alert('Success', 'Password updated successfully!');
+            await updatePassword(user, password);
+            navigation.goBack();
+        } catch (error) {
+            Alert.alert("Error", error.message);
+        }
     };
 
 
@@ -92,6 +113,7 @@ export default function ResetPassword() {
 
                     <Pressable
                         className=' bg-[#5680EC] w-[300px] h-[50px] flex justify-center items-center rounded-3xl'
+                        onPress={resetPassword}
                         >
                         <ThemedText className='text-xl text-white '>Change Password</ThemedText>
                     </Pressable>

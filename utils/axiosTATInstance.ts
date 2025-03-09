@@ -5,7 +5,7 @@ const apiTAT = axios.create({
     headers: {
       'accept': '*/*',
       'Accept-Language': 'en',
-      'x-api-key': 'UWeaS3gyJj9sQPt0S045Bu0vUtXcoRBs'
+      'x-api-key': '80JkXNR5DiYWslw5NoR4gGVatS3GKw9G'
     }
   });
 export default apiTAT;
