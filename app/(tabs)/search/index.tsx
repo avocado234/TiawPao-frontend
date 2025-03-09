@@ -33,6 +33,7 @@ interface PlanData {
   end_date: string;
   end_time: string;
   plan_id: string;
+  description: string;
   province_id: string;
   province_label: string;
   region_label: string;
@@ -47,18 +48,18 @@ interface PlanData {
 //   plan_data: PlanData;
 // }
 
-const tripData = [
-  { id: 1, user: "Jame Macdonell", nametrip: "Chonburi trip", price: "500 ฿", date: "24 Jan - 26 Jan", rating: "4.8", location: "Chonburi", description: "This plan is very good plan in Pattaya" },
-  { id: 2, user: "Jame Macdonell", nametrip: "Bangkok trip", price: "600 ฿", date: "1 Feb - 3 Feb", rating: "4.5", location: "Bangkok", description: "This plan is very good plan in Pattaya" },
-  { id: 3, user: "Jame Macdonell", nametrip: "Phuket trip", price: "700 ฿", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
-  { id: 4, user: "Jame Macdonell", nametrip: "Krabi trip", price: "300 ฿", date: "10 Mar - 12 Mar", rating: "4.9", location: "Krabi", description: "Beautiful beaches and nice weather" },
-];
+// const tripData = [
+//   { id: 1, user: "Jame Macdonell", nametrip: "Chonburi trip", price: "500 ฿", date: "24 Jan - 26 Jan", rating: "4.8", location: "Chonburi", description: "This plan is very good plan in Pattaya" },
+//   { id: 2, user: "Jame Macdonell", nametrip: "Bangkok trip", price: "600 ฿", date: "1 Feb - 3 Feb", rating: "4.5", location: "Bangkok", description: "This plan is very good plan in Pattaya" },
+//   { id: 3, user: "Jame Macdonell", nametrip: "Phuket trip", price: "700 ฿", date: "10 Mar - 12 Mar", rating: "4.7", location: "Phuket", description: "This plan is very good plan in Pattaya" },
+//   { id: 4, user: "Jame Macdonell", nametrip: "Krabi trip", price: "300 ฿", date: "10 Mar - 12 Mar", rating: "4.9", location: "Krabi", description: "Beautiful beaches and nice weather" },
+// ];
 
 const Search: React.FC = () => {
 
   const [planDataArray, setPlanDataArray] = useState<PlanData[]>([]);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const [filteredTrips, setFilteredTrips] = useState(tripData);
+  const [filteredTrips, setFilteredTrips] = useState(planDataArray);
   const [loading, setLoading] = useState<boolean>(true);
   const filterHeight = useSharedValue(0);
 
@@ -92,8 +93,8 @@ const Search: React.FC = () => {
     );
   }
   return (
-   <SafeAreaView className="flex-1 w-full !h-full">
-         <ThemedView className="flex-1 w-full !h-full mt-5">
+    <SafeAreaView style={styles.container}>
+      <ThemedView style={styles.themedView}>
         <Bgelement />
         <View style={styles.headerWrapper}>
           <ThemedText style={styles.headerText}>Public Plan</ThemedText>
@@ -102,7 +103,7 @@ const Search: React.FC = () => {
           </TouchableOpacity>
         </View>
         <Animated.View style={[styles.filterContainer, animatedFilterStyle]}>
-          <Filterplan trips={tripData} setFilteredTrips={setFilteredTrips} />
+          <Filterplan trips={planDataArray} setFilteredTrips={setFilteredTrips} />
         </Animated.View>
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -141,10 +142,11 @@ const Search: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
- 
+  container: { flex: 1 },
+  themedView: { flex: 1 },
   headerWrapper: {
-    marginTop: 48,
-    paddingHorizontal: width * 0.04,
+    marginTop: height * 0.05,
+    paddingHorizontal: width * 0.06,
     marginBottom: height * 0.015,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -154,7 +156,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.1,
     color: 'white',
     fontWeight: 'bold',
-    
   },
   filterContainer: {
     overflow: 'hidden',
