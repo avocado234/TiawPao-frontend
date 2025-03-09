@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Image, ScrollView, SafeAreaView, Pressable } from "react-native";
 import { Text, Button, View, XStack, YStack } from "tamagui";
 import Imageswipe from "@/components/imageswipe";
@@ -6,16 +6,37 @@ import { router, useLocalSearchParams, useRouter } from "expo-router";
 import { ThemedText } from '@/components/ThemedText';
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
 import Bgelement from "@/components/Bgelement";
-
+import apiTAT from '@/utils/axiosTATInstance';
 
 const homedetail = () => {
-    const router = useRouter();
     const param = useLocalSearchParams();
-    const { id, name, location, image } = param;
+    const { id, name, location, detailimage, introduction, thumbnailimage } = param;
+
+    let DetailImage = [];
+    if (typeof detailimage === 'string') {
+        try {
+            DetailImage = JSON.parse(detailimage);
+        } catch (error) {
+            console.error('Failed to parse detailimage:', error);
+            DetailImage = [];
+        }
+    }
+
+    DetailImage = Array.isArray(DetailImage) 
+        ? DetailImage.filter((image: any) => image?.uri && typeof image.uri === 'string' && image.uri.trim() !== '')
+        : [];
+
+    const mappedDetailImages = DetailImage.map((image: any, index: number) => ({
+        id: index.toString(),
+        title: `Image ${index + 1}`,
+        image: image.uri,
+    }));
+
+    console.log('Detail Pictures:', mappedDetailImages);
 
     return (
         <View style={styles.themedView}>
-            <Bgelement/>
+            <Bgelement />
             <XStack style={styles.test}>
                 <ThemeCustomBackButton />
             </XStack>
@@ -24,14 +45,19 @@ const homedetail = () => {
                 <Text style={styles.texttopic2}>{location}</Text>
             </YStack>
             <ScrollView>
-            {typeof image === 'string' && (
-                <Image source={{ uri: image }} style={styles.imagemain} resizeMode="cover" />
-            )}
+                {typeof thumbnailimage === 'string' && (
+                    <Image source={{ uri: thumbnailimage }} style={styles.imagemain} resizeMode="cover" />
+                )}
+                <ThemedText style={styles.texttopic4}>Details</ThemedText>
                 <YStack>
-                    <ThemedText style={styles.text}>        Koh Larn (Coral Island) is a perfect day trip from Pattaya, just 40 minutes by ferry or speedboat from Bali Hai Pier. Its clear beaches and warm waters are ideal for parasailing, jet skiing, banana boat rides, and snorkeling. For stunning views, visit the Big Buddha Viewpoint. You can explore the island by renting an affordable scooter or joining a group tour, which usually includes transportation.</ThemedText>
+                    <ThemedText style={styles.text}>{introduction}</ThemedText>
                 </YStack>
-            <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
-            <Imageswipe/>
+                {mappedDetailImages.length > 0 && (
+                    <>
+                        <ThemedText style={styles.texttopic3}>Things to do</ThemedText>
+                        <Imageswipe detailimages={mappedDetailImages} />
+                    </>
+                )}
             </ScrollView>
         </View>
     );
@@ -79,22 +105,29 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         marginHorizontal: 30,
-        marginVertical: 12,
         textAlign: 'justify',
         marginBottom: 30,
     },
     texttopic3: {
         fontSize: 16,
-        color: '#203B82',
+        color: 'gray',
         fontWeight: 'bold',
         marginHorizontal: 25,
-        marginBottom:15,
+        marginBottom: 15,
     },
     texttopic4: {
         fontSize: 16,
-        color: '#4B5563',
-        fontWeight: 'semibold',
-        margin: 10,
+        color: 'gray',
+        fontWeight: 'bold',
+        marginHorizontal: 25,
+        marginVertical: 10,
+
+    },
+    text2: {
+        fontSize: 16,
+        marginHorizontal: 30,
+        textAlign: 'justify',
+        marginBottom: 30,
     }
 })
 
