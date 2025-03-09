@@ -32,6 +32,7 @@ export default function RootLayout() {
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Nunito: require('../assets/fonts/Nunito-VariableFont_wght.ttf'),
   });
   const [usercur, setUsercur] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

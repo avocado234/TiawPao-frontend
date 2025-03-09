@@ -1,9 +1,13 @@
-import React from 'react'
-import { useState } from 'react'
-import { View, TextInput, Pressable, Text,Alert } from "react-native";
+import React, { useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 import CreateTrip from './createtrip';
+
 export default function FirstPageAdd() {
-    return (
-      <CreateTrip/>
-    );
+  useFocusEffect(
+    useCallback(() => {
+      return () => {}; // Cleanup function
+    }, [])
+  );
+
+  return <CreateTrip />;
 }
