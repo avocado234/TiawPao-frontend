@@ -1,11 +1,14 @@
 import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { router, useRouter } from "expo-router";
 
 interface Hotel {
     id: string;
     name: string;
     location: string;
-    detailimage: string | null;
+    introduction : string;
+    thumbnailimage: any ;
+    detailimage: any;
 }
 
 interface HotelListProps {
@@ -13,10 +16,29 @@ interface HotelListProps {
 }
 
 const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
+    const router = useRouter();
+
+    const PresstoHomedetail = (hotel: Hotel) => {
+        console.log("Hotel object:", hotel);
+        console.log("Sending to homedetail:", hotel);
+        console.log(`Selected: ${hotel.name}`);
+        const detailimage = typeof hotel.detailimage === 'string' ? hotel.detailimage : JSON.stringify(hotel.detailimage);
+            router.push({
+                pathname: 'homedetail',
+                params: {
+                    id: hotel.id,
+                    name: hotel.name,
+                    location: hotel.location,
+                    introduction: hotel.introduction,
+                    thumbnailimage: hotel.thumbnailimage,
+                    detailimage: detailimage
+                }
+            })
+    };
     return (
         <View className="flex-1 rounded-lg bg-white shadow-lg flex-row mb-4">
             {hotel.detailimage ? (
-                <Image source={{ uri: hotel.detailimage }} className="w-28 h-28 rounded-lg bg-fixed" />
+                <Image source={{ uri: hotel.thumbnailimage }} className="w-28 h-28 rounded-lg bg-fixed" />
             ) : (
                 <View className="w-24 h-24 bg-gray-200 rounded-sm flex items-center justify-center">
                     <Text className="text-gray-500">No Image</Text>
@@ -29,7 +51,7 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
                 <Text className="mt-2 text-m text-gray-500" numberOfLines={1} ellipsizeMode="tail">
                     {hotel.location}
                 </Text>
-                <TouchableOpacity activeOpacity={0.5} onPress={() => console.log(`Selected: ${hotel.name}`)}>
+                <TouchableOpacity activeOpacity={0.5} onPress={() => PresstoHomedetail(hotel) }>
                     <Text className="text-blue-500 text-right text-[15px] font-bold right-3 ">More details</Text>
                 </TouchableOpacity>
             </View>
