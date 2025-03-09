@@ -5,9 +5,10 @@ import { useFocusEffect } from "@react-navigation/native";
 
 export default function AddLayout() {
  
+
   return (
 
-    <Stack screenOptions={{ gestureEnabled: false }} initialRouteName="createtrip">
+    <Stack  initialRouteName="index">
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="createtrip" options={{ headerShown: false }} />
           <Stack.Screen name="tripmanually" options={{ headerShown: false }} />

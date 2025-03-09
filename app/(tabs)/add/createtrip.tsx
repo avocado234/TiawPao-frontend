@@ -26,6 +26,9 @@ import { useUserStore } from '@/store/useUser';
 import { auth } from '@/config/firebaseconfig';
 import uuid from 'react-native-uuid';
 import apiTAT from '@/utils/axiosTATInstance';
+import { useColorScheme } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -40,6 +43,7 @@ export const unstable_settings = {
   }
 export default function CreateTrip() {
   // State Definitions
+
   const [selectedValueRegion, setSelectedValueRegion] = useState(null);
   const [selectedValueProvince, setSelectedValueProvince] = useState(null);
   const [selectedValueProvinceID, setSelectedValueProvinceID] = useState(null);
@@ -61,6 +65,9 @@ export default function CreateTrip() {
   const regionChevronRotation = useSharedValue(0);
   const provinceChevronRotation = useSharedValue(0);
   const DROPDOWN_HEIGHT = 200;
+
+  const theme = useColorScheme();
+  const navigation = useNavigation();
 
   const animatedRegionStyle = useAnimatedStyle(() => ({
     height: regionHeight.value,
@@ -382,8 +389,9 @@ export default function CreateTrip() {
       <View style={{ marginBottom: 16 }}>
         <ThemedText className="text-[#203B82] py-2">Trip name</ThemedText>
         <ThemedTextInput
-          className="border border-[#203B82] h-[45px] rounded-lg px-4 py-2"
+          className={`border border-[#203B82] h-[45px] rounded-lg px-4 py-2 bg-white`}
           placeholder="e.g., Vacation in Thailand"
+          placeholderTextColor={theme == 'dark' ? 'white' : 'black'}
           value={tripName}
           onChangeText={setTripName}
         />
@@ -391,8 +399,9 @@ export default function CreateTrip() {
       <View style={{ marginBottom: 16 }}>
         <ThemedText className="text-[#203B82] py-2">Description</ThemedText>
         <ThemedTextInput
-          className="border border-[#203B82] h-[45px] rounded-lg px-4 py-2"
+          className={`border border-[#203B82] h-[45px] rounded-lg px-4 py-2 ${theme == 'dark' ? 'bg-[#1A202C]' : 'bg-white'}`}
           placeholder="e.g., A trip to explore the beauty of Thailand"
+          placeholderTextColor= {theme == 'dark' ? 'white' : 'black'}
           value={description}
           onChangeText={setDescription}
         />

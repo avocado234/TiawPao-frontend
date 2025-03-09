@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  Platform
+  Platform,
+  RefreshControl
 } from 'react-native';
 import type { CardProps } from 'tamagui';
 import { Button, Card, H2, Image, XStack } from 'tamagui';
@@ -31,9 +32,9 @@ import { Accordion, Paragraph, Square } from 'tamagui';
 import FilterDropDown from '@/components/FilterDropDown';
 import { catagoriesData } from '@/data/catagories';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { DialogInstance } from '@/components/DialogInstance';
 import TimePickerComponent from '@/components/TimePickerComponent';
 import { useUserStore } from '@/store/useUser';
+import { useNavigation } from 'expo-router';
 interface TripManuallyParams {
   planID?: string;
 }
@@ -71,7 +72,11 @@ export default function TripManually() {
   const [searchText, setSearchText] = useState('');
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [timeLocation, setTimeLocation] = useState<Date | null>(null);
+  const [location, setLocation] = useState<any[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false); // เพิ่มสถานะสำหรับการรีเฟรชข้อมูล
 
+  const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -79,13 +84,6 @@ export default function TripManually() {
     }, [planid])
   );
 
-  useEffect(() => {
-    console.log("This time Selected : " + timeLocation)
-    const hours = selectedTime.getHours();
-    const minutes = selectedTime.getMinutes();
-    const timeString = `${hours}:${minutes.toString().padStart(2, "0")}`;
-
-  }, [timeLocation])
   const getPlanData = async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
@@ -97,19 +95,24 @@ export default function TripManually() {
       const response = await api.get(`/plan/getplanbyid/${planid}`, {
         headers: { Authorization: `Bearer ${idToken}` },
       });
-      console.log("TEST")
       setPlanData(response.data.plan_data as PlanData);
-      console.log(response.data.plan_data.province_id);
       const places: any = await apiTAT.get(
         `/places?province_id=${response.data.plan_data.province_id}&limit=50&has_thumbnail=has_thumbnail`
       );
-      console.log("TEST22")
       setPlacesList(places.data.data);
+      const res_location = await api.get(`/plan/gettriplocation/${planid}`);
+      setLocation(res_location.data.trip_location);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
+      setRefreshing(false); // รีเซ็ตสถานะการรีเฟรช
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await getPlanData(); // เรียกใช้งาน getPlanData ใหม่
   };
 
   const start = new Date(plandata?.start_date || new Date().toISOString());
@@ -120,63 +123,45 @@ export default function TripManually() {
     setModalVisible(!isModalVisible);
   };
 
-  // When user taps the "Add to Trip" button on a card,
-  // close the location modal and open the time selection modal.
-  const openTimeModal = (placeId: string) => {
-    setSelectedPlaceId(placeId); // กำหนด place ที่เลือก
-    toggleModal(); // ปิด modal สถานที่
-    // setTimeModalVisible(true); // เปิด modal เลือกเวลา
-    setTimeout(() => {
-      setTimeModalVisible(true); // เปิด modal เลือกเวลา
-    }, 300);
-  };
+
   const filteredPlaces = placeslist.filter((item) =>
     (item?.name?.toLowerCase() || "").includes(searchText.toLowerCase()) ||
     (item?.location?.address?.toLowerCase() || "").includes(searchText.toLowerCase())
   );
-  
+  const handleOpen = (index: any) => {
+    // console.log(index)
+    setIsOpen(!isOpen);
+    setActiveDay(isOpen ? -1 : index)
+    // console.log(isOpen ? -1 : index)
+  }
 
-
-  const cancelTimeModal = () => {
-    setTimeModalVisible(false); // ปิด modal เลือกเวลา
-    toggleModal(); // กลับไปเปิด modal สถานที่อีกครั้ง
+  const goToIndex = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "index" }], // เปลี่ยนไปหน้า index.tsx
+    });
   };
-
-  const showTimePicker = () => {
-    setTimePickerVisible(true);
-  };
-
-  const hideTimePicker = () => {
-    setTimePickerVisible(false);
-  };
-
-  const handleConfirm = (time: any) => {
-    setSelectedTime(time);
-    hideTimePicker();
-  };
-
-  const addToPlan = () => {
-    toggleModal();
-  };
-
   if (loading) {
     return <LoadingComponent />;
   }
-
-  // const testdata = [
-  //   { id: 1, name: 'test1' },
-  //   { id: 2, name: 'test1' },
-  //   { id: 3, name: 'test1' },
-  // ];
-
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
-        <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
+        <TouchableOpacity style={styles.backButton} onPress={goToIndex}>
           <Icon name="arrow-back-outline" size={24} color="#203B82" />
         </TouchableOpacity>
-        <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={['#203B82']} // ตั้งค่าสีของการรีเฟรช (optional)
+            />
+          }
+        >
           <ImageBackground
             source={require("@/assets/images/Chonburi.png")}
             style={styles.tripCard}
@@ -221,11 +206,14 @@ export default function TripManually() {
                 <Accordion.Trigger
                   flexDirection="row"
                   justifyContent="space-between"
-                  onPress={() => setActiveDay(activeDay === index ? -1 : index)}
+                  // onPress={() => setActiveDay(activeDay == index ? -1 : index)}
+                  onPress={() => handleOpen(index)}
+
                 >
+
                   {({ open }: any) => (
                     <>
-                      <Paragraph>
+                      <Paragraph style={{ fontFamily: 'Nunito', }}>
                         Day {index + 1},{' '}
                         {new Date(start.getTime() + index * 86400000).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -241,59 +229,69 @@ export default function TripManually() {
                 </Accordion.Trigger>
                 <Accordion.HeightAnimator animation="medium">
                   <Accordion.Content animation="medium" exitStyle={{ opacity: 0 }}>
-                    <Paragraph>
+                    <View>
+                      {/* ปุ่มสำหรับ Adding some location อยู่ด้านบน */}
                       <TouchableOpacity onPress={toggleModal}>
                         <View style={styles.dropdownRow}>
                           <Icon name="add-circle-outline" size={24} color="#203B82" />
                           <Text style={styles.dropdownText}>Adding some location</Text>
                         </View>
                       </TouchableOpacity>
-                      {/* <DialogInstance placelist={placeslist}/> */}
 
-                    </Paragraph>
+                      {/* แสดงรายการ Trip Locations ถ้ามีข้อมูล */}
+                      {location.length > 0 && (
+                        <View style={styles.locationList}>
+                          {/* กรองแสดงข้อมูลตาม activeDay ที่เลือก */}
+                          {location
+                            .filter((loc) => loc.day == activeDay)  // กรองตาม activeDay ที่เลือก
+                            .sort((a, b) => {
+                              // ตรวจสอบและเติมศูนย์ให้เวลามีรูปแบบ "HH:mm"
+                              const formatTime = (time: string) => {
+                                const [hours, minutes] = time.split(":");
+                                return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`; // เพิ่มศูนย์ข้างหน้าเวลา
+                              };
+
+                              // แปลงเวลา a และ b เป็น Date ที่สามารถเปรียบเทียบได้
+                              const timeA = new Date(`1970-01-01T${formatTime(a.time_location)}:00Z`); // แปลงเวลา a
+                              const timeB = new Date(`1970-01-01T${formatTime(b.time_location)}:00Z`); // แปลงเวลา b
+
+                              // เปรียบเทียบเวลาของ a และ b
+                              return timeA.getTime() - timeB.getTime();
+                            })
+                            .map((loc, locIndex) => (
+                              <View key={locIndex} style={styles.locationItem}>
+                                <Text style={styles.locationPlace}>{loc.place_label}</Text>
+                                <Image source={{ uri: loc.thumbnail_url }} style={styles.locationThumbnail} />
+                                <Text style={[styles.NunitoFont]}>Category: {loc.categorie_label}</Text>
+                                <Text style={[styles.NunitoFont]}>Day: {parseInt(loc.day) + 1}</Text>
+                                <Text style={[styles.NunitoFont]}>Time: {loc.time_location}</Text>
+                              </View>
+                            ))}
+                        </View>
+                      )}
+
+
+
+                    </View>
                   </Accordion.Content>
                 </Accordion.HeightAnimator>
               </Accordion.Item>
             </Accordion>
           ))}
-          <View style={styles.budgetContainer}>
-            <Text style={styles.budgetText}>Average budget</Text>
-            <Text style={styles.budgetAmount}>0 ฿</Text>
-          </View>
+
         </ScrollView>
       </ThemedView>
 
-      {/* Modal for Location List (Filter & Search) */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Add Location</Text>
-
-          {/* Time Selection Component */}
-          {/* <View style={styles.timeSelectContainer}>
-            <Text style={styles.selectedTimeText}>
-            {selectedTime ? `Selected Time for Location: ${selectedTime.toLocaleTimeString()}` : 'No time selected'}
-          </Text>
-            <Text style={styles.selectedTimeText}>
-              {selectedTime ? `Selected Time for Location: ${selectedTime.toLocaleTimeString()}` : 'No time selected'}
-            </Text>
-            <Button onPress={showTimePicker} style={styles.timeSelectButton}>
-              Select Time
-          </Button>
-            <DateTimePicker
-              value={selectedTime}
-              mode="time"
-              display="default"
-              onChange={(event, date) => {
-                hideTimePicker();
-                if (date) handleConfirm(date);
-              }}
-            />
-          </View> */}
           <View style={styles.searchContainer}>
             <Icon name="search-outline" size={20} color="#203B82" />
             <TextInput
               style={[styles.searchInput]}
               placeholder="Where do you want to go"
+              placeholderTextColor="#203B82"
+
               value={searchText}
               onChangeText={setSearchText}
             />
@@ -312,7 +310,7 @@ export default function TripManually() {
                 </Card.Header>
                 <Card.Footer padded>
                   <XStack flex={1} />
-                  <TimePickerComponent onChangeTime={setTimeLocation} planData={item} userData={user} />
+                  <TimePickerComponent onChangeTime={setTimeLocation} planData={item} Day={activeDay} planID={planid} />
                 </Card.Footer>
                 <Card.Background>
                   <Image
@@ -331,18 +329,48 @@ export default function TripManually() {
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
-
-          {/* Time Picker Modal */}
-
         </View>
       </Modal>
-      {/* Modal สำหรับเลือกเวลา */}
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  refreshControl: {
+    marginTop: 10,
+  },
+  locationList: {
+    marginTop: 20,
+    paddingHorizontal: 16,
+  },
+  locationListTitle: {
+    fontFamily: 'Nunito',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  NunitoFont:{
+    fontWeight: 'bold',
+    fontSize:15,
+    fontFamily: 'Nunito',
+  },
+  locationItem: {
+    backgroundColor: '#f2f2f2',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  locationPlace: {
+    fontFamily: 'Nunito',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  locationThumbnail: {
+    width: '100%',
+    height: 150,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
   timeSelectContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -381,11 +409,13 @@ const styles = StyleSheet.create({
   },
   // Card header styles
   cardTitle: {
+    fontFamily: 'Nunito',
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
   },
   cardAddress: {
+    fontFamily: 'Nunito',
     fontSize: 14,
     color: 'black',
     marginTop: 4,
@@ -418,22 +448,26 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   tripName: {
+    fontFamily: 'Nunito',
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
   tripDate: {
+    fontFamily: 'Nunito',
     fontSize: 16,
     color: '#FFFFFF',
     marginVertical: 4,
     marginLeft: 4,
   },
   province: {
+    fontFamily: 'Nunito',
     fontSize: 16,
     color: '#FFFFFF',
     marginLeft: 4,
   },
   budgetContainer: {
+    fontFamily: 'Nunito',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -446,6 +480,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   budgetText: {
+    fontFamily: 'Nunito',
     fontSize: 18,
     fontWeight: 'bold',
     color: '#203B82',
@@ -475,6 +510,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   iconTextInline: {
+    fontFamily: 'Nunito',
     fontSize: 12,
     color: '#FFFFFF',
     marginLeft: 4,
@@ -499,6 +535,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   editButtonText: {
+    fontFamily: 'Nunito',
     fontSize: 14,
     color: '#203B82',
     fontWeight: 'bold',
@@ -521,6 +558,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   dropdownText: {
+    fontFamily: 'Nunito',
     marginLeft: 8,
     color: '#203B82',
   },
@@ -540,6 +578,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   searchInput: {
+    fontFamily: 'Nunito',
     flex: 1,
     marginLeft: 10,
     padding: 10,
@@ -552,9 +591,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalTitle: {
-    fontFamily:'Nunito-VariableFont_wght',
+    fontFamily: 'Nunito',
     fontSize: 18,
     marginBottom: 20,
+    fontWeight: 'bold',
   },
   modalButtons: {
     flexDirection: 'row',
@@ -570,6 +610,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   cancelButtonText: {
+    fontFamily: 'Nunito',
     color: '#203B82',
   },
   addToPlanButton: {
