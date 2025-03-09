@@ -14,14 +14,14 @@ interface PlaceData {
 }
 
 interface TripItem {
-  ID: string;
-  PlaceName: string;
-  DateVisit: string;
-  StartTime: string;
-  EndTime: string;
-  ImageURL: string;
-  Latitude: string;
-  Longitude: string;
+  place_id: string;
+  place_label: string;
+  dateVisit: string;
+  startTime: string;
+  endTime: string;
+  thumbnail_url: string;
+  latitude: string;
+  longitude: string;
 }
 
 const Main = () => {
@@ -345,7 +345,7 @@ const Main = () => {
           if (isFood) vibes += "foodie,";
           if (isShop) vibes += "shopping,";
           vibes = vibes.slice(0, -1);
-          const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, ${startTime} to ${endTime}. The traveler go to ${region} , and the trip is for ${peopletype} That trip is need vibes is ${vibes}  and have ${kids} kids and ${adults} adults in this trip. Your response must be in JSON format and should include the following details value with: ID,PlaceName,DateVisit,StartTime,EndTime,ImageURL,Latitude,Longitude The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(
+          const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, ${startTime} to ${endTime}. The traveler go to ${region} , and the trip is for ${peopletype} That trip is need vibes is ${vibes}  and have ${kids} kids and ${adults} adults in this trip. Your response must be in JSON format and should include the following details value with: place_id,place_label,dateVisit,startTime,endTime,thumbnail_url,latitude,longitude The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(
             newPlaces
           )} the answer must not have "/","/n", "\n","\" using "," insthead (set text more likely JSON), Example Answer: [{"ID": "1","PlaceName": "Bang Saen Beach","DateVisit": "14/03/2025","StartTime": "10:00","EndTime": "16:00","ImageURL": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","Latitude": "13.2842","Longitude": "100.9195" }]`;
 
