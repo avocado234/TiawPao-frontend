@@ -4,22 +4,21 @@ import Slider from '@react-native-community/slider';
 import { ThemedView } from './ThemedView';
 
 interface Trip {
-  author_email: string;
-  author_img: string;
-  end_date: string;
-  end_time: string;
   plan_id: string;
-  description: string;
-  province_id: string;
-  province_label: string;
+  author_email: string;
+  author_name: string;
+  author_img: string;
+  trip_name: string;
   region_label: string;
+  province_label: string;
+  province_id: string;
   start_date: string;
   start_time: string;
+  end_date: string;
+  end_time: string;
+  description: string;
   trip_location: any[];
-  trip_name: string;
   visibility: boolean;
-  // price: string; // Added price to match filter logic
-  // rating: string; // Added rating to match sort logic
 }
 
 interface FilterplanProps {
