@@ -33,6 +33,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
+import Plan from '../plan';
 
 type RegionKey = 'central' | 'northern' | 'northeastern' | 'eastern' | 'western' | 'southern';
 
@@ -292,7 +293,7 @@ export default function CreateTrip() {
       return;
     }
     router.push({
-      pathname: "/(tabs)/add/tripgenai",
+      pathname: "/(tabs)/add/introgenai",
       params: {
         tripName: tripName,
         region: selectedValueRegion,
