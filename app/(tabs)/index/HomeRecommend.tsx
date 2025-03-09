@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
     backgroundColor: "#5680EC",
+    
   },
   header: {
     flexDirection: "row",
@@ -168,13 +169,17 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 250,
     resizeMode: "cover",
+    top: 0,
+    marginTop: -60, 
+    zIndex: -1,
+    
   },
   saveButton: {
     flexDirection: "row",
     alignItems: "center",
     position: "absolute",
     right: 20,
-    top: 220,
+    top: 140,
     backgroundColor: "white",
     padding: 8,
     borderRadius: 20,

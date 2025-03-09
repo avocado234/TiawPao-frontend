@@ -25,9 +25,9 @@ const Carousel: React.FC = () => {
     const snapToInterval = screenWidth;
 
     const carouselData: CarouselItem[] = [
-        { _id: "67cb12b5a97f49320d2647a2", image: require("@/assets/images/test.png") },
-        { _id: "67cb16d9a97f49320d26481a", image: require("@/assets/images/test2.png") },
-        { _id: "67cb175ba97f49320d26482c", image: require("@/assets/images/test3.png") },
+        { _id: "67cd4c5aa97f49320d264845", image: require("@/assets/images/test.png") },
+        { _id: "67cd4cf0a97f49320d26484a", image: require("@/assets/images/test2.png") },
+        { _id: "67cd4d0ea97f49320d26484f", image: require("@/assets/images/test3.png") },
     ];
 
     useEffect(() => {
