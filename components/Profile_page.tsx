@@ -94,7 +94,7 @@ const Propage = () => {
       lastname !== user.lastname ||
       tel !== user.tel ||
       gender !== user.gender ||
-      dateString !== user.dateofbirth ||
+      dateString !== user.date_of_birth ||
       image !== null
     ) {
       try {
