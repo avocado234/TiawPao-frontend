@@ -3,7 +3,7 @@ import Longdo from 'longdomap-react-native-sdk';
 import { useColorScheme } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import apiTAT from '@/utils/axiosTATInstance';
-import { useNavigation ,useRouter} from 'expo-router';
+import { useLocalSearchParams, useNavigation ,useRouter} from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Accordion, YStack, Button } from 'tamagui';
 import { ThemedSafeAreaView } from '@/components/ThemedSafeAreaView';
@@ -12,6 +12,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { Text } from 'react-native';
 
 export default function HomeScreen() {
+  const params = useLocalSearchParams();
   const navigation = useNavigation();
   const [isList, setIsList] = useState<boolean>(false);
   const router = useRouter();

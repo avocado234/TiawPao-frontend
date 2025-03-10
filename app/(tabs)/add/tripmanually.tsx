@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,12 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  Platform, 
-  RefreshControl
+  Platform,
+  RefreshControl,
+  Dimensions
 } from 'react-native';
 import type { CardProps } from 'tamagui';
-import {GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { Button, Card, H2, Image, XStack } from 'tamagui';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from '@/components/Bgelement';
@@ -36,6 +37,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import TimePickerComponent from '@/components/TimePickerComponent';
 import { useUserStore } from '@/store/useUser';
 import { useNavigation } from 'expo-router';
+import Animated, { Extrapolation, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import AnimatedLocationItem from '@/components/AnimatedLocationItem';
 interface TripManuallyParams {
   planID?: string;
 }
@@ -76,7 +79,7 @@ export default function TripManually() {
   const [location, setLocation] = useState<any[][]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // เพิ่มสถานะสำหรับการรีเฟรชข้อมูล
-
+  const [isEdit, setIsEdit] = useState(false);
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -152,7 +155,52 @@ export default function TripManually() {
     setActiveDay(isOpen ? -1 : index)
     // console.log(isOpen ? -1 : index)
   }
-  
+  // const ITEM_HEIGHT = 80;
+  // const {width} = Dimensions.get('window');
+  // const SWIPE_THRESHOLD = -width*0.3
+  // const translateX = useSharedValue(0);
+  // const itemHeight = useSharedValue(ITEM_HEIGHT)
+  // const marginVertical = useSharedValue(10)
+  // const opacity = useSharedValue(1);
+
+  // const skewX = useSharedValue(0);
+  // const skewY = useSharedValue(0);
+
+  // const swipeGesture = Gesture.Pan().onUpdate(event => {
+  //     translateX.value = event.translationX;
+  //     skewX.value = interpolate(
+  //       translateX.value, 
+  //       [0, SWIPE_THRESHOLD],
+  //       [0,25],Extrapolation.CLAMP
+  //     );
+  //     skewY.value = interpolate(
+  //       translateX.value, 
+  //       [0, SWIPE_THRESHOLD],
+  //       [0,5],Extrapolation.CLAMP
+  //     );
+  // }).onEnd(event => {
+
+  // })
+  // const animatedItemStyle = useAnimatedStyle(() => ({
+  //   transform: [
+  //     { translateX: translateX.value },
+  //     { skewX: `${skewX.value}deg` },
+  //     { skewY: `${skewY.value}deg` }
+  //   ],
+  //   backgroundColor:interpolateColor(
+  //     translateX.value,
+  //     [0, SWIPE_THRESHOLD],
+  //     ['white', 'lightcoral']
+  //   )
+  // }))
+  const { width } = Dimensions.get('window');
+  const SWIPE_THRESHOLD = -width * 0.3;
+  const handleDeleteLocation = (placeId: string) => {
+    console.log("Delete",placeId);
+    setLocation(prev => prev.map(dayLocations => 
+      dayLocations.filter(loc => loc.place_id !== placeId)
+    ));
+  };
   const goToIndex = () => {
     navigation.reset({
       index: 0,
@@ -198,9 +246,9 @@ export default function TripManually() {
                 <Feather name="map-pin" size={20} color="#FFFFFF" />
                 <Text style={styles.province}>{plandata?.province_label || "Province Here"}</Text>
               </View>
-              <TouchableOpacity style={styles.editButton}>
-                <Text style={styles.editButtonText}>Edit</Text>
-                <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
+              <TouchableOpacity style={styles.editButton} onPress={()=>{setIsEdit(!isEdit)}}>
+              <Text style={styles.editButtonText}>{isEdit? "Done" : "Edit"}</Text>                
+              <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
               </TouchableOpacity>
             </View>
             <View style={styles.iconContainer}>
@@ -214,35 +262,20 @@ export default function TripManually() {
             <Accordion key={index} overflow="hidden" width="full" borderRadius="$3" backgroundColor="$white0" paddingBottom="$2" type="multiple">
               <Accordion.Item value={`day${index}`}>
                 <Accordion.Trigger flexDirection="row" justifyContent="space-between" onPress={() => handleOpen(index)}>
-                  {({ open }: any) => (
-                    <>
-                      <Paragraph style={{ fontFamily: 'Nunito' }}>
-                        Day {index + 1},{' '}
-                        {new Date(start.getTime() + index * 86400000).toLocaleDateString('en-GB', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
-                      </Paragraph>
-                      <Square animation="quick" rotate={open ? '180deg' : '0deg'}>
-                        <ChevronDown size="$1" />
-                      </Square>
-                    </>
-                  )}
+                  <Paragraph style={{ fontFamily: 'Nunito' }}>
+                    Day {index + 1}, {new Date(start.getTime() + index * 86400000).toLocaleDateString('en-GB')} 
+                  </Paragraph>
+                  <Square animation="quick"><ChevronDown size="$1" /></Square>
                 </Accordion.Trigger>
                 <Accordion.HeightAnimator animation="medium">
-                  <Accordion.Content animation="medium" exitStyle={{ opacity: 0 }}>
-
-                    <GestureHandlerRootView>
-                    <View>
-                      <TouchableOpacity onPress={toggleModal}>
+                  <Accordion.Content animation="medium">
+                    <TouchableOpacity onPress={toggleModal}>
                         <View style={styles.dropdownRow}>
                           <Icon name="add-circle-outline" size={24} color="#203B82" />
                           <Text style={styles.dropdownText}>Adding some location</Text>
                         </View>
                       </TouchableOpacity>
-
-                      {/* แสดงรายการ Trip Locations ของแต่ละวัน */}
+                    <GestureHandlerRootView>
                       {location[index] && location[index].length > 0 ? (
                         location[index]
                           .sort((a, b) => {
@@ -251,21 +284,19 @@ export default function TripManually() {
                             return timeA.getTime() - timeB.getTime();
                           })
                           .map((loc, locIndex) => (
-                            <GestureHandlerRootView>
-                              <View key={locIndex} style={styles.locationItem}>
-                                <Text style={styles.locationPlace}>{loc.place_label}</Text>
-                                <Image source={{ uri: loc.thumbnail_url }} style={styles.locationThumbnail} />
-                                <Text style={[styles.NunitoFont]}>Category: {loc.categorie_label}</Text>
-                                <Text style={[styles.NunitoFont]}>Time: {loc.time_location}</Text>
-                              </View>
-                            </GestureHandlerRootView>
+                            <AnimatedLocationItem 
+                              key={`${loc.place_id}-${locIndex}`} 
+                              loc={loc} 
+                              onDelete={handleDeleteLocation} 
+                              isEditMode={isEdit} 
+                              isFirst={locIndex === 0} // ✅ เช็คว่าเป็น Index แรกหรือไม่
+                            />
                           ))
                       ) : (
                         <Text style={styles.NunitoFont}>No locations added yet</Text>
                       )}
-                    </View>
-                    </GestureHandlerRootView>
 
+                    </GestureHandlerRootView>
                   </Accordion.Content>
                 </Accordion.HeightAnimator>
               </Accordion.Item>
