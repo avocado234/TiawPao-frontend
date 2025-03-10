@@ -162,8 +162,8 @@ const Main = () => {
 
   const callGeminiAPI = async (newPrompt: string) => {
     try {
-      return Datatest();
-      const apiKey = "YOUR_GEMINI_API_KEY";
+     // return Datatest();
+      const apiKey = "AIzaSyCT9FP2STHO_enpPheLMh1m_4hed0YRVX4";
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const payload = {
@@ -191,7 +191,7 @@ const Main = () => {
       }
 
       const responseData = await response.json();
-      console.log("Raw API Response:", responseData);
+      //console.log("Raw API Response:", responseData);
 
       const answerText =
         responseData.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -219,7 +219,7 @@ const Main = () => {
 
           if (jsonMatch && jsonMatch[0].length > 5) {
             const extractedJson = jsonMatch[0];
-            console.log("Extracted JSON:", extractedJson);
+           // console.log("Extracted JSON:", extractedJson);
             try {
               const answer = JSON.parse(extractedJson);
               setResponseText(answer);
