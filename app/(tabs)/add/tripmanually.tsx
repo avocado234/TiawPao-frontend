@@ -193,6 +193,12 @@ export default function TripManually() {
   //     ['white', 'lightcoral']
   //   )
   // }))
+  const handleLoaction = () => {
+    router.push({
+      pathname: "/(tabs)/add/maptrip",
+      params: { planID: planid }
+    });
+  }
   const { width } = Dimensions.get('window');
   const SWIPE_THRESHOLD = -width * 0.3;
   const handleDeleteLocation = (placeId: string) => {
@@ -252,14 +258,14 @@ export default function TripManually() {
               </TouchableOpacity>
             </View>
             <View style={styles.iconContainer}>
-              <TouchableOpacity onPress={() => router.push("/(tabs)/add/maptrip")} style={styles.iconButton}>
+              <TouchableOpacity onPress={handleLoaction} style={styles.iconButton}>
                 <Feather name="map" size={20} color="#FFFFFF" />
                 <Text style={styles.iconTextInline}>View Location</Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>
           {Array.from({ length: days }).map((_, index) => (
-            <Accordion key={index} overflow="hidden" width="full" borderRadius="$3" backgroundColor="$white0" paddingBottom="$2" type="multiple">
+            <Accordion key={index} overflow="hidden" width="full" borderRadius="$3" backgroundColor="$white0" paddingBottom="$1" type="multiple">
               <Accordion.Item value={`day${index}`}>
                 <Accordion.Trigger flexDirection="row" justifyContent="space-between" onPress={() => handleOpen(index)}>
                   <Paragraph style={{ fontFamily: 'Nunito' }}>
