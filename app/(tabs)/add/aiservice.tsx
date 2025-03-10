@@ -6,7 +6,6 @@ import axiosInstance from "@/utils/axiosInstance";
 import { useUserStore } from "@/store/useUser";
 import { auth } from "@/config/firebaseconfig";
 import { ThemedText } from '@/components/ThemedText';
-
 import { ThemedView } from "@/components/ThemedView";
 
 interface PlaceData {

@@ -161,7 +161,6 @@ export default function Main() {
           "region_label": region,
           "province_label": province,
           "province_id": String(getProvinceId(province?.toString() || "") || ""),
-          // แปลงทุกอย่างให้สอดคล้องกัน
           "start_date": startDate?.toString(),
           "start_time": startTime?.toString(),
           "end_date": endDate?.toString(),
@@ -180,19 +179,11 @@ export default function Main() {
 
         addUserPlanId(planID);
 
-        const formData = new FormData();
-        formData.append("userplan_id", planID);
-
-        await api.put(`/user/updateuserplan/${user.email}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${idToken}`
-          }
-        });
-
+      
+        console.log("flow this");
 
         router.push({
-          pathname: "/(tabs)/add/commuapi",
+          pathname: "/(tabs)/add/aiservice",
           params: {
             planID: planID,
             tripName: tripName,
@@ -226,7 +217,10 @@ export default function Main() {
         Alert.alert("Error", "Failed to create trip. Please try again.");
       }
     };
+    console.log("flow this");
     Gototrip();
+    console.log("Sucess!!!");
+
   };
   const Return_Button = () => {
     const theme = useColorScheme();
