@@ -289,7 +289,6 @@ const Main = () => {
       }
 
       try {
-        // เรียกใช้ TAT API เพื่อดึงข้อมูลสถานที่
         const response = await apiTAT.get(
           `https://tatdataapi.io/api/v2/places?province_id=${provinceId}&limit=200&sort_by=thumbnailUrl&status=true&has_name=true&has_thumbnail=true`
         );
