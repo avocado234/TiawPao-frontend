@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  Platform,
+  Platform, 
   RefreshControl
 } from 'react-native';
 import type { CardProps } from 'tamagui';
+import {GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent} from 'react-native-gesture-handler';
 import { Button, Card, H2, Image, XStack } from 'tamagui';
 import { ThemedView } from '@/components/ThemedView';
 import Bgelement from '@/components/Bgelement';
@@ -72,7 +73,7 @@ export default function TripManually() {
   const [searchText, setSearchText] = useState('');
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [timeLocation, setTimeLocation] = useState<Date | null>(null);
-  const [location, setLocation] = useState<any[]>([]);
+  const [location, setLocation] = useState<any[][]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false); // เพิ่มสถานะสำหรับการรีเฟรชข้อมูล
 
@@ -96,19 +97,36 @@ export default function TripManually() {
         headers: { Authorization: `Bearer ${idToken}` },
       });
       setPlanData(response.data.plan_data as PlanData);
+
       const places: any = await apiTAT.get(
         `/places?province_id=${response.data.plan_data.province_id}&limit=50&has_thumbnail=has_thumbnail`
       );
       setPlacesList(places.data.data);
+
+      // ดึงข้อมูล trip location
       const res_location = await api.get(`/plan/gettriplocation/${planid}`);
-      setLocation(res_location.data.trip_location);
+
+      // จัดข้อมูลให้เป็น 2D array ตาม `day`
+      const locationArray: any[][] = [];
+
+      res_location.data.trip_location.forEach((loc: any) => {
+        const dayIndex = parseInt(loc.day, 10); // แปลง `day` เป็นตัวเลข
+        if (!locationArray[dayIndex]) {
+          locationArray[dayIndex] = []; // สร้าง array ว่างถ้ายังไม่มี
+        }
+        locationArray[dayIndex].push(loc);
+      });
+
+      setLocation(locationArray);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
-      setRefreshing(false); // รีเซ็ตสถานะการรีเฟรช
+      setRefreshing(false);
     }
   };
+
+
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -134,7 +152,7 @@ export default function TripManually() {
     setActiveDay(isOpen ? -1 : index)
     // console.log(isOpen ? -1 : index)
   }
-
+  
   const goToIndex = () => {
     navigation.reset({
       index: 0,
@@ -151,7 +169,7 @@ export default function TripManually() {
         <TouchableOpacity style={styles.backButton} onPress={goToIndex}>
           <Icon name="arrow-back-outline" size={24} color="#203B82" />
         </TouchableOpacity>
-        <ScrollView 
+        <ScrollView
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -193,27 +211,12 @@ export default function TripManually() {
             </View>
           </ImageBackground>
           {Array.from({ length: days }).map((_, index) => (
-            <Accordion
-              key={index}
-              overflow="hidden"
-              width="full"
-              borderRadius="$3"
-              backgroundColor="$white0"
-              paddingBottom="$2"
-              type="multiple"
-            >
-              <Accordion.Item value="a1">
-                <Accordion.Trigger
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  // onPress={() => setActiveDay(activeDay == index ? -1 : index)}
-                  onPress={() => handleOpen(index)}
-
-                >
-
+            <Accordion key={index} overflow="hidden" width="full" borderRadius="$3" backgroundColor="$white0" paddingBottom="$2" type="multiple">
+              <Accordion.Item value={`day${index}`}>
+                <Accordion.Trigger flexDirection="row" justifyContent="space-between" onPress={() => handleOpen(index)}>
                   {({ open }: any) => (
                     <>
-                      <Paragraph style={{ fontFamily: 'Nunito', }}>
+                      <Paragraph style={{ fontFamily: 'Nunito' }}>
                         Day {index + 1},{' '}
                         {new Date(start.getTime() + index * 86400000).toLocaleDateString('en-GB', {
                           day: 'numeric',
@@ -229,8 +232,9 @@ export default function TripManually() {
                 </Accordion.Trigger>
                 <Accordion.HeightAnimator animation="medium">
                   <Accordion.Content animation="medium" exitStyle={{ opacity: 0 }}>
+
+                    <GestureHandlerRootView>
                     <View>
-                      {/* ปุ่มสำหรับ Adding some location อยู่ด้านบน */}
                       <TouchableOpacity onPress={toggleModal}>
                         <View style={styles.dropdownRow}>
                           <Icon name="add-circle-outline" size={24} color="#203B82" />
@@ -238,46 +242,36 @@ export default function TripManually() {
                         </View>
                       </TouchableOpacity>
 
-                      {/* แสดงรายการ Trip Locations ถ้ามีข้อมูล */}
-                      {location.length > 0 && (
-                        <View style={styles.locationList}>
-                          {/* กรองแสดงข้อมูลตาม activeDay ที่เลือก */}
-                          {location
-                            .filter((loc) => loc.day == activeDay)  // กรองตาม activeDay ที่เลือก
-                            .sort((a, b) => {
-                              // ตรวจสอบและเติมศูนย์ให้เวลามีรูปแบบ "HH:mm"
-                              const formatTime = (time: string) => {
-                                const [hours, minutes] = time.split(":");
-                                return `${hours.padStart(2, "0")}:${minutes.padStart(2, "0")}`; // เพิ่มศูนย์ข้างหน้าเวลา
-                              };
-
-                              // แปลงเวลา a และ b เป็น Date ที่สามารถเปรียบเทียบได้
-                              const timeA = new Date(`1970-01-01T${formatTime(a.time_location)}:00Z`); // แปลงเวลา a
-                              const timeB = new Date(`1970-01-01T${formatTime(b.time_location)}:00Z`); // แปลงเวลา b
-
-                              // เปรียบเทียบเวลาของ a และ b
-                              return timeA.getTime() - timeB.getTime();
-                            })
-                            .map((loc, locIndex) => (
+                      {/* แสดงรายการ Trip Locations ของแต่ละวัน */}
+                      {location[index] && location[index].length > 0 ? (
+                        location[index]
+                          .sort((a, b) => {
+                            const timeA = new Date(`1970-01-01T${a.time_location}:00Z`);
+                            const timeB = new Date(`1970-01-01T${b.time_location}:00Z`);
+                            return timeA.getTime() - timeB.getTime();
+                          })
+                          .map((loc, locIndex) => (
+                            <GestureHandlerRootView>
                               <View key={locIndex} style={styles.locationItem}>
                                 <Text style={styles.locationPlace}>{loc.place_label}</Text>
                                 <Image source={{ uri: loc.thumbnail_url }} style={styles.locationThumbnail} />
                                 <Text style={[styles.NunitoFont]}>Category: {loc.categorie_label}</Text>
-                                <Text style={[styles.NunitoFont]}>Day: {parseInt(loc.day) + 1}</Text>
                                 <Text style={[styles.NunitoFont]}>Time: {loc.time_location}</Text>
                               </View>
-                            ))}
-                        </View>
+                            </GestureHandlerRootView>
+                          ))
+                      ) : (
+                        <Text style={styles.NunitoFont}>No locations added yet</Text>
                       )}
-
-
-
                     </View>
+                    </GestureHandlerRootView>
+
                   </Accordion.Content>
                 </Accordion.HeightAnimator>
               </Accordion.Item>
             </Accordion>
           ))}
+
 
         </ScrollView>
       </ThemedView>
@@ -349,9 +343,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  NunitoFont:{
+  NunitoFont: {
     fontWeight: 'bold',
-    fontSize:15,
+    fontSize: 15,
     fontFamily: 'Nunito',
   },
   locationItem: {
