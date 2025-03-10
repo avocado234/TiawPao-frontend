@@ -27,20 +27,22 @@ import LoadingComponent from '@/components/LoadingComponent';
 const { width, height } = Dimensions.get('window');
 const FILTER_PANEL_HEIGHT = height * 0.25;
 
+
 interface PlanData {
-  author_email: string;
-  author_img: string;
-  end_date: string;
-  end_time: string;
   plan_id: string;
-  description: string;
-  province_id: string;
-  province_label: string;
+  author_email: string;
+  author_name: string;
+  author_img: string;
+  trip_name: string;
   region_label: string;
+  province_label: string;
+  province_id: string;
   start_date: string;
   start_time: string;
+  end_date: string;
+  end_time: string;
+  description: string;
   trip_location: any[];
-  trip_name: string;
   visibility: boolean;
 }
 
