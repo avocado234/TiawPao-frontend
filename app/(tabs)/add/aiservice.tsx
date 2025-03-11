@@ -163,7 +163,7 @@ const Main = () => {
   const callGeminiAPI = async (newPrompt: string) => {
     try {
      // return Datatest();
-      const apiKey = "AIzaSyCT9FP2STHO_enpPheLMh1m_4hed0YRVX4";
+      const apiKey = "Hell_nah_API";
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const payload = {
@@ -196,7 +196,7 @@ const Main = () => {
       const answerText =
         responseData.candidates?.[0]?.content?.parts?.[0]?.text;
 
-      console.log("Raw Answer Text:", answerText);
+    //  console.log("Raw Answer Text:", answerText);
 
       if (answerText) {
         try {
@@ -329,7 +329,7 @@ const Main = () => {
 
           setPrompt(newPrompt);
           console.log("Calling Gemini API...");
-          
+          console.log("Prompt:", newPrompt);
          
           await callGeminiAPI(newPrompt);
         } else {
