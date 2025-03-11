@@ -19,11 +19,13 @@ interface PlaceData {
 
 interface TripItem {
   place_id: string;
+  introduction: string ;
   place_label: string;
-  dateVisit: string;
+  dayVisit: string;
   startTime: string;
   endTime: string;
   thumbnail_url: string;
+  type: string;
   latitude: string;
   longitude: string;
 }
@@ -100,65 +102,131 @@ const Main = () => {
     return foundKey ? Number(foundKey) : undefined;
   };
 
-  const Datatest = () => {
-    console.log("Using mock data instead of Gemini API");
-      const mockData = [
-      {
-        "place_id": "P03-01",
-        "place_label": "Grand Palace",
-        "dateVisit": "15/03/2025",
-        "startTime": "09:00",
-        "endTime": "12:00", 
-        "thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/CustomPOI/Picture/P03-01.jpeg",
-        "latitude": "13.7500",
-        "longitude": "100.4910"
-      },
-      {
-        "place_id": "P03-02",
-        "place_label": "Wat Arun",
-        "dateVisit": "15/03/2025",
-        "startTime": "14:00",
-        "endTime": "16:00",
-        "thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/CustomPOI/Picture/P03-02.jpeg",
-        "latitude": "13.7437",
-        "longitude": "100.4892"
-      },
-      {
-        "place_id": "P03-03",
-        "place_label": "Chatuchak Weekend Market",
-        "dateVisit": "16/03/2025",
-        "startTime": "10:00",
-        "endTime": "15:00",
-        "thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/CustomPOI/Picture/P03-03.jpeg",
-        "latitude": "13.7996",
-        "longitude": "100.5403"
-      }
-    ];
+  // const Datatest = () => {
+  //   console.log("Using mock data instead of Gemini API");
+  //     const mockData = [
+  //     {
+  //       "place_id": "P03-01",
+  //       "place_label": "Grand Palace",
+  //       "dateVisit": "15/03/2025",
+  //       "startTime": "09:00",
+  //       "endTime": "12:00", 
+  //       "thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/CustomPOI/Picture/P03-01.jpeg",
+  //       "latitude": "13.7500",
+  //       "longitude": "100.4910"
+  //     },
+  //     {
+  //       "place_id": "P03-02",
+  //       "place_label": "Wat Arun",
+  //       "dateVisit": "15/03/2025",
+  //       "startTime": "14:00",
+  //       "endTime": "16:00",
+  //       "thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/CustomPOI/Picture/P03-02.jpeg",
+  //       "latitude": "13.7437",
+  //       "longitude": "100.4892"
+  //     },
+  //     {
+  //       "place_id": "P03-03",
+  //       "place_label": "Chatuchak Weekend Market",
+  //       "dateVisit": "16/03/2025",
+  //       "startTime": "10:00",
+  //       "endTime": "15:00",
+  //       "thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/CustomPOI/Picture/P03-03.jpeg",
+  //       "latitude": "13.7996",
+  //       "longitude": "100.5403"
+  //     }
+  //   ];
     
-    setResponseText(mockData);
-    return mockData;
-  };
-  const goToTripManually = () => {
-    try {
-      console.log("Navigating to trip manually page with AI results");
-      const aiResultsJSON = JSON.stringify(responseText);
+  //   setResponseText(mockData);
+  //   return mockData;
+  // };
+  const uploadTripLocations = async () => {
+  if (!responseText || !Array.isArray(responseText) || responseText.length === 0) {
+    console.error("No trip locations to upload");
+    return false;
+  }
 
-      router.replace({
-        pathname: "/(tabs)/add/tripmanually",
-        params: {
-          planID: planID,
-          aiResults: aiResultsJSON,
-          fromAI: "true"
-        }
-      });
-
-      setLoading(false);
-    } catch (error) {
-      console.error("Error navigating to trip manually:", error);
-      setError("Failed to navigate to trip page");
-      setLoading(false);
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("User not logged in");
     }
-  };
+
+    const idToken = await currentUser.getIdToken();
+    console.log(`Uploading ${responseText.length} locations to server for plan ${planID}`);
+
+    for (const location of responseText) {
+      const day = parseInt(location.dayVisit, 10);
+      
+  
+      const requestBody = {
+        place_id: location.place_id,
+        place_label: location.place_label,
+        categorie_label: location.type ,
+        introduction: location.introduction,
+        thumbnail_url: location.thumbnail_url,
+        latitude: location.latitude.toString(),
+        longitude: location.longitude.toString(),
+        time_location: location.startTime,
+        day: day.toString(),
+      };
+      
+      console.log(`Adding location: ${location.place_label}`);
+
+      const response = await axiosInstance.post(
+        `/plan/addtriplocation/${planID}`,
+        requestBody,
+        {
+          headers: { 
+            Authorization: `Bearer ${idToken}`,
+          },
+        }
+      );
+
+      console.log(`Location ${location.place_label} added, status: ${response.status}`);
+    }
+
+    console.log("All locations uploaded successfully");
+    return true;
+  } catch (error) {
+    console.error("Error uploading trip locations:", error);
+    setError("Failed to upload trip locations to server");
+    return false;
+  }
+};
+  const goToTripManually = async () => {
+  try {
+    console.log("Processing AI results before navigation...");
+    
+    
+    const uploaded = await uploadTripLocations();
+    
+    if (uploaded) {
+      console.log("Locations uploaded successfully, navigating to trip manually page");
+    } else {
+      console.log("Failed to upload some locations, but continuing to trip manually page");
+    }
+    
+    
+    const aiResultsJSON = JSON.stringify(responseText);
+
+    router.replace({
+      pathname: "/(tabs)/add/tripmanually",
+      params: {
+        planID: planID,
+        aiResults: aiResultsJSON,
+        fromAI: "true",
+        uploaded: uploaded ? "true" : "false"
+      }
+    });
+
+    setLoading(false);
+  } catch (error) {
+    console.error("Error navigating to trip manually:", error);
+    setError("Failed to navigate to trip page");
+    setLoading(false);
+  }
+};
 
   const callGeminiAPI = async (newPrompt: string) => {
     try {
@@ -300,7 +368,8 @@ const Main = () => {
             latitude: place.latitude,
             longitude: place.longitude,
             thumbnailUrl: place.thumbnailUrl,
-            type: place.category.name,
+            introduction: place.introduction || "No introduction available", 
+            type: place.category.name || "No Type available",
           }));
 
           setPlaces(newPlaces);
@@ -323,9 +392,9 @@ const Main = () => {
           vibes = vibes.slice(0, -1); 
 
          
-          const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype} That trip is need vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. Your response must be in JSON format and should include the following details value with: place_id,place_label,dateVisit,startTime,endTime,thumbnail_url,latitude,longitude The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(
+          const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype} That trip is need vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0 ),startTime,endTime,thumbnail_url,latitude,longitude,type,introduction The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(
             newPlaces
-          )} the answer must not have "/","/n", "\n","\" using "," insthead (set text more likely JSON), Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dateVisit": "14/03/2025","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195" }]`;
+          )} the answer must not have "/","/n", "\n","\" using "," insthead (set text more likely JSON), Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195" ,"type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
 
           setPrompt(newPrompt);
           console.log("Calling Gemini API...");
@@ -348,6 +417,7 @@ const Main = () => {
   }, [province, planID]); 
 
   useEffect(() => {
+
     if (responseText && Array.isArray(responseText) && responseText.length > 0) {
       console.log("Got AI Response:", JSON.stringify(responseText, null, 2));
 
