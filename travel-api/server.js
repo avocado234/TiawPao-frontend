@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 5001;
 
 // ✅ เปิด CORS ให้ทุกโดเมนเข้าถึง API ได้
@@ -70,6 +71,7 @@ app.get("/trips/:id", async (req, res) => {
 // ✅ **[POST] เพิ่มทริปใหม่**
 app.post("/trips", async (req, res) => {
   console.log("Request body:", req.body);
+  const { title, subtitle, mainImage, description, places } = req.body;
 
   // ตรวจสอบว่าได้ส่งข้อมูลครบถ้วนหรือไม่
   if (!title || !subtitle || !mainImage || !description || !places) {
@@ -99,6 +101,7 @@ app.post("/trips", async (req, res) => {
 });
 
 // ✅ **เริ่มเซิร์ฟเวอร์**
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(5001, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:5001`);
 });
+

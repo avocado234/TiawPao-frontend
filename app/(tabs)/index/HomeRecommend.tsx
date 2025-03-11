@@ -50,7 +50,7 @@ export default function HomeRecommend() {
 
     const fetchTripData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/trips/${tripId}`);
+        const response = await axios.get(`http://192.168.1.144:5001/trips/${tripId}`);
         setTripData(response.data);
       } catch (err) {
         setError("Failed to fetch trip data.");
