@@ -314,6 +314,7 @@ export default function CreateTrip() {
         startTime: startTime.toISOString(),
         endDate: endDate.toISOString(),
         endTime: endTime.toISOString(),
+        description: description,
         visibility: selectedOption
       }
     });
