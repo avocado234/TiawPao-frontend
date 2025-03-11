@@ -118,7 +118,7 @@ export default function CreateTrip() {
   const provinces = {
     central: [
       { id: 218, value: "ang_thong", label: "Ang Thong" },
-      { id: 229, value: "ayutthaya", label: "Ayutthaya" },
+      { id: 229, value: "Phra Nakhon Si Ayutthaya", label: "Phra Nakhon Si Ayutthaya" },
       { id: 219, value: "bangkok", label: "Bangkok" },
       { id: 221, value: "chainat", label: "Chainat" },
       { id: 223, value: "lopburi", label: "Lop Buri" },

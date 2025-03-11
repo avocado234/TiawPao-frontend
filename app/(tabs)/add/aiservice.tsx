@@ -163,7 +163,7 @@ const Main = () => {
   const callGeminiAPI = async (newPrompt: string) => {
     try {
      // return Datatest();
-      const apiKey = "Hell_nah_API";
+      const apiKey = "AIzaSyDu6ozTXaX_PFkamSwrF3uDWFNWJMp-ZeI";
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       const payload = {
