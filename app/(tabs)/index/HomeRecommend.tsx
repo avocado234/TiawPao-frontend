@@ -5,30 +5,39 @@ import {
   View,
   Image,
   Text,
+  ScrollView,
+  Platform,
+  StatusBar,
+  useColorScheme,
   TouchableOpacity,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import ThemeCustomBackButton from "@/components/ThemeCustomBackButton";
-import Bgelement from "@/components/Bgelement";
 import * as Animatable from "react-native-animatable";
 import Animated, { useSharedValue, useAnimatedStyle, interpolate, Extrapolation } from "react-native-reanimated";
 
 export default function HomeRecommend() {
   const router = useRouter();
   const param = useLocalSearchParams();
+  const theme = useColorScheme();
   const {
     name,
     introduction,
     numberOfDays,
     regionNames,
-    distance,
     placeImageUrls,
     thumbnailUrl,
   } = param;
 
-  const mainImageUri = typeof thumbnailUrl === "string" ? thumbnailUrl : "https://via.placeholder.com/500";
-  const imageUrlsArray = typeof placeImageUrls === "string" ? placeImageUrls.split(",") : [];
+  const mainImageUri =
+    typeof thumbnailUrl === "string"
+      ? thumbnailUrl
+      : "https://via.placeholder.com/500";
+  const imageUrlsArray =
+    typeof placeImageUrls === "string"
+      ? placeImageUrls.split(",")
+      : [];
 
   const scrollY = useSharedValue(0);
 
@@ -38,8 +47,8 @@ export default function HomeRecommend() {
         {
           translateY: interpolate(
             scrollY.value,
-            [0, 200],  // ช่วงที่ scroll (0 คือเริ่มต้น, 200 คือระยะที่ scroll ขึ้นไป)
-            [0, -150], // ค่า translateY ของ infoCard (0 = เริ่มต้น, -150 = ขึ้นไปทับ mainImage)
+            [0, 200],
+            [0, -150],
             Extrapolation.CLAMP
           ),
         },
@@ -47,17 +56,23 @@ export default function HomeRecommend() {
     };
   });
 
+  const statusBarHeight = Platform.select({
+    ios: 44,
+    android: StatusBar.currentHeight || 24,
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-      <Bgelement />
-      <View style={[styles.header]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ThemeCustomBackButton />
-        </TouchableOpacity>
-      </View>
-      <Animatable.Image source={{ uri: mainImageUri }} style={styles.mainImage} animation="fadeIn" duration={800} />
-      
-      <Animated.ScrollView
+      {/* ภาพพื้นหลัง */}
+      <Image source={{ uri: mainImageUri }} style={[styles.backgroundImage, {top : statusBarHeight}]} />
+
+      {/* ปุ่มกดกลับ */}
+      <TouchableOpacity style={[styles.backButtonContainer, { top: statusBarHeight }]} onPress={() => router.push('/(tabs)/')}>
+      <MaterialIcons name="arrow-back" size={30} color={"#203B82"} />
+      </TouchableOpacity>
+
+      {/* ScrollView สำหรับเนื้อหา */}
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         onScroll={(event) => {
@@ -65,82 +80,123 @@ export default function HomeRecommend() {
         }}
         scrollEventThrottle={16}
       >
+        {/* การ์ดแสดงข้อมูล */}
         <Animated.View style={[styles.infoCard, animatedInfoCardStyle]}>
           <View style={styles.infoContainer}>
             <Text style={styles.title}>{name}</Text>
-            <Text style={styles.introduction}>{introduction || "No description available."}</Text>
+            <Text style={styles.introduction}>
+              {introduction || "No description available."}
+            </Text>
 
             <View style={styles.infoRow}>
               <Ionicons name="location-outline" size={24} color="#203B82" />
-              <Text style={styles.infoText}>Region : {Array.isArray(regionNames) ? regionNames.join(", ") : regionNames || "N/A"}</Text>
+              <Text style={styles.infoText}>
+                Region:{" "}
+                {Array.isArray(regionNames)
+                  ? regionNames.join(", ")
+                  : regionNames || "N/A"}
+              </Text>
             </View>
+
             <View style={styles.infoRow}>
               <Ionicons name="calendar-outline" size={24} color="#203B82" />
-              <Text style={styles.infoText}>Number of Days : {numberOfDays} day</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Ionicons name="walk-outline" size={24} color="#203B82" />
-              <Text style={styles.infoText}>Distance : {distance || "No distance"} Km.</Text>
+              <Text style={styles.infoText}>
+                Number of Days: {numberOfDays} day
+              </Text>
             </View>
           </View>
 
+          {/* Gallery */}
           <Animatable.View animation="fadeInUp" delay={500} duration={600}>
             <Text style={styles.subTitle}>Gallery</Text>
-            <Animated.ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.imageList}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.imageList}
+            >
               {imageUrlsArray.map((imageUri, index) => (
                 <Animatable.View key={index} animation="zoomIn" delay={index * 200}>
                   <Image source={{ uri: imageUri }} style={styles.subImage} />
                 </Animatable.View>
               ))}
-            </Animated.ScrollView>
+            </ScrollView>
           </Animatable.View>
         </Animated.View>
-      </Animated.ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    marginBottom: 10,
-    paddingHorizontal: 16,
-    marginTop: 50,
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F5F5",
   },
-  backButton: { marginRight: 5 },
-  mainImage: {
-    marginTop: 100,
+  backgroundImage: {
+    position: "absolute", // ตั้งให้อยู่พื้นหลัง
+    top: 44, // or any other appropriate value
+    left: 0,
     width: "100%",
-    height: 300,
-    justifyContent: "center",
-    alignSelf: "center",
-    zIndex: 0,
-    position: "absolute", 
+    height:"40%",
+    resizeMode: "cover",
+    opacity: 1, 
   },
-  scrollContent: { paddingBottom: 60, zIndex: 1 },
+  backButtonContainer: {
+    position: "absolute",
+    left: 15,
+    zIndex: 10, 
+  },
+  scrollContent: {
+    paddingBottom: 40,
+  },
   infoCard: {
-    marginTop: 280, // ทำให้เริ่มจากตำแหน่งสูงกว่า mainImage เล็กน้อย
-    width: "100%",
-    height: "100%",
+    marginTop: 350,
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    paddingBottom: 50,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
     elevation: 3,
-    zIndex: 1,
+    zIndex: 5, 
   },
   infoContainer: {
-    padding: 15,
+    padding: 20,
   },
-  title: { fontSize: 22, fontWeight: "bold", color: "#203B82", marginBottom: 10 },
-  introduction: { fontSize: 16, color: "#444", marginBottom: 10 },
-  infoRow: { flexDirection: "row", alignItems: "center", marginBottom: 5 },
-  infoText: { fontSize: 16, color: "#555", marginLeft: 5 },
-  subTitle: { fontSize: 20, fontWeight: "bold", marginLeft: 15, marginBottom: 10, color: "#203B82", marginTop: 10 },
-  imageList: { paddingHorizontal: 10 },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#203B82",
+    marginBottom: 10,
+  },
+  introduction: {
+    fontSize: 16,
+    color: "#444",
+    marginBottom: 10,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  infoText: {
+    fontSize: 16,
+    color: "#555",
+    marginLeft: 5,
+  },
+  subTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 15,
+    marginBottom: 10,
+    color: "#203B82",
+    marginTop: 10,
+  },
+  imageList: {
+    paddingHorizontal: 10,
+  },
   subImage: {
     width: 200,
     height: 150,
