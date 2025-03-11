@@ -61,6 +61,9 @@ const Plan: React.FC = () => {
       }
       const idToken = await currentUser.getIdToken();
       console.log("Global userplan_id:", userPlanIds);
+      if (userPlanIds == null){
+        return
+      }
       const planDataResponses = await Promise.all(
         userPlanIds.map(async (planId) => {
           console.log(`Requesting plan data for: ${planId}`);
