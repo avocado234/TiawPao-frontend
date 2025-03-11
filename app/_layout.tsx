@@ -67,7 +67,7 @@ const getUserData = async (email: any) => {
 
     // ดึง ID token จาก Firebase
     const idToken = await currentUser.getIdToken();
-
+    // console.log("Token",idToken);
     // ส่ง idToken ไปกับ headers ของ API call
     const userData: any = await api.get(`/user/getuser/${email}`, {
       headers: {
@@ -87,8 +87,9 @@ const getUserData = async (email: any) => {
       date_of_birth: dataUser.date_of_birth, // เปลี่ยนจาก dateofbirth เป็น date_of_birth
       tel: dataUser.tel,
       gender: dataUser.gender,
-      userplan_id: dataUser.userplan_id, // เพิ่มถ้ามี
+      userplan_id: dataUser.userplan_id ? dataUser.userplan_id: [], // เพิ่มถ้ามี
     });
+    
   } catch (err) {
     console.log(err);
   }
