@@ -63,6 +63,7 @@ export default function Main() {
     endDate,
     endTime,
     visibility,
+    description,
   } = param;
   const vibeslock = () => {
     //console.log(Mustsee||Nature||Eco||ArtAndthea||Beach||Adventure||Camping||Urban||Rural||Luxury||LocalCul||Foodie||Shopping);
@@ -228,6 +229,7 @@ export default function Main() {
             endTime: endTime,
             visibility: visibility,
             peopletype: triptype,
+            description: description,
             isMust: Mustsee?.toString(),
             isNature: Nature?.toString(),
             isEcoL: Eco?.toString(),
@@ -264,6 +266,7 @@ export default function Main() {
           region: region,
           province: province,
           startDate: startDate,
+          description:description,
           startTime: startTime,
           endDate: endDate,
           endTime: endTime,
