@@ -274,7 +274,7 @@ export default function CreateTrip() {
           Authorization: `Bearer ${idToken}`
         }
       });
-      addUserPlanId(planID);
+      console.log(response);
 
       const formData = new FormData();
       formData.append("userplan_id", planID);
@@ -285,6 +285,7 @@ export default function CreateTrip() {
           Authorization: `Bearer ${idToken}`
         }
       });
+      addUserPlanId(planID);
       router.replace({
         pathname: "/(tabs)/add/tripmanually",
         params: { planID: planID }
