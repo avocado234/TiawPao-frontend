@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#000',
+    borderWidth: 2,
+    borderColor: '#203B82',
     marginHorizontal: 4,
   },
   activeTabButton: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#203B82',
+    color: '#FFFFE0',
   },
   activeTabText: {
     color: '#FFF',
