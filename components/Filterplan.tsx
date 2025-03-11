@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions, SafeAreaView } from 'react-native';
-import Slider from '@react-native-community/slider';
-import { ThemedView } from './ThemedView';
+import { Feather } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+  SafeAreaView,
+} from 'react-native';
 
 interface Trip {
   plan_id: string;
@@ -28,155 +35,146 @@ interface FilterplanProps {
 
 const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   const { width } = useWindowDimensions();
-  const [budget, setBudget] = useState<number>(9999);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const sortTrips = (type: 'rating' | 'budget' | 'name', order: 'asc' | 'desc') => {
-    const newFilter = `${type}-${order}`;
+  const tabs = ['A-Z', 'Z-A'];
 
-    if (activeFilter === newFilter) {
-      setActiveFilter(null);
-      setFilteredTrips(trips); // Reset filter to original trips
-      return;
+  const filterAndSortTrips = () => {
+    let filtered = trips.filter((trip) =>
+      trip.trip_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (activeTab === 'A-Z') {
+      filtered = filtered.sort((a, b) => a.trip_name.localeCompare(b.trip_name));
+    } else if (activeTab === 'Z-A') {
+      filtered = filtered.sort((a, b) => b.trip_name.localeCompare(a.trip_name));
     }
 
-    setActiveFilter(newFilter);
-    const sortedTrips = [...trips];
-
-    // if (type === 'rating') {
-    //   sortedTrips.sort((a, b) =>
-    //     order === 'desc' ? parseFloat(b.rating) - parseFloat(a.rating) : parseFloat(a.rating) - parseFloat(b.rating)
-    //   );
-    // } else if (type === 'budget') {
-    //   sortedTrips.sort((a, b) =>
-    //     order === 'desc'
-    //       ? parseFloat(b.price.replace('$', '')) - parseFloat(a.price.replace('$', ''))
-    //       : parseFloat(a.price.replace('$', '')) - parseFloat(b.price.replace('$', ''))
-    //   );
-    // } 
-    if (type === 'name') {
-      sortedTrips.sort((a, b) =>
-        order === 'asc' ? a.trip_name.localeCompare(b.trip_name) : b.trip_name.localeCompare(a.trip_name)
-      );
-    }
-
-    setFilteredTrips(sortedTrips);
+    setFilteredTrips(filtered);
   };
 
-  // const filterByBudget = (value: number) => {
-  //   setBudget(value);
-  //   const filtered = trips.filter((trip) => parseFloat(trip.price.replace('$', '')) <= value);
-  //   setFilteredTrips(filtered);
-  // };
+  const handleTabPress = (tab: string) => {
+    // ถ้ากด tab เดิม ให้เป็นการยกเลิก filter
+    if (activeTab === tab) {
+      setActiveTab('');
+      setFilteredTrips(trips); // คืนค่า trips ทั้งหมด
+    } else {
+      setActiveTab(tab);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setFilteredTrips(trips);
+  };
+
+  useEffect(() => {
+    filterAndSortTrips();
+  }, [searchQuery, activeTab, trips]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ThemedView style={[styles.container, { padding: width * 0.04 }]}>
-        <View style={[styles.innerContainer, { padding: width * 0.02 }]}>
-          <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Sort By</Text>
-          <View style={styles.buttonRow}>
-            {[
-              { label: '(A - Z)', type: 'name', order: 'asc' },
-              { label: '(Z - A)', type: 'name', order: 'desc' },
-              // { label: 'Budget(Low - High)', type: 'budget', order: 'asc' },
-              // { label: 'Budget(High - Low)', type: 'budget', order: 'desc' },
-            ].map(({ label, type, order }) => (
-              <TouchableOpacity
-                key={`${type}-${order}`}
-                style={[
-                  styles.button,
-                  activeFilter === `${type}-${order}` && styles.activeButton,
-                ]}
-                onPress={() => sortTrips(type as 'rating' | 'budget' | 'name', order as 'asc' | 'desc')}
-                activeOpacity={0.7}
-              >
-                <Text
-                  style={[
-                    styles.buttonText,
-                    activeFilter === `${type}-${order}` && styles.activeButtonText,
-                  ]}
-                >
-                  {label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+    <SafeAreaView style={styles.container}>
+      {/* Search Section */}
+      <View style={styles.searchContainer}>
+        <Feather name="search" size={24} color="#999"  />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          placeholderTextColor="#999"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={handleClearSearch} style={styles.clearButton}>
+            <Feather name="x-circle" size={20} color="#999" />
+          </TouchableOpacity>
+        )}
+      </View>
 
-          {/* <Text style={[styles.subTitle, { fontSize: width * 0.04 }]}>Range Budget</Text>
-          <View style={styles.sliderContainer}>
-            <Text style={[styles.sliderLabel, { fontSize: width * 0.035, width: width * 0.12 }]}>
-              0 ฿
+      {/* Tab Section */}
+      <View style={styles.tabContainer}>
+        {tabs.map((tab) => (
+          <TouchableOpacity
+            key={tab}
+            style={[
+              styles.tabButton,
+              activeTab === tab && styles.activeTabButton,
+            ]}
+            onPress={() => handleTabPress(tab)}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === tab && styles.activeTabText,
+              ]}
+            >
+              {tab}
             </Text>
-            <Slider
-              style={[styles.slider, { width: width * 0.6 }]}
-              minimumValue={0}
-              maximumValue={9000}
-              step={1}
-              value={budget}
-              onValueChange={setBudget}
-              onSlidingComplete={filterByBudget}
-              minimumTrackTintColor="#fff"
-              maximumTrackTintColor="#ddd"
-              thumbTintColor="white"
-            />
-            <Text style={[styles.sliderLabel, { fontSize: width * 0.035, width: width * 0.12 }]}>
-              {budget} ฿
-            </Text>
-          </View> */}
-        </View>
-      </ThemedView>
+          </TouchableOpacity>
+        ))}
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#5680EC',
+    paddingHorizontal: 16,
+    paddingTop: 10,
   },
-  innerContainer: {
-    backgroundColor: 'rgba(32, 59, 130, 0.3)',
-    borderRadius: 10,
-  },
-  subTitle: {
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
-  },
-  buttonRow: {
+  searchContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap-reverse',
-    justifyContent: 'center',
-  },
-  button: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    margin: 5,
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
-  activeButton: {
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+    paddingLeft: 8,
+    paddingRight: 30, // เผื่อพื้นที่ให้กับปุ่ม Clear
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: 10,
+  },
+  clearButton: {
+    position: 'absolute',
+    right: 14,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginBottom: 20,
+  },
+  tabButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#203B82',
+    marginHorizontal: 4,
+  },
+  activeTabButton: {
     backgroundColor: '#203B82',
   },
-  buttonText: {
-    color: 'black',
+  tabText: {
+    fontSize: 14,
     fontWeight: 'bold',
+    color: '#FFFFE0',
   },
-  activeButtonText: {
-    color: 'white',
-  },
-  sliderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  sliderLabel: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  slider: {
-    alignSelf: 'center',
+  activeTabText: {
+    color: '#FFF',
   },
 });
 

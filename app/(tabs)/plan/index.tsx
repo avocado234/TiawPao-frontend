@@ -19,7 +19,7 @@ import api from '@/utils/axiosInstance';
 import { useUserStore } from '@/store/useUser';
 import { auth } from '@/config/firebaseconfig';
 import LoadingComponent from '@/components/LoadingComponent';
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('window');
 
 interface PlanData {
   author_email: string;
@@ -190,7 +190,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#203B82',
   },
   headerWrapper: {
-    marginTop: height * 0.08,
+    marginTop: height * 0.1,
+    paddingHorizontal: width * 0.01,
+    marginBottom: height * 0.015,
+    flexDirection: 'row',
   },
   headerText: {
     fontSize: 32,

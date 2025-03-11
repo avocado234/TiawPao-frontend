@@ -114,20 +114,20 @@ const Homepage: React.FC = () => {
 
     const fetchTravelData = async () => {
         try {
-          const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=3&sha_flag=true&limit=30&sort_by=detailPicture&place_sub_category_id=3&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
-          setTravelData(transformTravel(response.data));
+            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=3&sha_flag=true&limit=30&sort_by=detailPicture&place_sub_category_id=3&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
+            setTravelData(transformTravel(response.data));
         } catch (error: any) {
-          if (error.response) {
-            console.error('Error response:', error.response);
-          } else if (error.request) {
-            console.error('Error request:', error.request);
-          } else {
-            console.error('Error message:', error.message);
-          }
+            if (error.response) {
+                console.error('Error response:', error.response);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+            } else {
+                console.error('Error message:', error.message);
+            }
         }
-      };    
+    };
 
-      const transformTravel = (data: any): TravelItem[] => {
+    const transformTravel = (data: any): TravelItem[] => {
         return data.data.map((item: any) => {
             const detailImages = Array.isArray(item.sha?.detailPicture)
                 ? item.sha.detailPicture.map((imgUrl: string) => ({ uri: imgUrl }))
@@ -141,17 +141,17 @@ const Homepage: React.FC = () => {
                 introduction: item.introduction || '',
             };
         })
-        .filter((item: TravelItem) =>
-            item.introduction?.trim() !== "" &&
-            item.introduction !== null &&
-            item.id &&
-            item.name &&
-            item.location &&
-            item.thumbnailimage &&
-            JSON.parse(item.detailimage).length > 0
-        );
-      };
-    
+            .filter((item: TravelItem) =>
+                item.introduction?.trim() !== "" &&
+                item.introduction !== null &&
+                item.id &&
+                item.name &&
+                item.location &&
+                item.thumbnailimage &&
+                JSON.parse(item.detailimage).length > 0
+            );
+    };
+
     const fetchRestaurantData = async () => {
         try {
             const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=4&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
@@ -296,8 +296,8 @@ const styles = StyleSheet.create({
         top: width * 0.05,
     },
     avatar: {
-        width: 24,
-        height: 24,
+        width: 56,
+        height: 56,
         borderRadius: width * 0.07,
         position: "absolute",
         bottom: width * 0.06,
