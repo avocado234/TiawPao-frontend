@@ -204,7 +204,6 @@ export default function Main() {
           start_time: startTime?.toString(),
           end_date: endDate?.toString(),
           end_time: endTime?.toString(),
-          description: description,
           trip_location: [],
           visibility: visibility === "Public",
         };
