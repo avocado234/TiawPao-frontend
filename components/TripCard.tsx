@@ -4,23 +4,26 @@ import { FontAwesome } from "@expo/vector-icons";
 import { ThemedView } from "./ThemedView";
 
 interface PlanData {
-  author_email: string;
-  author_img: string;
-  end_date: string;
-  end_time: string;
   plan_id: string;
-  province_id: string;
-  province_label: string;
+  author_email: string;
+  author_name: string;
+  author_img: string;
+  trip_name: string;
   region_label: string;
+  province_label: string;
+  province_id: string;
   start_date: string;
   start_time: string;
+  end_date: string;
+  end_time: string;
+  description: string;
   trip_location: any[];
-  trip_name: string;
   visibility: boolean;
 }
 
 const TripCard: React.FC<PlanData> = (props) => {
   // Helper function to format the date
+  // console.log(props)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     // Example format: "Mar 6, 2025"
@@ -37,7 +40,7 @@ const TripCard: React.FC<PlanData> = (props) => {
         <View style={styles.header}>
           <View style={styles.userInfo}>
             <Image source={{ uri: props.author_img }} style={styles.avatar} />
-            <Text style={styles.userName}>{props.author_email}</Text>
+            <Text style={styles.userName}>{props.author_name ? props.author_name : "Unknow"}</Text>
           </View>
           {/* <Text style={styles.price}>ราคา</Text> */}
           <Text numberOfLines={1} ellipsizeMode="clip" style={styles.tripTitle}>
@@ -60,7 +63,7 @@ const TripCard: React.FC<PlanData> = (props) => {
               <Text style={styles.ratingText}> 4.8</Text>
             </View> */}
           </View>
-          <Text style={styles.reviewDesc}>lorem</Text>
+          <Text style={styles.reviewDesc}>{props.description ? props.description : "No Description" }</Text>
         </View>
       </ThemedView>
     </View>

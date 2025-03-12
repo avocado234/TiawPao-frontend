@@ -15,7 +15,7 @@ interface TripLocation {
   introduction: string;
   thumbnail_url: string;
   latitude: string;
-  longtitude: string; // Note: Adjust to "longitude" if desired
+  longitude: string; // Note: Adjust to "longitude" if desired
   time_location: string;
   day: string;
 }
@@ -45,6 +45,8 @@ export default function HomeScreen() {
   const getTriplocation = async () => {
     try {
       const res_location = await api.get(`/plan/gettriplocation/${planid}`);
+      console.log(res_location.data);
+
       // Assuming API returns an object with a property "trip_location" that is an array
       // If API returns the array directly, use res_location.data instead.
       setTripLocation(res_location.data.trip_location || res_location.data);
@@ -70,7 +72,7 @@ export default function HomeScreen() {
 
     // Set initial map cursor to the first location if available
     if (trip_location.length > 0) {
-      setCursorLongitude(parseFloat(trip_location[0].longtitude) || 0);
+      setCursorLongitude(parseFloat(trip_location[0].longitude) || 0);
       setCursorLatitude(parseFloat(trip_location[0].latitude) || 0);
     }
   }, [trip_location]);
@@ -78,7 +80,7 @@ export default function HomeScreen() {
   useEffect(() => {
     // Update cursor values when trip_location changes
     if (trip_location.length > 0) {
-      setCursorLongitude(parseFloat(trip_location[0].longtitude) || 100.5382);
+      setCursorLongitude(parseFloat(trip_location[0].longitude) || 100.5382);
       setCursorLatitude(parseFloat(trip_location[0].latitude) || 13.7649);
     }
     console.log(cursorLatitude, cursorLongitude);
@@ -96,7 +98,7 @@ export default function HomeScreen() {
     const markers = trip_location.map((place, index) => {
       return Longdo.object(
         "Marker",
-        { lon: parseFloat(place.longtitude), lat: parseFloat(place.latitude) },
+        { lon: parseFloat(place.longitude), lat: parseFloat(place.latitude) },
         { title: `Place ${index + 1}`, detail: place.place_label }
       );
     });
@@ -152,7 +154,7 @@ export default function HomeScreen() {
                     <Pressable
                       key={place.place_id}
                       onPress={() => {
-                        setCursorLongitude(parseFloat(place.longtitude) || 0);
+                        setCursorLongitude(parseFloat(place.longitude) || 0);
                         setCursorLatitude(parseFloat(place.latitude) || 0);
                       }}
                     >
