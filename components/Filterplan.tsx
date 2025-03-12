@@ -11,7 +11,21 @@ import {
 } from 'react-native';
 
 interface Trip {
+  plan_id: string;
+  author_email: string;
+  author_name: string;
+  author_img: string;
   trip_name: string;
+  region_label: string;
+  province_label: string;
+  province_id: string;
+  start_date: string;
+  start_time: string;
+  end_date: string;
+  end_time: string;
+  description: string;
+  trip_location: any[];
+  visibility: boolean;
 }
 
 interface FilterplanProps {

@@ -13,9 +13,10 @@ export default function AddLayout() {
           <Stack.Screen name="createtrip" options={{ headerShown: false }} />
           <Stack.Screen name="tripmanually" options={{ headerShown: false }} />
           <Stack.Screen name="genaiselected" options={{headerShown: false}} />
-          <Stack.Screen name="tripgenai" options={{headerShown: false}} />
           <Stack.Screen name="maptrip" options={{headerShown: false}} />
-          <Stack.Screen name="commuapi" options={{headerShown: true}} />
+          <Stack.Screen name="aiservice" options={{ headerShown: false }} />
+          <Stack.Screen name="introgenai" options={{headerShown: false}} />
+      
                    
      </Stack>
   );
