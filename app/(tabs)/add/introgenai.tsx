@@ -81,7 +81,7 @@ const Main = () => {
   let backGroundPic;
   const theme = useColorScheme();
   const param = useLocalSearchParams();
-  const { tripName, region, province, startDate, startTime, endDate, endTime, visibility } = param;
+  const { tripName, region, province, startDate, startTime, endDate, endTime, visibility,description } = param;
   if (region === "central") {
     backGroundPic = require(`@/assets/images/region/central.jpeg`);
   }
@@ -115,6 +115,7 @@ const Main = () => {
         startTime: startTime,
         endDate: endDate,
         endTime: endTime,
+        description: description,
         visibility: visibility,
         
       }
