@@ -406,12 +406,21 @@ const Main = () => {
           vibes = vibes.slice(0, -1); 
 
          
-         const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. That trip needs vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. 
+         	const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. That trip needs vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. 
           Important: You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty.
-          Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0),startTime,endTime,thumbnail_url,latitude,longitude,type,introduction. The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(newPlaces)} 
-          The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON). 
-          Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
+          Consider travel time between locations:
+          - Calculate approximate travel time between places using their coordinates
+          - Group nearby attractions on the same day to minimize travel time
+          - Allow at least 30-45 minutes travel time between locations
+          - For places more than 20 km apart, allow at least 1-2 hours for travel
+          - Remember that travel with ${kids} kids requires additional time for breaks (if dont have kid can skip this instruction)
+          - Arrange locations in a logical sequence to avoid backtracking
 
+          Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0),startTime,endTime,thumbnail_url,latitude,longitude,type,introduction. The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(newPlaces)} 
+
+          The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON). 
+
+          Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
           setPrompt(newPrompt);
           console.log("Calling Gemini API...");
           console.log("Prompt:", newPrompt);
