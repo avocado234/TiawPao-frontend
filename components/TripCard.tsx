@@ -2,6 +2,7 @@ import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { ThemedView } from "./ThemedView";
+import { Calendar } from "@tamagui/lucide-icons";
 
 interface PlanData {
   plan_id: string;
@@ -48,7 +49,8 @@ const TripCard: React.FC<PlanData> = (props) => {
             {props.trip_name}
           </Text>
           <View style={styles.tripInfo}>
-            <FontAwesome name="calendar" size={18} color="#fff" />
+            {/* <FontAwesome name="calendar" size={18} color="#fff" /> */}
+            <Calendar size={20} color={'#fff'} />
             <Text style={styles.dateText}> {formatDate(props.start_date)} - {formatDate(props.end_date)}</Text>
           </View>
           <View style={styles.tripInfo}>

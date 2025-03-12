@@ -29,7 +29,7 @@ import api from '@/utils/axiosInstance';
 import apiTAT from '@/utils/axiosTATInstance';
 import LoadingComponent from '@/components/LoadingComponent';
 import { useFocusEffect } from '@react-navigation/native';
-import { ChevronDown } from '@tamagui/lucide-icons';
+import { Calendar, ChevronDown } from '@tamagui/lucide-icons';
 import { Accordion, Paragraph, Square } from 'tamagui';
 import FilterDropDown from '@/components/FilterDropDown';
 import { catagoriesData } from '@/data/catagories';
@@ -107,7 +107,7 @@ export default function TripManually() {
       setPlacesList(places.data.data);
 
       // ดึงข้อมูล trip location
-      const res_location = await api.get(`/plan/gettriplocation/${planid}`);
+      const res_location = await api.get(`/plan/gettriplocation/${planid}`,{});
 
       // จัดข้อมูลให้เป็น 2D array ตาม `day`
       const locationArray: any[][] = [];
@@ -269,8 +269,8 @@ export default function TripManually() {
             <View style={styles.tripContent}>
               <Text style={styles.tripName}>{plandata?.trip_name}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Ionicons name="calendar-clear" size={19} color="#FFFFFF" />
-                <Text style={styles.tripDate}>
+              <Calendar size={24} color={'#fff'} style={{ marginRight: 8 }} />
+              <Text style={styles.tripDate}>
                   {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} -
                   {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </Text>

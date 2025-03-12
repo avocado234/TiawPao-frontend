@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { Calendar } from "@tamagui/lucide-icons";
 
 interface TripData {
   author_email: string;
@@ -66,7 +67,8 @@ const MyPlanBox: React.FC<MyPlanBoxProps> = ({ trips, isEditMode, onDelete }) =>
                 {trip.plan_data.trip_name}
               </Text>
               <View style={styles.tripInfo}>
-                <FontAwesome name="calendar" size={24} color="#fff" />
+               <Calendar size={20} color={'#fff'} />
+                {/* <FontAwesome name="calendar" size={24} color="#fff" /> */}
                 <Text style={styles.tripInfoText}>
                   {formatDate(trip.plan_data.start_date)} - {formatDate(trip.plan_data.end_date)} , {trip.plan_data.trip_location?.length} Location
                 </Text>

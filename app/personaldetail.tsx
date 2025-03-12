@@ -13,6 +13,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useSignupStore } from "@/store/useSignupStore"; 
 import { useColorScheme } from 'react-native';
 import api from '@/utils/axiosInstance'; 
+import { Calendar } from '@tamagui/lucide-icons';
 
 export default function PersonalDetail() {
   const { email ,setSignupData } = useSignupStore(); 
@@ -27,7 +28,7 @@ export default function PersonalDetail() {
 
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
-
+  
   const handleNext = async () => {
     console.log(date_of_birth);
 
@@ -139,7 +140,9 @@ export default function PersonalDetail() {
             className={`flex flex-row items-center border ${theme === 'dark' ? 'border-[#3B82F6]' : 'border-[#203B82]'} h-[45px] w-full rounded-3xl px-4 py-2`}
           >
             <ThemedText className="flex-1">{date_of_birth || "Select Date"}</ThemedText>
-            <Entypo name="calendar" size={24} color={theme === 'dark' ? "#fff" : "#203B82"} />
+            <Calendar size={24} color={theme === 'dark' ? "#fff" : "#203B82"} style={{ marginRight: 8 }} />
+
+            {/* <Entypo name="calendar" size={24} color={theme === 'dark' ? "#fff" : "#203B82"} /> */}
           </TouchableOpacity>
           {isDatePickerVisible && (
             <DateTimePicker

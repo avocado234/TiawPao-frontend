@@ -157,7 +157,7 @@ const Propage = () => {
             }
           }
         );
-
+        
 
         if (updateUser.status === 201) {
           // Fetch the updated user data
