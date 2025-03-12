@@ -76,20 +76,22 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Search Section */}
-      <View style={styles.searchContainer}>
-        <Feather name="search" size={24} color="#999"  />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-          placeholderTextColor="#999"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity onPress={handleClearSearch} style={styles.clearButton}>
-            <Feather name="x-circle" size={20} color="#999" />
-          </TouchableOpacity>
-        )}
+      <View style={styles.searchCenterContainer} >
+        <View style={styles.searchContainer}>
+          <Feather name="search" size={24} color="#999"  />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search"
+            placeholderTextColor="#999"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={handleClearSearch} style={styles.clearButton}>
+              <Feather name="x-circle" size={20} color="#999" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
       {/* Tab Section */}
@@ -119,7 +121,11 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
 };
 
 const styles = StyleSheet.create({
+  searchCenterContainer: {
+    alignItems: 'center',
+  },
   container: {
+    // backgroundColor:"red",
     paddingHorizontal: 16,
     paddingTop: 10,
   },
@@ -131,6 +137,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     marginBottom: 12,
+    width:"90%",
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
@@ -153,8 +160,10 @@ const styles = StyleSheet.create({
     right: 14,
   },
   tabContainer: {
+    width: '95%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginTop: 5,
     marginBottom: 20,
   },
   tabButton: {

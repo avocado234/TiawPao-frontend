@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#203B82',
   },
   headerWrapper: {
-    marginTop: height * 0.1,
+    marginTop: height * 0.05,
     paddingHorizontal: width * 0.01,
     marginBottom: height * 0.015,
     flexDirection: 'row',

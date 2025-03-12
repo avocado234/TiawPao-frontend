@@ -17,23 +17,23 @@ const { width } = Dimensions.get('window');
 const SWIPE_THRESHOLD = -width * 0.3;
 
 const AnimatedLocationItem = ({ loc, onDelete, isEditMode, isFirst }: { loc: any; onDelete: (placeId: string) => void; isEditMode: boolean; isFirst: boolean }) => {
-  const translateX = useSharedValue(isEditMode && isFirst ? -15 : 0); // ✅ เริ่มต้นเป็น -15px ถ้า isEditMode = true
+  const translateX = useSharedValue(isEditMode && isFirst ? -15 : 0);
   const showDelete = useSharedValue(0);
   const bounceX = useSharedValue(0);
 
   useEffect(() => {
     if (isEditMode && isFirst) {
-      translateX.value = withSpring(-15); // ✅ เมื่อ isEditMode = true ให้เลื่อน -15px
+      translateX.value = withSpring(-15); 
       bounceX.value = withRepeat(withSpring(-10, { damping: 5, stiffness: 100 }), -1, true);
     } else {
-      translateX.value = withSpring(0); // ✅ เมื่อ isEditMode = false ให้กลับไปที่ 0px
+      translateX.value = withSpring(0); 
       bounceX.value = 0;
     }
   }, [isEditMode, isFirst]);
 
   const handleDelete = async () => {
     try {
-    //   await api.delete(`/locations/${loc.place_id}`);
+      await api.delete(`/plan/deletetriplocation/${loc.place_id}`);
       runOnJS(onDelete)(loc.place_id);
     } catch (error) {
       Alert.alert("Error", "Failed to delete location");
@@ -61,7 +61,7 @@ const AnimatedLocationItem = ({ loc, onDelete, isEditMode, isFirst }: { loc: any
       if (translateX.value <= SWIPE_THRESHOLD) {
         runOnJS(showAlert)();
       }
-      translateX.value = withSpring(isEditMode && isFirst ? -15 : 0); // ✅ กลับไปที่ -15px หรือ 0px ตาม isEditMode
+      translateX.value = withSpring(isEditMode && isFirst ? -15 : 0); 
       showDelete.value = withSpring(0);
     });
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -17,7 +18,6 @@ import api from '@/utils/axiosInstance';
 import LoadingComponent from '@/components/LoadingComponent';
 
 const { width, height } = Dimensions.get('window');
-
 
 interface PlanData {
   plan_id: string;
@@ -41,16 +41,18 @@ const Search: React.FC = () => {
   const [planDataArray, setPlanDataArray] = useState<PlanData[]>([]);
   const [filteredTrips, setFilteredTrips] = useState<PlanData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const getPublicPlan = async () => {
     try {
       const response = await api.get('/plan/getpublicplan');
       setPlanDataArray(response.data);
-      setFilteredTrips(response.data); 
-      setLoading(false);
+      setFilteredTrips(response.data);
     } catch (error) {
       console.error(error);
+    } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -58,9 +60,14 @@ const Search: React.FC = () => {
     getPublicPlan();
   }, []);
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getPublicPlan();
+  }, []);
+
   const router = useRouter();
 
-  if (loading) {
+  if (loading && !refreshing) {
     return <LoadingComponent />;
   }
 
@@ -81,6 +88,9 @@ const Search: React.FC = () => {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {filteredTrips.map((trip, index) => (
             <TouchableOpacity
@@ -109,12 +119,11 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   themedView: { flex: 1 },
   headerWrapper: {
-    marginTop: height * 0.1,
+    marginTop: height * 0.05,
     paddingHorizontal: width * 0.06,
     marginBottom: height * 0.015,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    
   },
   headerText: {
     fontSize: width * 0.08,
