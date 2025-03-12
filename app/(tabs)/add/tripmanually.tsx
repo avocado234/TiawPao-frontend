@@ -123,6 +123,7 @@ export default function TripManually() {
       setLocation(locationArray);
     } catch (error) {
       console.error(error);
+      router.replace('/(tabs)/add/createtrip');
     } finally {
       setLoading(false);
       setRefreshing(false);

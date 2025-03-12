@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { ActivityIndicator, View, Text, StyleSheet, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import apiTAT from "@/utils/axiosTATInstance";
-import axiosInstance from "@/utils/axiosInstance";
+import api from "@/utils/axiosInstance";
+
 import { useUserStore } from "@/store/useUser";
 import { auth } from "@/config/firebaseconfig";
 import { ThemedText } from '@/components/ThemedText';
@@ -166,14 +167,14 @@ const Main = () => {
         introduction: location.introduction,
         thumbnail_url: location.thumbnail_url,
         latitude: location.latitude.toString(),
-        longitude: location.longitude.toString(),
+        longtitude: location.longitude.toString(),
         time_location: location.startTime,
         day: day.toString(),
       };
       
       console.log(`Adding location: ${location.place_label}`);
-
-      const response = await axiosInstance.post(
+      console.log("planID IN AI GEN:", planID);
+      const response = await api.post(
         `/plan/addtriplocation/${planID}`,
         requestBody,
         {
@@ -182,6 +183,19 @@ const Main = () => {
           },
         }
       );
+
+      const formData = new FormData();
+      const value = Array.isArray(planID) ? planID.join(',') : planID;
+      formData.append("userplan_id", value);
+
+      await api.put(`/user/updateuserplan/${user.email}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${idToken}`
+        }
+     });
+
+
 
       console.log(`Location ${location.place_label} added, status: ${response.status}`);
     }

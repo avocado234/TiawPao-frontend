@@ -41,6 +41,7 @@ const TripCard: React.FC<PlanData> = (props) => {
           <View style={styles.userInfo}>
             <Image source={{ uri: props.author_img }} style={styles.avatar} />
             <Text style={styles.userName}>{props.author_name ? props.author_name : "Unknow"}</Text>
+
           </View>
           {/* <Text style={styles.price}>ราคา</Text> */}
           <Text numberOfLines={1} ellipsizeMode="clip" style={styles.tripTitle}>

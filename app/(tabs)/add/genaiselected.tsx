@@ -194,6 +194,8 @@ export default function Main() {
           plan_id: planID,
           author_email: user.email,
           author_img: user.image,
+          author_name: user.username,
+          description: description,
           trip_name: tripName,
           region_label: region,
           province_label: province,
