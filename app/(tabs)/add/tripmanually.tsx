@@ -216,6 +216,32 @@ export default function TripManually() {
   if (loading) {
     return <LoadingComponent />;
   }
+  const PicPicker = () =>
+  {
+    let data ;
+    if (plandata?.region_label == "central") {
+      data =  require(`@/assets/images/region/central.jpeg`);
+    }
+    else if(plandata?.region_label == "northern") {
+       data = require(`@/assets/images/region/northern.jpg`);
+    }
+    else if(plandata?.region_label == "northeastern") {
+       data =  require(`@/assets/images/region/northeastern.jpg`);
+    }
+    else if(plandata?.region_label == "southern") {
+       data = require(`@/assets/images/region/southern.png`);
+    }
+    else if(plandata?.region_label == "eastern") {
+       data = require(`@/assets/images/region/eastern.png`);
+    }
+    else if(plandata?.region_label == "western") {
+       data = require(`@/assets/images/region/western.jpg`);
+    }
+    else {
+       data = require(`@/assets/images/Chonburi.png`);
+    }
+    return data;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
@@ -235,9 +261,9 @@ export default function TripManually() {
           }
         >
           <ImageBackground
-            source={require("@/assets/images/Chonburi.png")}
+            source={PicPicker()}
             style={styles.tripCard}
-            imageStyle={{ borderRadius: 8 }}
+            imageStyle={{ borderRadius: 8 ,opacity:0.8}}
           >
             <View style={styles.tripContent}>
               <Text style={styles.tripName}>{plandata?.trip_name}</Text>
