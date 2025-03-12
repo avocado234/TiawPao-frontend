@@ -12,7 +12,7 @@ import {
 import { useRouter } from "expo-router";
 
 interface CarouselItem {
-    image: string ;
+    image: string;
     id: string;
     routeId: string;
     name: string;
@@ -24,8 +24,6 @@ interface CarouselItem {
     regions: any[];
     distance: number;
     placeImageUrls: any;
-  
-    
 }
 
 interface CarouselProps {
@@ -39,49 +37,38 @@ const Carousel: React.FC<CarouselProps> = ({ carouselData }) => {
     const isAutoScrolling = useRef(false);
     const router = useRouter();
     const snapToInterval = screenWidth;
- 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (!isAutoScrolling.current && flatListRef.current) {
-                const nextIndex = (activeIndex + 1) % carouselData.length;
-                isAutoScrolling.current = true;
-                flatListRef.current.scrollToIndex({
-                    index: nextIndex,
-                    animated: true,
-                });
-                setActiveIndex(nextIndex);
-                setTimeout(() => {
-                    isAutoScrolling.current = false;
-                }, 500);
-            }
-        }, 3000);
 
-        return () => clearInterval(interval);
-    }, [activeIndex, carouselData.length]);
-
-    const getItemLayout = (_: any, index: number) => ({
-        length: screenWidth,
-        offset: screenWidth * index,
-        index,
-    });
-
+    const getItemLayout = useMemo(
+        () => (_: any, index: number) => ({
+            length: screenWidth,
+            offset: screenWidth * index,
+            index,
+        }),
+        [screenWidth]
+    );
+    
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         if (isAutoScrolling.current) return;
+    
         const scrollPosition = event.nativeEvent.contentOffset.x;
-        const index = Math.round(scrollPosition / screenWidth);
-        setActiveIndex(index);
+        if (screenWidth > 0) {
+            const index = Math.round(scrollPosition / screenWidth);
+            if (!isNaN(index) && index >= 0 && index < carouselData.length) {
+                setActiveIndex(index);
+            }
+        }
     };
 
     const renderItem = ({ item }: { item: CarouselItem }) => (
-        <TouchableOpacity 
-            onPress={() => router.push({ 
-                pathname: "/HomeRecommend", 
+        <TouchableOpacity
+            onPress={() => router.push({
+                pathname: "/HomeRecommend",
                 params: {
                     id: item.id,
                     name: item.name,
                     introduction: item.introduction,
                     numberOfDays: item.numberOfDays,
-                    provinceWithDay: item.provinceWithDay, 
+                    provinceWithDay: item.provinceWithDay,
                     regionNames: item.regionNames,
                     regions: item.regions,
                     distance: item.distance,
@@ -94,7 +81,6 @@ const Carousel: React.FC<CarouselProps> = ({ carouselData }) => {
             <Image source={{ uri: item.image }} style={styles.image} />
         </TouchableOpacity>
     );
-    
 
     const renderDotIndicators = () => (
         <View style={styles.dotContainer}>
@@ -109,6 +95,33 @@ const Carousel: React.FC<CarouselProps> = ({ carouselData }) => {
             ))}
         </View>
     );
+
+    useEffect(() => {
+        if (carouselData.length === 0) return;
+    
+        const interval = setInterval(() => {
+            if (!isAutoScrolling.current && flatListRef.current) {
+                const nextIndex = (activeIndex + 1) % carouselData.length;
+    
+                try {
+                    isAutoScrolling.current = true;
+                    flatListRef.current.scrollToIndex({
+                        index: nextIndex,
+                        animated: true,
+                    });
+                    setActiveIndex(nextIndex);
+                } catch (error) {
+                    console.error("Scroll Error:", error);
+                } finally {
+                    setTimeout(() => {
+                        isAutoScrolling.current = false;
+                    }, 500);
+                }
+            }
+        }, 3000);
+    
+        return () => clearInterval(interval);
+    }, [activeIndex, carouselData.length]);
 
     return (
         <View style={styles.carouselWrapper}>
@@ -141,10 +154,10 @@ const styles = StyleSheet.create({
     image: {
         width: Dimensions.get("window").width,
         height: 250,
-        
+
     },
     dotContainer: {
-        top:10,
+        top: 10,
         left: 0,
         right: 0,
         flexDirection: "row",
