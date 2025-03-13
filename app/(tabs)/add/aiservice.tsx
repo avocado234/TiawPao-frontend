@@ -408,6 +408,7 @@ const Main = () => {
          
         const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. 
           Important:
+          - add a location on the ${startDate} depending on the ${startTime} not show time early than ${startTime}. If there are many days in between, you can go as late as you want, but on the ${endDate}, the time in the plan must not exceed the ${endTime}.
           - Check if your ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.
           - The selected vibes for this trip are: ${vibes}. You MUST prioritize places that match these vibes. Each recommended location should clearly align with at least one of these selected vibes. Do not include places that don't match the requested vibes.
           - The traveler has ${adults} adults and ${kids} kids. Make sure to include kid-friendly activities and plan for additional time for breaks.
