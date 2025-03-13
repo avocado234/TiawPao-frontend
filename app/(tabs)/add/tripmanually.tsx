@@ -303,10 +303,13 @@ export default function TripManually() {
       });
       console.log("Add Plan Is Success");
       Alert.alert("Save Plan Success", "Your plan has been saved successfully", [{ text: "OK" }]);
+      user.userplan_id.push(planID);
       router.replace({
         pathname: "/(tabs)/add/tripmanually",
         params: { planID: planID }
       });
+      // console.log(user.userplan_id)
+      // console.log(user.userplan_id)
     } catch (err) {
       Alert.alert("Save Plan Failed", "An error occurred while saving your plan", [{ text: "OK" }]);
       console.log(err);
