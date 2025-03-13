@@ -76,7 +76,7 @@ const Main = () => {
   const provinceMap: Record<number, string> = {
     571: "Amnat Charoen", 218: "Ang Thong", 219: "Bangkok", 590: "Bueng Kan",
     572: "Buri Ram", 220: "Chachoengsao", 221: "Chainat", 573: "Chaiyaphum",
-    463: "Chanthaburi", 101: "Chiang Mai", 102: "Chiang Rai", 464: "Chon Buri",
+    463: "Chanthaburi", 101: "Chiang Mai", 102: "Chiang Rai", 464: "Chonburi",
     343: "Chumphon", 574: "Kalasin", 103: "Kamphaeng Phet", 222: "Kanchanaburi",
     575: "Khon Kaen", 344: "Krabi", 104: "Lampang", 105: "Lamphun", 
     576: "Loei", 223: "Lop Buri", 106: "Mae Hong Son", 577: "Maha Sarakham",
@@ -410,6 +410,8 @@ const Main = () => {
           Important:
           - Check if your ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.
           - The selected vibes for this trip are: ${vibes}. You MUST prioritize places that match these vibes. Each recommended location should clearly align with at least one of these selected vibes. Do not include places that don't match the requested vibes.
+          - The traveler has ${adults} adults and ${kids} kids. Make sure to include kid-friendly activities and plan for additional time for breaks.
+          - Include at least one restaurant for each day of the trip, either for lunch (around 12:00-14:00) or dinner (around 17:00-20:00) but not both. Make sure the restaurant is open during the specified time ands watch ${startTime} and ${endTime}.
 
           Additional requirements:
           - You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty (if have only zero or one day you must use 2-4 place only!!!!!).
