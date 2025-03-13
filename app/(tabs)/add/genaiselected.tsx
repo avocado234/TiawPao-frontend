@@ -172,7 +172,7 @@ export default function Main() {
     const Gototrip = async () => {
       if (triptype === "")
       {
-        Alert.alert("Warning", "Please select People type!");
+        Alert.alert("Warning", "Please select Travelers type!");
         return;
       }
       if (selectedTrip === null || !vibeslock()) {
@@ -181,7 +181,7 @@ export default function Main() {
       }
 
       if (adults === 0 && kids === 0) {
-        Alert.alert("Warning", "Please select your people!");
+        Alert.alert("Warning", "Please select your number of Travelers!");
         return;
       }
 
