@@ -206,6 +206,7 @@ export default function Main() {
           end_time: endTime?.toString(),
           trip_location: [],
           visibility: visibility === "Public",
+          created_by:"AI"
         };
 
         const response = await api.post(`/user/createplan`, dataJson, {
