@@ -425,7 +425,7 @@ const Main = () => {
           - Do not include the same location more than once in the entire itinerary
           - Consider realistic opening hours for each location (most attractions open 8:00-18:00)
           - Don't schedule visits outside of reasonable operating hours
-          - Check if your startTime and endTime for each location are sensible based on the type of attraction
+          - Check if your ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.
           - Temples usually close earlier (around 17:00)
           - Night markets only open in the evening (around 17:00-22:00)
           - Natural attractions like beaches or parks may close before sunset
@@ -435,7 +435,6 @@ const Main = () => {
           The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON).
 
           Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
-          setPrompt(newPrompt);
           console.log("Calling Gemini API...");
           console.log("Prompt:", newPrompt);
          
