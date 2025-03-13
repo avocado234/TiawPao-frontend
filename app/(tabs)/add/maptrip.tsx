@@ -59,29 +59,53 @@ export default function HomeScreen() {
     getTriplocation();
   }, []);
 
+  // useEffect(() => {
+  //   // Group trips by day using the TripLocation type explicitly.
+  //   const groupByDay = trip_location.reduce((acc: { [key: string]: TripLocation[] }, trip: TripLocation) => {
+  //     if (!acc[trip.day]) {
+  //       acc[trip.day] = [];
+  //     }
+  //     acc[trip.day].push(trip);
+  //     return acc;
+  //   }, {});
+  //   setGroupedTrips(groupByDay);
+
+  //   // Set initial map cursor to the first location if available
+  //   if (trip_location.length > 0) {
+  //     setCursorlongtitude(parseFloat(trip_location[0].longtitude) || 0);
+  //     setCursorLatitude(parseFloat(trip_location[0].latitude) || 0);
+  //   }
+  // }, [trip_location]);
   useEffect(() => {
-    // Group trips by day using the TripLocation type explicitly.
-    const groupByDay = trip_location.reduce((acc: { [key: string]: TripLocation[] }, trip: TripLocation) => {
+    // Sort trips by time_location before grouping
+    const sortedTrips = [...trip_location].sort((a, b) =>
+      a.time_location.localeCompare(b.time_location)
+    );
+  
+    // Group trips by day
+    const groupByDay = sortedTrips.reduce((acc: { [key: string]: TripLocation[] }, trip: TripLocation) => {
       if (!acc[trip.day]) {
         acc[trip.day] = [];
       }
       acc[trip.day].push(trip);
       return acc;
     }, {});
+  
     setGroupedTrips(groupByDay);
-
+  
     // Set initial map cursor to the first location if available
-    if (trip_location.length > 0) {
-      setCursorlongtitude(parseFloat(trip_location[0].longtitude) || 0);
-      setCursorLatitude(parseFloat(trip_location[0].latitude) || 0);
+    if (sortedTrips.length > 0) {
+      setCursorlongtitude(parseFloat(sortedTrips[0].longtitude) || 0);
+      setCursorLatitude(parseFloat(sortedTrips[0].latitude) || 0);
     }
   }, [trip_location]);
+  
 
   useEffect(() => {
     // Update cursor values when trip_location changes
     if (trip_location.length > 0) {
-      setCursorlongtitude(parseFloat(trip_location[0].longtitude) || 100.5382);
-      setCursorLatitude(parseFloat(trip_location[0].latitude) || 13.7649);
+      setCursorlongtitude(parseFloat(trip_location[trip_location.length-1].longtitude) || 100.5382);
+      setCursorLatitude(parseFloat(trip_location[trip_location.length-1].latitude) || 13.7649);
     }
     console.log(cursorLatitude, cursorlongtitude);
   }, [trip_location]);
@@ -89,22 +113,47 @@ export default function HomeScreen() {
   Longdo.apiKey = 'd5359b98f595a04e169cf69c4aa1d37b';
   let map: any;
 
+  // const routing = () => {
+  //   if (!map || trip_location.length === 0) return;
+  //   // Clear previous routes
+  //   map.call("Route.clear");
+
+  //   // Create markers from trip_location using the defined properties.
+  //   const markers = trip_location.map((place, index) => {
+  //     return Longdo.object(
+  //       "Marker",
+  //       { lon: parseFloat(place.longtitude), lat: parseFloat(place.latitude) },
+  //       { title: `Place ${index + 1}`, detail: place.place_label }
+  //     );
+  //   });
+  //   markers.forEach((marker) => map.call("Route.add", marker));
+  //   map.call("Route.search");
+  // };
   const routing = () => {
-    if (!map || trip_location.length === 0) return;
+    if (!map || Object.keys(groupedTrips).length === 0) return;
+  
     // Clear previous routes
     map.call("Route.clear");
-
-    // Create markers from trip_location using the defined properties.
-    const markers = trip_location.map((place, index) => {
+  
+    // Flatten groupedTrips into a single array while maintaining order
+    const allTrips = Object.keys(groupedTrips)
+      .sort() // Ensures days are in order if necessary
+      .flatMap((day) => groupedTrips[day]); // Extract trips from each day
+  
+    // Create markers from groupedTrips
+    const markers = allTrips.map((place, index) => {
       return Longdo.object(
         "Marker",
         { lon: parseFloat(place.longtitude), lat: parseFloat(place.latitude) },
         { title: `Place ${index + 1}`, detail: place.place_label }
       );
     });
+  
+    // Add markers to the route
     markers.forEach((marker) => map.call("Route.add", marker));
     map.call("Route.search");
   };
+  
 
   const toggleList = () => {
     setIsList(!isList);
