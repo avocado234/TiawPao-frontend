@@ -414,7 +414,7 @@ const Main = () => {
           - Include at least one restaurant for each day of the trip, either for lunch (around 12:00-14:00) or dinner (around 17:00-20:00) but not both. Make sure the restaurant is open during the specified time ands watch ${startTime} and ${endTime}.
 
           Additional requirements:
-          - You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty (if have only zero or one day you must use 2-4 place only!!!!!).
+          - You MUST include equal more than 2, but not more than 4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty (if have only zero or one day you must use 2-4 place only!!!!!).
           - For each place you recommend, specify which vibe category it belongs to (e.g., "This is a nature spot" or "This offers local culture experience")
 
           Consider travel time between locations:  
