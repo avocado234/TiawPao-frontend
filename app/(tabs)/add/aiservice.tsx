@@ -407,8 +407,9 @@ const Main = () => {
 
          
          	const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. That trip needs vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. 
-          Important: You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty.
-          Consider travel time between locations:
+          Important: You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty (if have only zero or one day you must use 2-4 place only!!!!!).
+          Consider travel time between locations:  
+          
           - Calculate approximate travel time between places using their coordinates
           - Group nearby attractions on the same day to minimize travel time
           - Allow at least 30-45 minutes travel time between locations
