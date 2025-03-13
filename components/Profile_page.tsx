@@ -174,6 +174,22 @@ const Propage = () => {
             console.error(`Error updating plan id ${id}:`, error);
           }
         }
+        for (const id of userplan) {
+          try {
+            const res = await api.put(
+              `/plan/updateauthorname/${id}`,
+              { author_name: username },
+              {
+                headers: {
+                  Authorization: `Bearer ${idToken}`
+                }
+              }
+            );
+            console.log(`Updated plan id ${id}:`, res.data);
+          } catch (error) {
+            console.error(`Error updating plan id ${id}:`, error);
+          }
+        }
 
 
         if (updateUser.status === 201) {
