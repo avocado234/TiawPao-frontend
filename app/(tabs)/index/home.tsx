@@ -16,7 +16,7 @@ import Homebox from '@/components/Homebox';
 import HotelList from '@/components/HotelList';
 import { useUserStore } from '@/store/useUser';
 import apiTAT from '@/utils/axiosTATInstance';
-
+import LoadingComponent from '@/components/LoadingComponent';
 const { width, height } = Dimensions.get('window');
 
 interface HotelItem {
@@ -70,9 +70,10 @@ const Homepage: React.FC = () => {
     const [travelData, setTravelData] = useState<TravelItem[]>([]);
     const [restaurantData, setRestaurantData] = useState<RestaurantItem[]>([]);
     const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
-
+    const [loading ,setLoading] = useState<boolean>(true);
 
     const fetchHotelData = async () => {
+        setLoading(true);
         try {
             const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=2&limit=130&sort_by=detailPicture&place_sub_category_id=38&has_introduction=true&has_name=true&has_thumbnail=true');
             setHotelData(transformHotels(response.data));
@@ -84,6 +85,8 @@ const Homepage: React.FC = () => {
             } else {
                 console.error('Error message:', error.message);
             }
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -113,6 +116,7 @@ const Homepage: React.FC = () => {
     };
 
     const fetchTravelData = async () => {
+        setLoading(true);
         try {
             const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=3&sha_flag=true&limit=30&sort_by=detailPicture&place_sub_category_id=3&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
             setTravelData(transformTravel(response.data));
@@ -124,6 +128,8 @@ const Homepage: React.FC = () => {
             } else {
                 console.error('Error message:', error.message);
             }
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -153,11 +159,14 @@ const Homepage: React.FC = () => {
     };
 
     const fetchRestaurantData = async () => {
+        setLoading(true);
         try {
             const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=4&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
             setRestaurantData(transformRestaurant(response.data));
         } catch (error: any) {
             handleApiError(error);
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -181,12 +190,15 @@ const Homepage: React.FC = () => {
     };
 
     const fetchCarouselData = async () => {
+        setLoading(true);
         try {
             const response = await apiTAT.get('/routes?limit=3&page=1&sort=datetime_updated_desc');
             const transformedData = transformCarousel(response.data);
             setCarouselData(transformedData);
         } catch (error: any) {
             handleApiError(error);
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -242,6 +254,12 @@ const Homepage: React.FC = () => {
         fetchCarouselData();
     }, []);
 
+    if (loading) {
+        return (
+            <LoadingComponent />
+        );
+    }
+    
     return (
         <View className="flex-1 w-full !h-full">
             <ThemedView className="flex-1 w-full !h-full mt-5">
