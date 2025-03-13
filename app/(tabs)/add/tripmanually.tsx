@@ -300,6 +300,9 @@ export default function TripManually() {
       });
       console.log("Add Plan Is Success");
       Alert.alert("Save Plan Success", "Your plan has been saved successfully", [{ text: "OK" }]);
+      // console.log(user.userplan_id)
+      user.userplan_id.push(planID);
+      // console.log(user.userplan_id)
     } catch (err) {
       Alert.alert("Save Plan Failed", "An error occurred while saving your plan", [{ text: "OK" }]);
       console.log(err);
