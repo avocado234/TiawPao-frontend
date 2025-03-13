@@ -267,7 +267,8 @@ export default function CreateTrip() {
         "end_time": endTime.toISOString(),
         "description":description,
         "trip_location": [],
-        "visibility": selectedOption === 'Public'
+        "visibility": selectedOption === 'Public',
+       "created_by":"Manual"
       };
       const response = await api.post(`/user/createplan`, dataJson, {
         headers: {
