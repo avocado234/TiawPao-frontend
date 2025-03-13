@@ -11,7 +11,8 @@ import {
   ActivityIndicator,
   Platform,
   RefreshControl,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import type { CardProps } from 'tamagui';
 import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
@@ -25,6 +26,7 @@ import { auth } from '@/config/firebaseconfig';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
+import uuid from 'react-native-uuid';
 import api from '@/utils/axiosInstance';
 import apiTAT from '@/utils/axiosTATInstance';
 import LoadingComponent from '@/components/LoadingComponent';
@@ -56,6 +58,7 @@ interface PlanData {
   start_time: string;
   trip_location: any[];
   trip_name: string;
+  description: string;
   visibility: boolean;
 }
 
@@ -74,6 +77,7 @@ export default function TripManually() {
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [searchText, setSearchText] = useState('');
+  const [isEditAble, setIsEditAble] = useState<boolean>(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const [timeLocation, setTimeLocation] = useState<Date | null>(null);
   const [location, setLocation] = useState<any[][]>([]);
@@ -100,11 +104,13 @@ export default function TripManually() {
         headers: { Authorization: `Bearer ${idToken}` },
       });
       setPlanData(response.data.plan_data as PlanData);
+      setIsEditAble(response.data.plan_data.author_email === user?.email);
 
       const places: any = await apiTAT.get(
         `/places?province_id=${response.data.plan_data.province_id}&limit=50&has_thumbnail=has_thumbnail`
       );
       setPlacesList(places.data.data);
+
 
       // ดึงข้อมูล trip location
       const res_location = await api.get(`/plan/gettriplocation/${planid}`,{});
@@ -208,6 +214,65 @@ export default function TripManually() {
       dayLocations.filter(loc => loc.place_id !== placeId)
     ));
   };
+  const handleSavePlan = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error('User not logged in');
+    }
+    const idToken = await currentUser.getIdToken();
+    // const missingFields = getMissingFields();
+    // if (missingFields.length > 0) {
+    //   Alert.alert(
+    //     "Incomplete Form",
+    //     `Please fill fields: ${missingFields.join(', ')}`,
+    //     [{ text: "OK" }]
+    //   );
+    //   return;
+    // }
+    try {
+      const planID = uuid.v4();
+      const dataJson = {
+        "plan_id": planID,
+        "author_email": user.email,
+        "author_name": user.username,
+        "author_img": user.image,
+        "trip_name": plandata?.trip_name,
+        "region_label": plandata?.region_label,
+        "province_label": plandata?.province_label,
+        "province_id": String(plandata?.province_id),
+        "start_date": plandata?.start_date,
+        "start_time": plandata?.start_time,
+        "end_date": plandata?.end_date,
+        "end_time": plandata?.end_time,
+        "description":plandata?.description,
+        "trip_location": plandata?.trip_location,
+        "visibility": false
+      };
+      // console.log("dataJson");
+      // console.log(dataJson);
+      const response = await api.post(`/user/createplan`, dataJson, {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      });
+      console.log(response);
+
+      const formData = new FormData();
+      formData.append("userplan_id", planID);
+
+      await api.put(`/user/updateuserplan/${user.email}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${idToken}`
+        }
+      });
+      console.log("Add Plan Is Success");
+      Alert.alert("Save Plan Success", "Your plan has been saved successfully", [{ text: "OK" }]);
+    } catch (err) {
+      Alert.alert("Save Plan Failed", "An error occurred while saving your plan", [{ text: "OK" }]);
+      console.log(err);
+    }
+  };
   const goToIndex = () => {
     navigation.reset({
       index: 0,
@@ -279,10 +344,16 @@ export default function TripManually() {
                 <Feather name="map-pin" size={20} color="#FFFFFF" />
                 <Text style={styles.province}>{plandata?.province_label || "Province Here"}</Text>
               </View>
+              {isEditAble ? 
               <TouchableOpacity style={styles.editButton} onPress={()=>{setIsEdit(!isEdit)}}>
-              <Text style={styles.editButtonText}>{isEdit? "Done" : "Edit"}</Text>                
-              <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
+                <Text style={styles.editButtonText}>{isEdit? "Done" : "Edit"}</Text>                
+                <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
               </TouchableOpacity>
+              :
+              <TouchableOpacity style={styles.editButton} onPress={handleSavePlan}>
+                <Text style={styles.editButtonText}>Save</Text>                
+              </TouchableOpacity>
+              }
             </View>
             <View style={styles.iconContainer}>
               <TouchableOpacity onPress={handleLoaction} style={styles.iconButton}>
