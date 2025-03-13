@@ -41,6 +41,7 @@ import { useUserStore } from '@/store/useUser';
 import { useNavigation } from 'expo-router';
 import Animated, { Extrapolation, interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import AnimatedLocationItem from '@/components/AnimatedLocationItem';
+import CustomDateTimePicker from '@/components/CustomDateTimePicker';
 interface TripManuallyParams {
   planID?: string;
 }
@@ -79,6 +80,8 @@ export default function TripManually() {
   const [searchText, setSearchText] = useState('');
   const [isEditAble, setIsEditAble] = useState<boolean>(false);
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
+  const [isStartDate, setIsStartDate] = useState<boolean>(false);
+  const [isEndDate, setIsEndDate] = useState<boolean>(false);
   const [timeLocation, setTimeLocation] = useState<Date | null>(null);
   const [location, setLocation] = useState<any[][]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -214,21 +217,52 @@ export default function TripManually() {
       dayLocations.filter(loc => loc.place_id !== placeId)
     ));
   };
+  const handleEdit = async() => {
+    if(isEdit){
+    // if(false){
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error('User not logged in');
+      }
+      const idToken = await currentUser.getIdToken();
+      try {
+        const dataJson = {
+          "trip_name": plandata?.trip_name,
+          "region_label": plandata?.region_label,
+          "province_label": plandata?.province_label,
+          "province_id": String(plandata?.province_id),
+          "start_date": plandata?.start_date,
+          "start_time": plandata?.start_time,
+          "end_date": plandata?.end_date,
+          "end_time": plandata?.end_time,
+          "description":plandata?.description,
+          "trip_location": plandata?.trip_location,
+          "visibility": false
+        };
+        // console.log(dataJson);
+        const response = await api.put(`/plan/updateplan/${plandata?.plan_id}`, dataJson, {
+          headers: {
+            Authorization: `Bearer ${idToken}`
+          }
+        });
+        // console.log(response);
+        // console.log("Add Plan Is Success");
+        Alert.alert("Save Plan Success", "Your plan has been saved successfully", [{ text: "OK" }]);
+      } catch (err) {
+        Alert.alert("Save Plan Failed", "An error occurred while saving your plan", [{ text: "OK" }]);
+        console.log(err);
+      }
+
+    }
+    setIsEdit(!isEdit);
+  };
+
   const handleSavePlan = async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) {
       throw new Error('User not logged in');
     }
     const idToken = await currentUser.getIdToken();
-    // const missingFields = getMissingFields();
-    // if (missingFields.length > 0) {
-    //   Alert.alert(
-    //     "Incomplete Form",
-    //     `Please fill fields: ${missingFields.join(', ')}`,
-    //     [{ text: "OK" }]
-    //   );
-    //   return;
-    // }
     try {
       const planID = uuid.v4();
       const dataJson = {
@@ -248,14 +282,12 @@ export default function TripManually() {
         "trip_location": plandata?.trip_location,
         "visibility": false
       };
-      // console.log("dataJson");
-      // console.log(dataJson);
       const response = await api.post(`/user/createplan`, dataJson, {
         headers: {
           Authorization: `Bearer ${idToken}`
         }
       });
-      console.log(response);
+      // console.log(response);
 
       const formData = new FormData();
       formData.append("userplan_id", planID);
@@ -332,20 +364,68 @@ export default function TripManually() {
             imageStyle={{ borderRadius: 8 ,opacity:0.8}}
           >
             <View style={styles.tripContent}>
-              <Text style={styles.tripName}>{plandata?.trip_name}</Text>
+              {!isEdit ? 
+                <Text style={styles.tripName}>{plandata?.trip_name}</Text>
+                :
+                <TextInput
+                  style={styles.tripName}
+                  value={plandata?.trip_name}
+                  onChangeText={(text) => setPlanData({ ...plandata, trip_name: text })}
+                />  
+              }
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Calendar size={24} color={'#fff'} style={{ marginRight: 8 }} />
-              <Text style={styles.tripDate}>
-                  {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} -
+                <Calendar size={24} color={'#fff'} style={{ marginRight: 2 }} />
+              
+                {isEdit ? 
+                <View >
+                  {isEdit && (
+                    <View  style={ {flexDirection: 'row', alignItems: 'center'}}>
+                    {/* <View> */}
+                      <TouchableOpacity onPress={() => setIsStartDate(true)}>
+                        <Text style={styles.tripDate}>
+                          {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </Text>
+                      </TouchableOpacity>
+                      <Text style={styles.tripDate}>{"-"}</Text>
+                      <TouchableOpacity onPress={() => setIsEndDate(true)}>
+                        <Text style={styles.tripDate}>
+                          {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </Text>
+                      </TouchableOpacity>
+                      
+                    {/* </View> */}
+                  </View>
+                  )}
+                </View>
+                 
+                  // // edit start date and end date use time picker 
+                  // <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  // <TouchableOpacity onPress={() => setTimePickerVisible(true)}>
+                  //   <Text style={styles.tripDate}>
+                  //     {new Date(plandata?.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  //   </Text>
+                  // </TouchableOpacity>
+                  // <Text style={styles.tripDate}>-</Text>
+                  // <TouchableOpacity onPress={() => setTimePickerVisible(true)}>
+                  //   <Text style={styles.tripDate}>
+                  //     {new Date(plandata?.end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  //   </Text>
+                  // </TouchableOpacity>
+                  // 
+                  // </View>
+                  :
+                  <Text style={styles.tripDate}>
+                  {start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - 
                   {end.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </Text>
+                }
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Feather name="map-pin" size={20} color="#FFFFFF" />
                 <Text style={styles.province}>{plandata?.province_label || "Province Here"}</Text>
               </View>
               {isEditAble ? 
-              <TouchableOpacity style={styles.editButton} onPress={()=>{setIsEdit(!isEdit)}}>
+              <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
                 <Text style={styles.editButtonText}>{isEdit? "Done" : "Edit"}</Text>                
                 <FontAwesome6 name="edit" size={20} color="#203B82" style={styles.editIcon} />
               </TouchableOpacity>
@@ -460,6 +540,32 @@ export default function TripManually() {
           </View>
         </View>
       </Modal>
+      <CustomDateTimePicker
+        value={plandata?.start_date ? new Date(plandata?.start_date) : new Date()}
+        visible={isStartDate}
+        mode="date"
+        onChange={(event, selectedDate) => {
+          const currentDate = selectedDate || selectedTime;
+          setPlanData({
+            ...plandata,
+            start_date: currentDate.toISOString().split('T')[0], // Update end_date
+          });
+        }}
+        onClose={() => setIsStartDate(false)}
+      />
+      <CustomDateTimePicker
+        value={plandata?.end_date ? new Date(plandata?.end_date) : new Date()}
+        visible={isEndDate}
+        mode="date"
+        onChange={(event, selectedDate) => {
+          const currentDate = selectedDate || selectedTime;
+          setPlanData({
+            ...plandata,
+            end_date: currentDate.toISOString().split('T')[0], // Update end_date
+          });
+        }}
+        onClose={() => setIsEndDate(false)}
+      />
     </SafeAreaView>
   );
 }
