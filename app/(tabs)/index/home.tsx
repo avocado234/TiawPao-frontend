@@ -161,7 +161,7 @@ const Homepage: React.FC = () => {
     const fetchRestaurantData = async () => {
         setLoading(true);
         try {
-            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=4&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
+            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=30&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
             setRestaurantData(transformRestaurant(response.data));
         } catch (error: any) {
             handleApiError(error);
