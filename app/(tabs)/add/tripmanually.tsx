@@ -199,7 +199,7 @@ export default function TripManually() {
           "end_date": plandata?.end_date,
           "end_time": plandata?.end_time,
           "description":plandata?.description,
-          "trip_location": plandata?.trip_location,
+          // "trip_location": plandata?.trip_location,
           "visibility": false,
           "created_by": plandata?.created_by
         };

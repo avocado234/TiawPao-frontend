@@ -54,6 +54,8 @@ const AnimatedLocationItem = ({ plan_id, loc, onDelete, isEditMode, isFirst }: {
             // console.log(payload, idToken, plan_id, loc.place_id);
 
             console.log("token", idToken);
+            console.log("plan_id")
+            console.log(payload)
             const respon = await api.delete(`/plan/deletetriplocation/${plan_id}`, {
                 data: payload,
                 headers: {
