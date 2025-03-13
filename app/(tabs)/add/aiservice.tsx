@@ -406,7 +406,7 @@ const Main = () => {
           vibes = vibes.slice(0, -1); 
 
          
-         	const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. That trip needs vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. 
+         const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. That trip needs vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. 
           Important: You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty (if have only zero or one day you must use 2-4 place only!!!!!).
           Consider travel time between locations:  
           
@@ -416,6 +416,12 @@ const Main = () => {
           - For places more than 20 km apart, allow at least 1-2 hours for travel
           - Remember that travel with ${kids} kids requires additional time for breaks (if dont have kid can skip this instruction)
           - Arrange locations in a logical sequence to avoid backtracking
+          - Consider realistic opening hours for each location (most attractions open 8:00-18:00)
+          - Don't schedule visits outside of reasonable operating hours
+          - Check if your startTime and endTime for each location are sensible based on the type of attraction
+          - Temples usually close earlier (around 17:00)
+          - Night markets only open in the evening (around 17:00-22:00)
+          - Natural attractions like beaches or parks may close before sunset
 
           Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0),startTime,endTime,thumbnail_url,latitude,longitude,type,introduction. The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(newPlaces)} 
 
