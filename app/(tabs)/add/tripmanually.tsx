@@ -61,6 +61,7 @@ interface PlanData {
   trip_name: string;
   description: string;
   visibility: boolean;
+  created_by:string;
 }
 
 export default function TripManually() {
@@ -237,7 +238,8 @@ export default function TripManually() {
           "end_time": plandata?.end_time,
           "description":plandata?.description,
           "trip_location": plandata?.trip_location,
-          "visibility": false
+          "visibility": false,
+          "created_by": plandata?.created_by
         };
         // console.log(dataJson);
         const response = await api.put(`/plan/updateplan/${plandata?.plan_id}`, dataJson, {
@@ -280,7 +282,8 @@ export default function TripManually() {
         "end_time": plandata?.end_time,
         "description":plandata?.description,
         "trip_location": plandata?.trip_location,
-        "visibility": false
+        "visibility": false,
+        "created_by": plandata?.created_by
       };
       const response = await api.post(`/user/createplan`, dataJson, {
         headers: {
@@ -300,8 +303,12 @@ export default function TripManually() {
       });
       console.log("Add Plan Is Success");
       Alert.alert("Save Plan Success", "Your plan has been saved successfully", [{ text: "OK" }]);
-      // console.log(user.userplan_id)
       user.userplan_id.push(planID);
+      router.replace({
+        pathname: "/(tabs)/add/tripmanually",
+        params: { planID: planID }
+      });
+      // console.log(user.userplan_id)
       // console.log(user.userplan_id)
     } catch (err) {
       Alert.alert("Save Plan Failed", "An error occurred while saving your plan", [{ text: "OK" }]);
