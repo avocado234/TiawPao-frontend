@@ -166,44 +166,6 @@ export default function TripManually() {
     setActiveDay(isOpen ? -1 : index)
     // console.log(isOpen ? -1 : index)
   }
-  // const ITEM_HEIGHT = 80;
-  // const {width} = Dimensions.get('window');
-  // const SWIPE_THRESHOLD = -width*0.3
-  // const translateX = useSharedValue(0);
-  // const itemHeight = useSharedValue(ITEM_HEIGHT)
-  // const marginVertical = useSharedValue(10)
-  // const opacity = useSharedValue(1);
-
-  // const skewX = useSharedValue(0);
-  // const skewY = useSharedValue(0);
-
-  // const swipeGesture = Gesture.Pan().onUpdate(event => {
-  //     translateX.value = event.translationX;
-  //     skewX.value = interpolate(
-  //       translateX.value, 
-  //       [0, SWIPE_THRESHOLD],
-  //       [0,25],Extrapolation.CLAMP
-  //     );
-  //     skewY.value = interpolate(
-  //       translateX.value, 
-  //       [0, SWIPE_THRESHOLD],
-  //       [0,5],Extrapolation.CLAMP
-  //     );
-  // }).onEnd(event => {
-
-  // })
-  // const animatedItemStyle = useAnimatedStyle(() => ({
-  //   transform: [
-  //     { translateX: translateX.value },
-  //     { skewX: `${skewX.value}deg` },
-  //     { skewY: `${skewY.value}deg` }
-  //   ],
-  //   backgroundColor:interpolateColor(
-  //     translateX.value,
-  //     [0, SWIPE_THRESHOLD],
-  //     ['white', 'lightcoral']
-  //   )
-  // }))
   const handleLoaction = () => {
     router.push({
       pathname: "/(tabs)/add/maptrip",
@@ -237,7 +199,7 @@ export default function TripManually() {
           "end_date": plandata?.end_date,
           "end_time": plandata?.end_time,
           "description":plandata?.description,
-          "trip_location": plandata?.trip_location,
+          // "trip_location": plandata?.trip_location,
           "visibility": false,
           "created_by": plandata?.created_by
         };
@@ -480,6 +442,7 @@ export default function TripManually() {
                           .map((loc, locIndex) => (
                             <AnimatedLocationItem 
                               key={`${loc.place_id}-${locIndex}`} 
+                              plan_id={planid}
                               loc={loc} 
                               onDelete={handleDeleteLocation} 
                               isEditMode={isEdit} 
