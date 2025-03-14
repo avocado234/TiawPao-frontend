@@ -432,7 +432,7 @@ const Main = () => {
 
           The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON).
 
-          Example Answer: **MUST** [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00:00","endTime": "16:00:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
+          Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
           console.log("Calling Gemini API...");
           console.log("Prompt:", newPrompt);
          
