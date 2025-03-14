@@ -407,43 +407,32 @@ const Main = () => {
 
          
         const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. 
-       Important:
-        - Create a travel itinerary for the selected ${province}. I want to make the most of my trip.
-        - Each day's itinerary **MUST start at or after ${startTime} and end no later than ${endTime}** (except for ${startDate} and ${endDate}, which have special conditions).
-        - The first activity of each day **MUST** start at or after ${startTime}. Do NOT schedule any activity before this time, even if the attraction is available earlier.
-        - Example: If ${startTime} is 10:00 AM, the first activity on that day must start at 10:00 AM or later. Any activity before this time should be excluded.
-        - On ${startDate} and during the trip, I can stay out late, but on ${endDate}, I need to finish at ${endTime}.
-        - Check if ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.
-        - The selected vibes for this trip are: ${vibes}. You **MUST** prioritize places that match these vibes. Each recommended location should clearly align with at least one of these selected vibes. Do not include places that don't match the requested vibes.
-        - The traveler has ${adults} adults and ${kids} kids. Make sure to include kid-friendly activities and plan for additional time for breaks.
-        - Ensure that the travel time between locations is reasonable. If two places are too far apart, prioritize closer attractions instead.
+        Important:
+            - Create a travel itinerary for the selected ${province}. I want to make the most of my trip.
+            - Each day's itinerary **MUST start at or after ${startTime} and end no later than ${endTime}** (except for ${startDate} and ${endDate}, which have special conditions).
+            - The first activity of each day **MUST** start at or after ${startTime}. Do NOT schedule any activity before this time, even if the attraction is available earlier.
+            - Example: If ${startTime} is 10:00 AM, the first activity on that day must start at 10:00 AM or later. Any activity before this time should be excluded.
+            - Natural attractions like beaches or parks may open early (e.g., 06:00-22:00), **but if scheduled on ${startDate}, they MUST be set to start at or after ${startTime}**.
+            - On ${startDate} and during the trip, I can stay out late, but on ${endDate}, I need to finish at ${endTime}.
+            - Check if ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.
+            - The selected vibes for this trip are: ${vibes}. You **MUST** prioritize places that match these vibes. Each recommended location should clearly align with at least one of these selected vibes. Do not include places that don't match the requested vibes.
+            - The traveler has ${adults} adults and ${kids} kids. Make sure to include kid-friendly activities and plan for additional time for breaks.
+            - Ensure that the travel time between locations is reasonable. If two places are too far apart, prioritize closer attractions instead.
 
-        Additional requirements:
-        - You **MUST** include at least 2, but not more than 4, places for EACH day of the trip (from day 0 to the last day). Make sure no day is empty.
-        - Include at least one restaurant per day, preferably around lunch (12:00-14:00) or dinner (17:00-20:00). However, if a long gap between activities exists, you may include both.
-        - For each place you recommend, specify which vibe category it belongs to (e.g., "This is a nature spot" or "This offers a local cultural experience").
+          Additional requirements:
+            - You **MUST** include at least 2, but not more than 4, places for EACH day of the trip (from day 0 to the last day).  
+              If fewer than 2 places fit within the available hours, **prioritize quality recommendations rather than forcing the number of places**.
+            - Estimate travel time between locations based on their coordinates and **realistic traffic conditions**.
+            - Generally, allow at least **30-45 minutes** for short-distance travel.
+            - If locations are **more than 20 km apart**, estimate travel time based on road conditions (typically 1-2 hours).
 
-          Consider travel time between locations:  
-                    
-          - Calculate approximate travel time between places using their coordinates
-          - Group nearby attractions on the same day to minimize travel time
-          - Allow at least 30-45 minutes travel time between locations
-          - For places more than 20 km apart, allow at least 1-2 hours for travel
-          - Remember that travel with ${kids} kids requires additional time for breaks (if dont have kid can skip this instruction)
-          - Arrange locations in a logical sequence to avoid backtracking
-          - Never schedule overlapping time slots for different locations on the same day
-          - Do not include the same location more than once in the entire itinerary
-          - Consider realistic opening hours for each location 
-          - Don't schedule visits outside of reasonable operating hours
-          - Temples usually close earlier (around 17:00)
-          - Night markets only open in the evening (around 17:00-00:00)
-          - Natural attractions like beaches or parks can open (around 06.00-22.00),but  show on ${startDate} in plan should be show time depend on ${startTime}
+
 
           Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0),startTime,endTime,thumbnail_url,latitude,longitude,type,introduction. The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(newPlaces)} 
 
           The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON).
 
-          Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
+          Example Answer: **MUST** [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00:00","endTime": "16:00:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
           console.log("Calling Gemini API...");
           console.log("Prompt:", newPrompt);
          
