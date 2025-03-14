@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
+    
   },
   activeTabText: {
     color: '#000',
