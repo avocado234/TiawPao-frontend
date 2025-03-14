@@ -411,7 +411,7 @@ const Main = () => {
             - Create a travel itinerary for the selected ${province}. I want to make the most of my trip.
             - Each day's itinerary **MUST start at or after ${startTime} and end no later than ${endTime}** (except for ${startDate} and ${endDate}, which have special conditions).
             - The first activity of each day **MUST** start at or after ${startTime}. Do NOT schedule any activity before this time, even if the attraction is available earlier.
-            - Example: If ${startTime} is 10:00 AM, the first activity on that day must start at 10:00 AM or later. Any activity before this time should be excluded.
+            - Example: If ${startTime} is 10:00, the first activity on that day must start at 10:00 or later. Any activity before this time should be excluded.
             - Natural attractions like beaches or parks may open early (e.g., 06:00-22:00), **but if scheduled on ${startDate}, they MUST be set to start at or after ${startTime}**.
             - On ${startDate} and during the trip, I can stay out late, but on ${endDate}, I need to finish at ${endTime}.
             - Check if ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.
