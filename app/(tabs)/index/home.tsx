@@ -75,7 +75,7 @@ const Homepage: React.FC = () => {
     const fetchHotelData = async () => {
         setLoading(true);
         try {
-            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=2&limit=130&sort_by=detailPicture&place_sub_category_id=38&has_introduction=true&has_name=true&has_thumbnail=true');
+            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?place_category_id=2&limit=30&sort_by=detailPicture&place_sub_category_id=38&has_introduction=true&has_name=true&has_thumbnail=true');
             setHotelData(transformHotels(response.data));
         } catch (error: any) {
             if (error.response) {
@@ -161,7 +161,7 @@ const Homepage: React.FC = () => {
     const fetchRestaurantData = async () => {
         setLoading(true);
         try {
-            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=4&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
+            const response = await apiTAT.get('https://tatdataapi.io/api/v2/places?keyword=restaurant&sha_flag=true&limit=30&place_sub_category_id=165&status=true&has_introduction=true&has_name=true&has_thumbnail=true');
             setRestaurantData(transformRestaurant(response.data));
         } catch (error: any) {
             handleApiError(error);

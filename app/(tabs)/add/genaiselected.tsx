@@ -170,13 +170,18 @@ export default function Main() {
       return foundKey ? Number(foundKey) : undefined;
     };
     const Gototrip = async () => {
+      if (triptype === "")
+      {
+        Alert.alert("Warning", "Please select Travelers type!");
+        return;
+      }
       if (selectedTrip === null || !vibeslock()) {
         Alert.alert("Warning", "Please select your travel vibes!");
         return;
       }
 
       if (adults === 0 && kids === 0) {
-        Alert.alert("Warning", "Please select your people!");
+        Alert.alert("Warning", "Please select your number of Travelers!");
         return;
       }
 

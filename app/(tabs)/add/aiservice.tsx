@@ -76,7 +76,7 @@ const Main = () => {
   const provinceMap: Record<number, string> = {
     571: "Amnat Charoen", 218: "Ang Thong", 219: "Bangkok", 590: "Bueng Kan",
     572: "Buri Ram", 220: "Chachoengsao", 221: "Chainat", 573: "Chaiyaphum",
-    463: "Chanthaburi", 101: "Chiang Mai", 102: "Chiang Rai", 464: "Chon Buri",
+    463: "Chanthaburi", 101: "Chiang Mai", 102: "Chiang Rai", 464: "Chonburi",
     343: "Chumphon", 574: "Kalasin", 103: "Kamphaeng Phet", 222: "Kanchanaburi",
     575: "Khon Kaen", 344: "Krabi", 104: "Lampang", 105: "Lamphun", 
     576: "Loei", 223: "Lop Buri", 106: "Mae Hong Son", 577: "Maha Sarakham",
@@ -159,16 +159,21 @@ const Main = () => {
     for (const location of responseText) {
       const day = parseInt(location.dayVisit, 10);
       
+      // แปลงเวลาให้เป็นรูปแบบ HH:MM ตามเวลาประเทศไทย
+      const formatThaiTime = (timeStr: string) => {
+        const [hours, minutes] = timeStr.split(':');
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+      };
   
       const requestBody = {
         place_id: location.place_id,
         place_label: location.place_label,
-        categorie_label: location.type ,
+        categorie_label: location.type,
         introduction: location.introduction,
         thumbnail_url: location.thumbnail_url,
         latitude: location.latitude.toString(),
         longtitude: location.longitude.toString(),
-        time_location: location.startTime,
+        time_location: formatThaiTime(location.startTime), // ใช้ฟังก์ชันจัดรูปแบบเวลา
         day: day.toString(),
       };
       
@@ -406,23 +411,27 @@ const Main = () => {
           vibes = vibes.slice(0, -1); 
 
          
-         	const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. That trip needs vibes is ${vibes} and have ${kids} kids and ${adults} adults in this trip. 
-          Important: You MUST include at least 2-4 place for EACH day of the trip (from day 0 to the last day). Make sure no day is empty (if have only zero or one day you must use 2-4 place only!!!!!).
-          Consider travel time between locations:  
-          
-          - Calculate approximate travel time between places using their coordinates
-          - Group nearby attractions on the same day to minimize travel time
-          - Allow at least 30-45 minutes travel time between locations
-          - For places more than 20 km apart, allow at least 1-2 hours for travel
-          - Remember that travel with ${kids} kids requires additional time for breaks (if dont have kid can skip this instruction)
-          - Arrange locations in a logical sequence to avoid backtracking
+        const newPrompt = `You are a travel planning consultant. Your task is to create a travel trip to ${province} from ${startDate} to ${endDate}, time is ${startTime} to ${endTime}. The traveler go to ${region}, and the trip is for ${peopletype}. 
+       Important:
+          - Create a travel itinerary for the selected province. I want to make the most of my trip.  
+          - On ${startDate} and during the trip, I can stay out late, but on ${endDate}, I need to finish at ${endTime}.  
+          - Each day's itinerary should start no earlier than ${startTime} and end no later than ${endTime} (except for ${startDate} and ${endDate}, which have special conditions).  
+          - Ensure that the first activity of each day does not start before ${startTime}. If an attraction is only available earlier, do not include it.  
+          - Check if ${startTime} and ${endTime} for each location are sensible based on the type of attraction. If the location cannot be visited within the specified time frame, do not include it.  
+          - The selected vibes for this trip are: ${vibes}. You MUST prioritize places that match these vibes. Each recommended location should clearly align with at least one of these selected vibes. Do not include places that don't match the requested vibes.  
+          - The traveler has ${adults} adults and ${kids} kids. Make sure to include kid-friendly activities and plan for additional time for breaks.  
+          - Ensure that the travel time between locations is reasonable. If two places are too far apart, prioritize closer attractions instead.  
 
-          Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0),startTime,endTime,thumbnail_url,latitude,longitude,type,introduction. The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(newPlaces)} 
+          Additional requirements:  
+          - You MUST include at least 2, but not more than 4, places for EACH day of the trip (from day 0 to the last day). Make sure no day is empty.  
+          - Include at least one restaurant per day, preferably around lunch (12:00-14:00) or dinner (17:00-20:00). However, if a long gap between activities exists, you may include both.  
+          - For each place you recommend, specify which vibe category it belongs to (e.g., "This is a nature spot" or "This offers a local cultural experience").  
 
-          The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON). 
+          Your response must be in JSON format and should include the following details value with: place_id,place_label,dayVisit(Start with 0),startTime(Thai local time HH:MM format),endTime(Thai local time HH:MM format),thumbnail_url,latitude,longitude,type,introduction. The data must be sourced from My resource. If any required information is unavailable, you may omit it. resource is ${JSON.stringify(newPlaces)} 
 
-          Example Answer: [{"place_id": "1","place_label": "Bang Saen Beach","dayVisit": "0","startTime": "10:00","endTime": "16:00","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
-          setPrompt(newPrompt);
+          The answer must not have "/","/n", "\n","\" using "," instead (set text more likely JSON).
+
+          Example Answer: [{"place_id": "1","place_label": "Bang Sange","dayVisit": "0","startTime": "HH:MM","thumbnail_url": "https://tatapi.tourismthailand.org/tatfs/Image/Content/Upload/Item/Item_20170825_150824_4518.JPG","latitude": "13.2842","longitude": "100.9195","type": "Beach","introduction": "Bang Saen Beach is a beach town along the eastern gulf coast of Thailand."}]`;
           console.log("Calling Gemini API...");
           console.log("Prompt:", newPrompt);
          
