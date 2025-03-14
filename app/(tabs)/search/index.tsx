@@ -75,15 +75,15 @@ const Search: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <ThemedView style={styles.themedView}>
         <Bgelement />
-        {/* Header */}
+      
         <View style={styles.headerWrapper}>
           <ThemedText style={styles.headerText}>Public Plan</ThemedText>
         </View>
 
-        {/* Filterplan Section */}
+     
         <Filterplan trips={planDataArray} setFilteredTrips={setFilteredTrips} />
 
-        {/* Trip List */}
+      
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContainer}

@@ -42,7 +42,7 @@ export default function HomeRecommend() {
 
   const scrollY = useSharedValue(0);
 
-  // เปลี่ยนสีตามโหมดธีม
+  
   const cardBackgroundColor = theme === "dark" ? "#000" : "#fff";
   const infoTextColor = theme === "dark" ? "#F2F2F2" : "#555";
   const textColor = theme === "dark" ? "#5680EC" : "#203B82";
@@ -70,7 +70,7 @@ export default function HomeRecommend() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* ภาพพื้นหลัง */}
+     
       <Animatable.Image
         animation="fadeInUp"
         delay={300}
@@ -90,13 +90,13 @@ export default function HomeRecommend() {
         </TouchableOpacity>
       </View>
 
-      {/* ScrollView สำหรับเนื้อหา */}
+     
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
       >
-        {/* การ์ดแสดงข้อมูล */}
+        
         <Animatable.View
           animation="fadeInUp"
           delay={500}
@@ -104,7 +104,7 @@ export default function HomeRecommend() {
           style={[styles.infoCard, animatedInfoCardStyle,{ backgroundColor : cardBackgroundColor}]}
         >
           <View style={styles.infoContainer}>
-            {/* Title */}
+            
             <Animatable.Text 
               animation="fadeInUp" 
               delay={600} 
@@ -114,7 +114,7 @@ export default function HomeRecommend() {
               {name}
             </Animatable.Text>
 
-            {/* Introduction */}
+           
             <Animatable.Text 
               animation="fadeInUp" 
               delay={700} 
@@ -124,7 +124,7 @@ export default function HomeRecommend() {
               {introduction || "No description available."}
             </Animatable.Text>
 
-            {/* Number of Days */}
+            
             <Animatable.View 
               animation="fadeInUp"  
               delay={800} 
@@ -137,7 +137,7 @@ export default function HomeRecommend() {
               </Text>
             </Animatable.View>
 
-            {/* Region */}
+          
             <Animatable.View 
               animation="fadeInUp" 
               delay={900} 
@@ -154,7 +154,7 @@ export default function HomeRecommend() {
             </Animatable.View>
           </View>
 
-          {/* Gallery */}
+          
           <Animatable.View 
             animation="fadeInUp" 
             delay={1000} 
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   infoCard: {
-    marginTop: "73%", // ปรับให้สัมพันธ์กับขนาดของรูป
+    marginTop: "73%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   

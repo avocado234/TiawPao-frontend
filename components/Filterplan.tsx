@@ -55,10 +55,9 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
   };
 
   const handleTabPress = (tab: string) => {
-    // ถ้ากด tab เดิม ให้เป็นการยกเลิก filter
     if (activeTab === tab) {
       setActiveTab('');
-      setFilteredTrips(trips); // คืนค่า trips ทั้งหมด
+      setFilteredTrips(trips); 
     } else {
       setActiveTab(tab);
     }
@@ -75,7 +74,6 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Search Section */}
       <View style={styles.searchCenterContainer} >
         <View style={styles.searchContainer}>
           <Feather name="search" size={24} color="#999"  />
@@ -94,7 +92,7 @@ const Filterplan: React.FC<FilterplanProps> = ({ trips, setFilteredTrips }) => {
         </View>
       </View>
 
-      {/* Tab Section */}
+     
       <View style={styles.tabContainer}>
         {tabs.map((tab) => (
           <TouchableOpacity
@@ -125,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    // backgroundColor:"red",
+   
     paddingHorizontal: 16,
     paddingTop: 10,
   },
@@ -149,7 +147,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     paddingLeft: 8,
-    paddingRight: 30, // เผื่อพื้นที่ให้กับปุ่ม Clear
+    paddingRight: 30, 
   },
   searchIcon: {
     position: 'absolute',

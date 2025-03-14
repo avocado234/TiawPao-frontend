@@ -15,7 +15,7 @@ interface TripData {
   region_label: string;
   start_date: string;
   start_time: string;
-  trip_location?: string[]; // optional เพื่อรองรับ undefined
+  trip_location?: string[]; 
   trip_name: string;
   visibility: boolean;
 }
@@ -68,7 +68,6 @@ const MyPlanBox: React.FC<MyPlanBoxProps> = ({ trips, isEditMode, onDelete }) =>
               </Text>
               <View style={styles.tripInfo}>
                <Calendar size={20} color={'#fff'} />
-                {/* <FontAwesome name="calendar" size={24} color="#fff" /> */}
                 <Text style={styles.tripInfoText}>
                   {formatDate(trip.plan_data.start_date)} - {formatDate(trip.plan_data.end_date)} , {trip.plan_data.trip_location?.length} Location
                 </Text>
