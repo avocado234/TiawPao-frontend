@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#203B82',
   },
   headerWrapper: {
-    marginTop: height * 0.05,
+    marginTop: height * 0.005,
     paddingHorizontal: width * 0.01,
     marginBottom: height * 0.015,
     flexDirection: 'row',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: '#5680EC',
     right: width * 0.05,
-    bottom: height * 0.1,
+    bottom: height * 0.06,
     padding: width * 0.04,
     borderRadius: width * 0.1,
   },

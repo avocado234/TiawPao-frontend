@@ -287,8 +287,8 @@ const Homepage: React.FC = () => {
                         <Homebox places={travelData} />
                         <ThemedText className="text-2xl font-bold left-3 ">Food & Drink</ThemedText>
                         <Homebox places={restaurantData} />
-                        <ThemedText className="text-2xl font-bold left-3 ">Hotels</ThemedText>
-                        <View className="p-2">
+                        <ThemedText className="text-2xl font-bold left-3 top-2 ">Hotels</ThemedText>
+                        <View className="p-1">
                             <HotelList hotels={hotelData} />
                         </View>
                     </View>
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
         alignContent: "space-between",
     },
     headerText: {
-        fontSize: width * 0.1,
+        fontSize: 32,
         color: 'white',
         fontWeight: 'bold',
         marginBottom: height * 0.05,

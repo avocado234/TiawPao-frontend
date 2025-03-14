@@ -36,7 +36,12 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
             })
     };
     return (
-        <View className="flex-1 rounded-lg bg-white shadow-lg flex-row mb-4">
+        <View className="flex-1 rounded-lg bg-white flex-row mb-4" style={{ 
+            shadowColor: "#000",
+            shadowOpacity: 0.2,
+            shadowOffset: { width: 0, height: 2 },
+            shadowRadius: 5,
+            elevation: 3,}}> 
             {hotel.detailimage ? (
                 <Image source={{ uri: hotel.thumbnailimage }} className="w-28 h-28 rounded-lg bg-fixed" />
             ) : (
@@ -45,7 +50,7 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
                 </View>
             )}
             <View className="ml-3 flex-1 p-1">
-                <Text className="text-2xl font-bold text-gray-800 mt-2" numberOfLines={1} ellipsizeMode="clip">
+                <Text className="text-2xl font-bold text-gray-800 mt-2" numberOfLines={1} ellipsizeMode= "clip" >
                     {hotel.name}
                 </Text>
                 <Text className="mt-2 text-m text-gray-500" numberOfLines={1} ellipsizeMode="tail">
