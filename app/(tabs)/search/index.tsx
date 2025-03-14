@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   themedView: { flex: 1 },
   headerWrapper: {
-    marginTop: height * 0.05,
+    marginTop: height * 0.005,
     paddingHorizontal: width * 0.06,
     marginBottom: height * 0.015,
     flexDirection: 'row',

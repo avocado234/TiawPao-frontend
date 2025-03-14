@@ -76,7 +76,6 @@ export default function HomeRecommend() {
         style={[styles.backgroundImage, { top: statusBarHeight }]}
       />
 
-      {/* ปุ่มกดกลับ */}
       <View style={[styles.backgroundbackButtonContainer, { top: statusBarHeight }]}>
         <TouchableOpacity
           style={styles.backButtonContainer}
@@ -92,9 +91,7 @@ export default function HomeRecommend() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-        onScroll={(event) => {
-          scrollY.value = event.nativeEvent.contentOffset.y;
-        }}
+        
         scrollEventThrottle={16}
       >
         {/* การ์ดแสดงข้อมูล */}
@@ -151,18 +148,19 @@ const styles = StyleSheet.create({
   },
   backgroundbackButtonContainer: {
     position: "absolute",
-    left: 15,
-    zIndex: 10,
-    backgroundColor: "rgba(255, 255, 255)",
-    borderRadius: 30, 
-    width: 40, 
-    height: 40, 
+    left: 20,
+    zIndex: 20, 
+    backgroundColor: "rgba(255, 255, 255, 0.9)", // เพิ่ม opacity เพื่อให้เห็นพื้นหลัง
+    borderRadius: 30,
+    width: 40,
+    height: 40,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 5,
-    elevation: 3, 
+    elevation: 3,
   },
+  
   backButtonContainer: {
     width: 40,
     height: 40,
@@ -172,22 +170,22 @@ const styles = StyleSheet.create({
   
   backgroundImage: {
     position: "absolute",
-    top: 44,
+    top:60,
     left: 0,
     width: "100%",
-    height: "40%",
+    height: "45%",
     resizeMode: "cover",
     opacity: 1,
   },
 
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 10,
   },
   infoCard: {
-    marginTop: 350,
+    marginTop: "73%", // ปรับให้สัมพันธ์กับขนาดของรูป
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingBottom: 50,
+    paddingBottom: 60,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
@@ -195,6 +193,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     zIndex: 5,
   },
+  
   infoContainer: {
     padding: 20,
   },
@@ -206,19 +205,19 @@ const styles = StyleSheet.create({
   },
   introduction: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   infoText: {
     fontSize: 16,
     marginLeft: 5,
   },
   subTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     marginLeft: 15,
     marginBottom: 10,
@@ -233,5 +232,6 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 10,
     marginRight: 10,
+    marginTop  :10
   },
 });
