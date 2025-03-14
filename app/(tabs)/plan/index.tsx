@@ -43,7 +43,6 @@ interface Trip {
 
 const Plan: React.FC = () => {
   const [planDataArray, setPlanDataArray] = useState<Trip[]>([]);
-  // ใช้ selector เพื่อดึง userPlanIds จาก global state
   const userPlanIds = useUserStore((state) => state.user.userplan_id);
   const { removeUserPlanId } = useUserStore();
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -72,7 +71,7 @@ const Plan: React.FC = () => {
               Authorization: `Bearer ${idToken}`,
             },
           });
-          // คาดว่า response.data มีรูปแบบ { plan_data: { ... } }
+
           return response.data;
         })
       );
@@ -88,14 +87,13 @@ const Plan: React.FC = () => {
     }
   };
 
-  // เมื่อหน้าถูก focus ให้เรียก getUserTrip ใหม่ โดยขึ้นอยู่กับ userPlanIds
   useFocusEffect(
     useCallback(() => {
       getUserTrip();
     }, [userPlanIds])
   );
 
-  // ฟังก์ชัน refresh สำหรับ pull-to-refresh
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getUserTrip();
@@ -117,7 +115,7 @@ const Plan: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-      // อัปเดต global state เพื่อลบ planId
+    
       removeUserPlanId(planId);
       await api.delete(`/plan/deleteplanbyid/${planId}`, {
         headers: {
