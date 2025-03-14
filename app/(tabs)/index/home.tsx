@@ -321,6 +321,6 @@ const styles = StyleSheet.create({
         bottom: width * 0.06,
     },
     scrollContentContainer: {
-        paddingBottom: width * 0.45,
+        paddingBottom: width * 0.25,
     },
 });

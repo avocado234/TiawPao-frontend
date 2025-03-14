@@ -71,12 +71,17 @@ export default function HomeRecommend() {
   return (
     <SafeAreaView style={styles.container}>
       {/* ภาพพื้นหลัง */}
-      <Image
+      <Animatable.Image
+        animation="fadeInUp"
+        delay={300}
+        duration={800}
         source={{ uri: mainImageUri }}
         style={[styles.backgroundImage, { top: statusBarHeight }]}
       />
 
-      <View style={[styles.backgroundbackButtonContainer, { top: statusBarHeight }]}>
+      <View
+        style={[styles.backgroundbackButtonContainer, { top: statusBarHeight }]}
+      >
         <TouchableOpacity
           style={styles.backButtonContainer}
           onPress={() => router.push("/(tabs)/")}
@@ -85,32 +90,60 @@ export default function HomeRecommend() {
         </TouchableOpacity>
       </View>
 
-
-
       {/* ScrollView สำหรับเนื้อหา */}
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-        
         scrollEventThrottle={16}
       >
         {/* การ์ดแสดงข้อมูล */}
-        <Animated.View style={[styles.infoCard, animatedInfoCardStyle]}>
+        <Animatable.View
+          animation="fadeInUp"
+          delay={500}
+          duration={800}
+          style={[styles.infoCard, animatedInfoCardStyle,{ backgroundColor : cardBackgroundColor}]}
+        >
           <View style={styles.infoContainer}>
-            <Text style={[styles.title, { color: textColor }]}>{name}</Text>
-            <Text style={[styles.introduction, { color: infoTextColor }]}>
-              {introduction || "No description available."}
-            </Text>
+            {/* Title */}
+            <Animatable.Text 
+              animation="fadeInUp" 
+              delay={600} 
+              duration={700} 
+              style={[styles.title, { color: textColor }]}
+            >
+              {name}
+            </Animatable.Text>
 
-          
-            <View style={styles.infoRow}>
+            {/* Introduction */}
+            <Animatable.Text 
+              animation="fadeInUp" 
+              delay={700} 
+              duration={700} 
+              style={[styles.introduction, { color: infoTextColor }]}
+            >
+              {introduction || "No description available."}
+            </Animatable.Text>
+
+            {/* Number of Days */}
+            <Animatable.View 
+              animation="fadeInUp"  
+              delay={800} 
+              duration={700} 
+              style={styles.infoRow}
+            >
               <Calendar size={24} color={infoTextColor} />
               <Text style={[styles.infoText, { color: infoTextColor }]}>
                 Number of Days: {numberOfDays} day
               </Text>
-            </View>
-         
-          <View style={styles.infoRow}>
+            </Animatable.View>
+
+            {/* Region */}
+            <Animatable.View 
+              animation="fadeInUp" 
+              delay={900} 
+              duration={700} 
+              style={styles.infoRow}
+            >
               <Ionicons name="location-outline" size={24} style={{ color: infoTextColor }} />
               <Text style={[styles.infoText, { color: infoTextColor }]}>
                 Region:{" "}
@@ -118,10 +151,15 @@ export default function HomeRecommend() {
                   ? regionNames.join(", ")
                   : regionNames || "N/A"}
               </Text>
-            </View>
-            </View>
+            </Animatable.View>
+          </View>
+
           {/* Gallery */}
-          <Animatable.View animation="fadeInUp" delay={500} duration={600}>
+          <Animatable.View 
+            animation="fadeInUp" 
+            delay={1000} 
+            duration={700}
+          >
             <Text style={[styles.subTitle, { color: textColor }]}>Gallery</Text>
             <ScrollView
               horizontal
@@ -135,11 +173,12 @@ export default function HomeRecommend() {
               ))}
             </ScrollView>
           </Animatable.View>
-        </Animated.View>
+        </Animatable.View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -179,12 +218,13 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    paddingBottom: 10,
+    paddingBottom: 40,
   },
   infoCard: {
     marginTop: "73%", // ปรับให้สัมพันธ์กับขนาดของรูป
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+  
     paddingBottom: 60,
     shadowColor: "#000",
     shadowOpacity: 0.1,
