@@ -425,12 +425,12 @@ export default function TripManually() {
                 </Accordion.Trigger>
                 <Accordion.HeightAnimator animation="medium">
                   <Accordion.Content animation="medium">
-                    <TouchableOpacity onPress={toggleModal}>
+                    {plandata?.author_email === user?.email && (<TouchableOpacity onPress={toggleModal}>
                         <View style={styles.dropdownRow}>
                           <Icon name="add-circle-outline" size={24} color="#203B82" />
                           <Text style={styles.dropdownText}>Adding some location</Text>
                         </View>
-                      </TouchableOpacity>
+                      </TouchableOpacity>)}
                     <GestureHandlerRootView>
                       {location[index] && location[index].length > 0 ? (
                         location[index]
