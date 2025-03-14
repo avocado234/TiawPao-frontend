@@ -50,7 +50,7 @@ const HotelCard: React.FC<{ hotel: Hotel }> = ({ hotel }) => {
                 </View>
             )}
             <View className="ml-3 flex-1 p-1">
-                <Text className="text-2xl font-bold text-gray-800 mt-2" numberOfLines={1} ellipsizeMode= "clip" >
+                <Text className="text-2xl font-bold text-gray-800 mt-2" numberOfLines={1} ellipsizeMode= "tail" >
                     {hotel.name}
                 </Text>
                 <Text className="mt-2 text-m text-gray-500" numberOfLines={1} ellipsizeMode="tail">
